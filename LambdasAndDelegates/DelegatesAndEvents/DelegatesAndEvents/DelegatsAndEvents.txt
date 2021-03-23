@@ -6,3 +6,9 @@ Delega multiemisj:
 - może mieć więcej niż jedną referencje do funkcji delgata.
 - sledzi referencje delegatów za pomocą listy wywołań
 - Delagaty na liście są wywoływane sekwencyjnie
+
+#Podnoszenie zdarzeń - Raising events#
+- EventHandler jest delgatem
+- Po zdefiniowaniu eventu potrzebujemy go "podnieść" ponieważ słuchacze (listnerzy) nie mogli by uzyskac danych o zdarzeniu
+jesli cos zostało przekazane przez delgata
+
