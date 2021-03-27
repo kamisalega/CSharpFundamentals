@@ -1,0 +1,4 @@
+﻿#Wzorzec Builder#
+Wzorzec jest przydatny gdy buduje złozony obiekt.
+- Części składowe tego obiekut muszą być oddzielone od jego części i złożenia
+- Gdy trzeba tworzyć różne reprezentacje z lepszą kontrolą
