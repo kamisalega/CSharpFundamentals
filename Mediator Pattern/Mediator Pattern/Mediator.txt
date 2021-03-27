@@ -1,0 +1,19 @@
+﻿#Wzorzec Mediator#
+- opisuje w jaki sposób obiekty oddziałują na siebie i komunikują się ze sobą.
+- promuje luzne łączenie obiektów
+- umożliwa obiektom unikanie odwoływania
+bezpośrednio do siebie dzięki enkapsulacje komunikacji w centralnym mediatorze.
+
+- Wyobraź sobie że masz 10 lub 100, a nawet 10000000 obiektów który każdy musi się komunikować
+z każdym z pozostłych obiektów. Gdyby każdy z tych obiektów musiał się odnosić
+i przekazywać wszystkim innym przedmiotom w pośpiechu będzie to brzydkie.
+Musimy śledzić odwołania do obiektów we wszystkich i stale je synchronizować
+Nie jest to łatwe zadanie, ale dzięki wzorcowi
+mediatora tworzymy centralny obiekt mediatora
+ ten obiekt ponosi wyłączną odpowiedzialność za utrzymanie odniesien
+ do obiektów w naszej sieci, a także odpowiada za
+ przekazywanie wszelich komunikatów lub komunikacji między tymi obiektami.
+ Możesz myśleć o mediatorze przypominającym centrum komunikacyjne.
+
+ - Składa się z czterech elementów:
+
