@@ -44,6 +44,105 @@ namespace APM.SL
       return margin;
     }
 
+    public decimal CalculateMarginWithGuardClassOriginal(string costInput, string priceInput)
+    {
+      Guard.ThrowIfNullOrEmpty(costInput, "Please enter the cost", "cost");
+      Guard.ThrowIfNullOrEmpty(priceInput, "Please enter the price", "price");
+
+      var cost = Guard.ThrowIfNotPositiveDecimal(costInput!, "The cost must be a number 0 or greater", "cost");
+      var price = Guard.ThrowIfNotPositiveNonZeroDecimal(priceInput, "The price must be a number greater than 0", "price");
+
+      var margin = Math.Round(((price - cost) / price) * 100M);
+
+      return margin;
+    }
+
+    public decimal CalculateMarginWithOverload(string costInput, string priceInput)
+    {
+      if (string.IsNullOrWhiteSpace(costInput)) throw new ArgumentException("Please enter the cost");
+      if (string.IsNullOrWhiteSpace(priceInput)) throw new ArgumentException("Please enter the price");
+
+      var success = decimal.TryParse(costInput, out decimal cost);
+      if (!success || cost < 0) throw new ArgumentException("The cost must be a number 0 or greater");
+
+      success = decimal.TryParse(priceInput, out decimal price);
+      if (!success || price <= 0) throw new ArgumentException("The price must be a number greater than 0");
+
+      return CalculateMarginWithOverload(cost, price);
+    }
+
+    private decimal CalculateMarginWithOverload(decimal cost, decimal price)
+    {
+      // if (price == 0) throw new ArgumentException("The price must not be 0");
+
+      var margin = Math.Round(((price - cost) / price) * 100M);
+
+      return margin;
+    }
+
+    public decimal CalculateMarginWithGuardClauses(string costInput, string priceInput)
+    {
+      if (string.IsNullOrWhiteSpace(costInput)) throw new ArgumentException("Please enter the cost", "cost");
+      if (string.IsNullOrWhiteSpace(priceInput)) throw new ArgumentException("Please enter the price", "price");
+
+      var success = decimal.TryParse(costInput, out decimal cost);
+      if (!success || cost < 0) throw new ArgumentException("The cost must be a number 0 or greater", "cost");
+
+      success = decimal.TryParse(priceInput, out decimal price);
+      if (!success || price <= 0) throw new ArgumentException("The price must be a number greater than 0", "price");
+
+      var margin = Math.Round(((price - cost) / price) * 100M);
+
+      return margin;
+    }
+
+    public decimal CalculateMarginWithSurroundingConditionals(string costInput, string priceInput)
+    {
+      var success = decimal.TryParse(costInput, out decimal cost);
+
+      decimal margin = 0;
+      if (success)
+      {
+        success = decimal.TryParse(priceInput, out decimal price);
+
+        if (success && price > 0)
+        {
+          margin = Math.Round(((price - cost) / price) * 100M);
+        }
+      }
+
+      return margin;
+    }
+
+    public decimal CalculateMarginOriginal(string costInput, string priceInput)
+    {
+      decimal cost = decimal.Parse(costInput);
+      decimal price = decimal.Parse(priceInput);
+
+      var margin = Math.Round(((price - cost) / price) * 100M);
+
+      return margin;
+    }
+
+    public (decimal? Margin, string? Message) CalculateMarginTuple(string costInput, string priceInput)
+    {
+      if (string.IsNullOrWhiteSpace(costInput))
+        return (Margin: null, Message: "Please enter the cost");
+      if (string.IsNullOrWhiteSpace(priceInput))
+        return (Margin: null, Message: "Please enter the price");
+
+      var success = decimal.TryParse(costInput, out decimal cost);
+      if (!success || cost < 0)
+        return (Margin: null, Message: "The cost must be a number 0 or greater");
+
+      success = decimal.TryParse(priceInput, out decimal price);
+      if (!success || price <= 0)
+        return (Margin: null, Message: "The price must be a number greater than 0");
+
+      var margin = Math.Round(((price - cost) / price) * 100M);
+      return (Margin: margin, Message: null);
+    }
+
 
     /// <summary>
     /// Calculates the total amount of the discount
@@ -53,13 +152,13 @@ namespace APM.SL
     {
       if (price <= 0) throw new ArgumentException("Please enter the price");
 
-      if (discount?.PercentOff is null) 
-        throw new ArgumentException("Please specify a discount");
+      if (discount?.PercentOff is null) throw new ArgumentException("Please specify a discount");
 
       var discountAmount = price * (discount.PercentOff.Value / 100);
 
       return discountAmount;
     }
+
 
     /// <summary>
     /// Saves pricing details.
@@ -82,6 +181,34 @@ namespace APM.SL
       return true;
     }
 
+    public (bool Success, string Message) SavePriceWithTuple(int productId,
+                                            string cost, string price,
+                                            string category, string reason,
+                                            DateTime effectiveDate)
+    {
+      // To turn off unused parameter warnings
+      Console.WriteLine(new string[] { productId.ToString(), cost, price, category, reason, effectiveDate.ToString() });
+
+      // Validate arguments
+      // Call a method in the data layer to save the data...
+
+      return (Success: true, Message: "Price saved successfully");
+    }
+
+    public OperationResult SavePriceWithObject(int productId,
+                                              string cost, string price,
+                                              string category, string reason,
+                                              DateTime effectiveDate)
+    {
+      // To turn off unused parameter warnings
+      Console.WriteLine(new string[] { productId.ToString(), cost, price, category, reason, effectiveDate.ToString() });
+
+      // Validate arguments
+      // Call a method in the data layer to save the data...
+
+      return new OperationResult() { Success = true, ValidationMessage = "Price saved successfully" };
+    }
+
     /// <summary>
     /// Validates the effective data according to two rules:
     /// - Effective date is required
@@ -100,7 +227,11 @@ namespace APM.SL
 
     public bool ValidateEffectiveDateWithRef(DateTime? effectiveDate, ref string validationMessage)
     {
-      if (!effectiveDate.HasValue) return false;
+      if (!effectiveDate.HasValue)
+      {
+        validationMessage = "Date has no value";
+        return false;
+      };
 
       if (effectiveDate.Value < DateTime.Now.AddDays(7))
       {
@@ -114,7 +245,11 @@ namespace APM.SL
     public bool ValidateEffectiveDateWithOut(DateTime? effectiveDate, out string validationMessage)
     {
       validationMessage = "";
-      if (!effectiveDate.HasValue) return false;
+      if (!effectiveDate.HasValue)
+      {
+        validationMessage = "Date has no value";
+        return false;
+      };
 
       if (effectiveDate.Value < DateTime.Now.AddDays(7))
       {

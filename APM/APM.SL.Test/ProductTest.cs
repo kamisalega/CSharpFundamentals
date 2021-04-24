@@ -260,7 +260,21 @@ namespace APM.SL.Test
                     ex.Message);
     }
 
+    [Fact]
+    public void CalculateMarginTuple_WhenInvalidCostIsNull_ShouldGenerateError()
+    {
+      // Arrange
+      string? cost = null;
+      string price = "100";
+      var product = new Product();
+      (decimal? Margin, string? Message) expected = (Margin: null, Message: "Please enter the cost");
 
+      // Act
+      var actual = product.CalculateMarginTuple(cost!, price);
+
+      // Assert
+      Assert.Equal(expected, actual);
+    }
 
     //
     // CalculateTotalDiscount
