@@ -1,4 +1,5 @@
-﻿using System;
+﻿using APM.Utilities;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -47,7 +48,7 @@ namespace APM.SL.Test
       var discount = new Discount();
 
       // Act & Assert
-      var ex = Assert.Throws<KeyNotFoundException>(() => discount.FindDiscountWithException(discounts, discountName));
+      var ex = Assert.Throws<DiscountNotFoundException>(() => discount.FindDiscountWithException(discounts, discountName));
       Assert.Equal("Discount not found", ex.Message);
     }
 

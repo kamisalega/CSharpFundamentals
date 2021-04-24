@@ -8,7 +8,7 @@ namespace APM.SL
   {
     public static void ThrowIfNullOrEmpty(string argumentValue, string message, string parameterName)
     {
-      if (string.IsNullOrWhiteSpace(argumentValue)) throw new ArgumentException(message, parameterName);
+      if (string.IsNullOrWhiteSpace(argumentValue)) throw new ValidationException(message, parameterName);
     }
 
     public static decimal ThrowIfNotPositiveDecimal(string argumentValue, string message, string parameterName)

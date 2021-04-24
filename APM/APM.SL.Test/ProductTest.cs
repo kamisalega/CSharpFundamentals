@@ -171,7 +171,7 @@ namespace APM.SL.Test
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => product.CalculateMargin(cost, price));
+      var ex = Assert.Throws<ValidationException>(() => product.CalculateMargin(cost, price));
       Assert.Equal("Please enter the price (Parameter 'price')", ex.Message);
     }
 
@@ -184,7 +184,7 @@ namespace APM.SL.Test
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => product.CalculateMargin(cost, price));
+      var ex = Assert.Throws<ValidationException>(() => product.CalculateMargin(cost, price));
       Assert.Equal("Please enter the cost (Parameter 'cost')", ex.Message);
     }
 
@@ -197,7 +197,7 @@ namespace APM.SL.Test
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => 
+      var ex = Assert.Throws<ValidationException>(() => 
                                   product.CalculateMargin(cost, price!));
       Assert.Equal("Please enter the price (Parameter 'price')", ex.Message);
     }
@@ -211,7 +211,7 @@ namespace APM.SL.Test
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => 
+      var ex = Assert.Throws<ValidationException>(() => 
                                   product.CalculateMargin(cost!, price));
       Assert.Equal("Please enter the cost (Parameter 'cost')", ex.Message);
     }
