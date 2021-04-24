@@ -31,10 +31,15 @@ namespace APM.SL
     /// <returns>Resulting profit margin</returns>
     public decimal CalculateMargin(string costInput, string priceInput)
     {
-      decimal cost = decimal.Parse(costInput);
-      decimal price = decimal.Parse(priceInput);
+      Guard.ThrowIfNullOrEmpty(costInput, "Please enter the cost", "cost");
+      Guard.ThrowIfNullOrEmpty(priceInput, "Please enter the price", "price");
 
-      var margin = ((price - cost) / price) * 100M;
+      var cost = Guard.ThrowIfNotPositiveDecimal(costInput, 
+              "The cost must be a number 0 or greater", "cost");
+      var price = Guard.ThrowIfNotPositiveNonZeroDecimal(priceInput, 
+              "The price must be a number greater than 0", "price");
+
+      var margin = Math.Round(((price - cost) / price) * 100M);
 
       return margin;
     }

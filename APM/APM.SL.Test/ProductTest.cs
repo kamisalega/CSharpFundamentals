@@ -252,8 +252,10 @@ namespace APM.SL.Test
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => product.CalculateMargin(cost, price));
-      Assert.Equal("The cost must be a number 0 or greater (Parameter 'cost')", ex.Message);
+      var ex = Assert.Throws<ArgumentException>(() => 
+                                      product.CalculateMargin(cost, price));
+      Assert.Equal("The cost must be a number 0 or greater (Parameter 'cost')",
+                    ex.Message);
     }
 
 
