@@ -193,11 +193,12 @@ namespace APM.SL.Test
     {
       // Arrange
       string cost = "50";
-      string price = null;
+      string? price = null;
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => product.CalculateMargin(cost, price));
+      var ex = Assert.Throws<ArgumentException>(() => 
+                                  product.CalculateMargin(cost, price!));
       Assert.Equal("Please enter the price (Parameter 'price')", ex.Message);
     }
 
@@ -205,12 +206,13 @@ namespace APM.SL.Test
     public void CalculateMargin_WhenInvalidCostIsNull_ShouldGenerateError()
     {
       // Arrange
-      string cost = null;
+      string? cost = null;
       string price = "100";
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => product.CalculateMargin(cost, price));
+      var ex = Assert.Throws<ArgumentException>(() => 
+                                  product.CalculateMargin(cost!, price));
       Assert.Equal("Please enter the cost (Parameter 'cost')", ex.Message);
     }
 
@@ -306,11 +308,12 @@ namespace APM.SL.Test
     {
       // Arrange
       var price = 200;
-      Discount discount = null;
+      Discount? discount = null;
       var product = new Product();
 
       // Act & Assert
-      var ex = Assert.Throws<ArgumentException>(() => product.CalculateTotalDiscount(price, discount));
+      var ex = Assert.Throws<ArgumentException>(() => 
+                      product.CalculateTotalDiscount(price, discount!));
       Assert.Equal("Please specify a discount", ex.Message);
     }
 
@@ -328,6 +331,23 @@ namespace APM.SL.Test
       // Act & Assert
       var ex = Assert.Throws<ArgumentException>(() => product.CalculateTotalDiscount(price, discount));
       Assert.Equal("Please enter the price", ex.Message);
+    }
+
+    [Fact]
+    public void CalculateTotalDiscount_WhenPercentOffIsNull_ShouldReturnError()
+    {
+      // Arrange
+      var price = 200;
+      var discount = new Discount()
+      {
+        PercentOff = null
+      };
+      var product = new Product();
+
+      // Act & Assert
+      var ex = Assert.Throws<ArgumentException>(() => 
+                                  product.CalculateTotalDiscount(price, discount));
+      Assert.Equal("Please specify a discount", ex.Message);
     }
 
     //

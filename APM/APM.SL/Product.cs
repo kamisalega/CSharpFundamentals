@@ -12,15 +12,15 @@ namespace APM.SL
     public int ProductId { get; set; }
 
     // Reference Types
-    public string Category { get; set; }
+    public string Category { get; set; } = "";
 
-    public List<Discount> Discounts { get; set; }
+    public List<Discount>? Discounts { get; set; }
 
-    public Discount ProductDiscount { get; set; }
+    public Discount? ProductDiscount { get; set; }
 
-    public string ProductName { get; set; }
+    public string ProductName { get; set; } = "";
 
-    public string Reason { get; set; }
+    public string Reason { get; set; } = "";
 
 
     /// <summary>
@@ -53,9 +53,10 @@ namespace APM.SL
     {
       if (price <= 0) throw new ArgumentException("Please enter the price");
 
-      if (discount is null) throw new ArgumentException("Please specify a discount");
+      if (discount?.PercentOff is null) 
+        throw new ArgumentException("Please specify a discount");
 
-      var discountAmount = price * (discount.PercentOff / 100);
+      var discountAmount = price * (discount.PercentOff.Value / 100);
 
       return discountAmount;
     }
