@@ -1,11 +1,11 @@
-﻿# Default ignored files
+# Default ignored files
 /shelf/
 /workspace.xml
 # Rider ignored files
-/modules.xml
-/contentModel.xml
 /projectSettingsUpdater.xml
 /.idea.PluralsightWinFormsDemoApp.iml
+/modules.xml
+/contentModel.xml
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
