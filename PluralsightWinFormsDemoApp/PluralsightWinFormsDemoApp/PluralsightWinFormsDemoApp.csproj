@@ -82,6 +82,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainFormPresenter.cs" />
     <Compile Include="NewPodcastForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +114,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TextResources.fr.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ToolBarView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolBarView.Designer.cs">
+      <DependentUpon>ToolBarView.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="EpisodeView.en-GB.resx">
       <DependentUpon>EpisodeView.cs</DependentUpon>
@@ -155,6 +162,9 @@
     <EmbeddedResource Include="TextResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TextResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolBarView.resx">
+      <DependentUpon>ToolBarView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
