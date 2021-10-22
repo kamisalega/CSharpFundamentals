@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "DeskBooker.Core/1.0.0": {
+        "runtime": {
+          "DeskBooker.Core.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DeskBooker.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
