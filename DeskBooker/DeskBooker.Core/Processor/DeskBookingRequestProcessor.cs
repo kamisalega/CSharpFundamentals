@@ -1,3 +1,4 @@
+using System;
 using DeskBooker.Core.Domain;
 
 namespace DeskBooker.Core.Processor
@@ -6,6 +7,11 @@ namespace DeskBooker.Core.Processor
     {
         public DeskBookingResult BookDesk(DeskBookingRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+            
             return new DeskBookingResult
             {
                 FirstName = request.FirstName,
