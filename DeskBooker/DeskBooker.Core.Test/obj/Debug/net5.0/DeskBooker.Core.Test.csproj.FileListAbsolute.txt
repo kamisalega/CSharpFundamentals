@@ -101,3 +101,5 @@ C:\Users\kamil\Documents\Programowanie\CSharpFundamentals\DeskBooker\DeskBooker.
 C:\Users\kamil\Documents\Programowanie\CSharpFundamentals\DeskBooker\DeskBooker.Core.Test\bin\Debug\net5.0\CoverletSourceRootsMapping
 C:\Users\kamil\Documents\Programowanie\CSharpFundamentals\DeskBooker\DeskBooker.Core.Test\bin\Debug\net5.0\DeskBooker.Core.dll
 C:\Users\kamil\Documents\Programowanie\CSharpFundamentals\DeskBooker\DeskBooker.Core.Test\bin\Debug\net5.0\DeskBooker.Core.pdb
+C:\Users\kamil\Documents\Programowanie\CSharpFundamentals\DeskBooker\DeskBooker.Core.Test\bin\Debug\net5.0\Castle.Core.dll
+C:\Users\kamil\Documents\Programowanie\CSharpFundamentals\DeskBooker\DeskBooker.Core.Test\bin\Debug\net5.0\Moq.dll
