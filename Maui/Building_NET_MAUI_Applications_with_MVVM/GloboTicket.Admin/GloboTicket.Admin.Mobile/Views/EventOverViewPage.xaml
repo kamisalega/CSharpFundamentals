@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:converters="clr-namespace:GloboTicket.Admin.Mobile.Converters"
+             x:Class="GloboTicket.Admin.Mobile.Views.EventOverViewPage"
+             xmlns:views="clr-namespace:GloboTicket.Admin.Mobile.Views"
+             Title="EventOverViewPage">
+    <ContentPage.Resources>
+        <toolkit:ListToStringConverter x:Key="ListToStringConverter" Separator=", "/>
+        <converters:StatusEnumToTextConverter x:Key="StatusEnumToTextConverter" />
+
+        <Style TargetType="Grid">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+    <Grid>
+       <ScrollView>
+           <CollectionView 
+               ItemsSource ="{Binding Events}"
+               SelectedItem="{Binding SelectedEvent, Mode=TwoWay}"
+               SelectionMode="Single"
+               SelectionChangedCommand="{Binding NavigateToSelectedDetailCommand}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                                    Padding="10" 
+                                    ColumnDefinitions="Auto,Auto">
+                            <Image 
+                                        Aspect="AspectFill"
+                                        Source="{Binding ImageUrl, TargetNullValue=fallback.jpg}"
+                                        VerticalOptions="Center"
+                                        WidthRequest="100"
+                                        HeightRequest="100"/>
+                            <VerticalStackLayout 
+                                        Grid.Column="1"
+                                        Padding="10"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center">
+                                <Label 
+                                            Style="{StaticResource ValueLabelStyle}"
+                                            Margin="0"
+                                            Text="{Binding Name}"/>
+                                <Label Text="{Binding Artists, Converter={StaticResource ListToStringConverter}}"/>
+                                <Label Text="{Binding Price, StringFormat='{0:C}'}" />
+                                <Label Text="{Binding Date, StringFormat='{0:d}'}" />
+                                <Label Text="{Binding Category.Name}" />
+                                <Label 
+                                            FontAttributes="Italic"
+                                            Text="{Binding Status, Converter={StaticResource StatusEnumToTextConverter}}"
+                                            TextColor="{StaticResource Primary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+       </ScrollView>
+
+   </Grid>
+</views:ContentPageBase>

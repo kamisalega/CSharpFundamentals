@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "GloboTicket.Admin.Mobile\\GloboTicket.Admin.Mobile.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "GloboTicket.Admin.API\\GloboTicket.Admin.API.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
