@@ -1,4 +1,6 @@
-﻿namespace GloboTicket.Admin.Mobile.Repositories
+﻿using GloboTicket.Admin.Mobile.Models;
+
+namespace GloboTicket.Admin.Mobile.Repositories
 {
     public class NavigationService : INavigationService
     {
@@ -6,6 +8,17 @@
         {
             var parameters = new Dictionary<string, object> { { "EventId", id } };
             await Shell.Current.GoToAsync("event", parameters);
+        }
+
+        public Task GoToAddEvent() => Shell.Current.GoToAsync("event/add");
+        public Task GoToEditEvent(EventModel detailModel)
+        {
+            var navigationParameter = new ShellNavigationQueryParameters
+            {
+                { "Event", detailModel }
+            };
+            
+            return Shell.Current.GoToAsync("event/edit", navigationParameter);
         }
     }
 }

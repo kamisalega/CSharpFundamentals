@@ -17,9 +17,21 @@
             <Grid>
                 <VerticalStackLayout Padding="10">
                     <!-- Name -->
-                    <Label
-                        Text="{Binding Name, Mode=OneWay}"
-                        Style="{StaticResource TitleLabelStyle}" />
+
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label
+                            Text="{Binding Name}"
+                            Style="{StaticResource TitleLabelStyle}" />
+                        <Button
+                            Grid.Column="1"
+                            Margin="5"
+                            Command="{Binding NavigateToEditEventCommand}"
+                            FontFamily="MaterialIconsRegular"
+                            FontSize="20"
+                            HorizontalOptions="End"
+                            Text="&#xe3c9;"
+                            WidthRequest="50" />
+                    </Grid>
 
                     <HorizontalStackLayout>
                         <CheckBox IsChecked="{Binding ShowLargerImage}" />

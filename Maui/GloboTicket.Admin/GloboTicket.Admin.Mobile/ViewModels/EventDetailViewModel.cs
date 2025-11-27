@@ -2,7 +2,10 @@
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using GloboTicket.Admin.Mobile.Messages;
 using GloboTicket.Admin.Mobile.Models;
+using GloboTicket.Admin.Mobile.Repositories;
 using GloboTicket.Admin.Mobile.Services;
 using GloboTicket.Admin.Mobile.ViewModels.Base;
 
@@ -39,6 +42,7 @@ namespace GloboTicket.Admin.Mobile.ViewModels
         private bool _showLargerImage;
 
         private readonly IEventService _eventService;
+        private readonly INavigationService _navigationService;
 
         public bool ShowThumbnailImage => !ShowLargerImage;
 
@@ -49,17 +53,44 @@ namespace GloboTicket.Admin.Mobile.ViewModels
             if (await _eventService.UpdateStatus(Id, EventStatusModel.Cancelled))
             {
                 EventStatus = EventStatusEnum.Cancelled;
+                WeakReferenceMessenger.Default.Send(new StatusChangedMessage(Id, EventStatus));
             }
         }
 
+        [RelayCommand]
+        private async Task NavigateToEditEvent()
+        {
+            EventModel detailModel = MapToEventModel(this);
+            await _navigationService.GoToEditEvent(detailModel);
+        }
+
+        private EventModel MapToEventModel(EventDetailViewModel eventDetailViewModel)
+        {
+            return new EventModel
+            {
+                Id = eventDetailViewModel.Id,
+                Name = eventDetailViewModel.Name ?? string.Empty,
+                Price = eventDetailViewModel.Price,
+                ImageUrl = eventDetailViewModel.ImageUrl,
+                Status = (EventStatusModel)eventDetailViewModel.EventStatus,
+                Date = eventDetailViewModel.Date,
+                Description = eventDetailViewModel.Description ?? string.Empty,
+                Category = new CategoryModel
+                {
+                    Id = eventDetailViewModel.Category!.Id,
+                    Name = eventDetailViewModel.Category.Name
+                },
+                Artists = eventDetailViewModel.Artists.ToList()
+            };
+        }
 
         private bool CanCancelEvent() => EventStatus != EventStatusEnum.Cancelled && Date.AddHours(-4) >
             DateTime.Now;
 
-        public EventDetailViewModel(IEventService eventService)
+        public EventDetailViewModel(IEventService eventService, INavigationService navigationService)
         {
             _eventService = eventService;
-            
+            _navigationService = navigationService;
         }
 
         private async  Task GetEvent(Guid id)
