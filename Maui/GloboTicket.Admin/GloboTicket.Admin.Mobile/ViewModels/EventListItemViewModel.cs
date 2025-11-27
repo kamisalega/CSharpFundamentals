@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using GloboTicket.Admin.Mobile.Messages;
 using GloboTicket.Admin.Mobile.ViewModels.Base;
 
 namespace GloboTicket.Admin.Mobile.ViewModels
 {
-    public partial class EventListItemViewModel : ViewModelBase
+    public partial class EventListItemViewModel : ViewModelBase, IRecipient<StatusChangedMessage>
     {
 
         [ObservableProperty]
@@ -47,6 +49,14 @@ namespace GloboTicket.Admin.Mobile.ViewModels
             _artists = artists;
             _status = status;
             _category = category;
+        }
+
+        public void Receive(StatusChangedMessage message)
+        {
+           if(message.EventId == Id)
+           {
+               Status = message.Status;
+           }
         }
     }
 }
