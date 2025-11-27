@@ -49,6 +49,8 @@ namespace GloboTicket.Admin.Mobile.ViewModels
             _artists = artists;
             _status = status;
             _category = category;
+            
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         public void Receive(StatusChangedMessage message)

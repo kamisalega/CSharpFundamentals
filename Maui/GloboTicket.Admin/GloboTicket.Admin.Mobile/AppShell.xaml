@@ -7,6 +7,10 @@
     xmlns:views="clr-namespace:GloboTicket.Admin.Mobile.Views"
     Title="GloboTicket.Admin.Mobile">
 
+    <Shell.TitleView>
+        <views:LogoView/>
+    </Shell.TitleView>
+
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate views:EventOverViewPage}"

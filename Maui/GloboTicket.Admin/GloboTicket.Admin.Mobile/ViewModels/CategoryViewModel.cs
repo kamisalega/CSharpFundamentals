@@ -9,5 +9,11 @@ namespace GloboTicket.Admin.Mobile.ViewModels
         private Guid _id;
         [ObservableProperty]
         private string _name = default!;
+
+        public bool Equals(CategoryViewModel? other)
+        {
+            if (other == null) return false;
+            return Id.Equals(other.Id);
+        }
     }
 }

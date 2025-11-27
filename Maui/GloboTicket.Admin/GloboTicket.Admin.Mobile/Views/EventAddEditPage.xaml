@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:ContentPageBase xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:views="clr-namespace:GloboTicket.Admin.Mobile.Views"
+                       xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                       xmlns:converters="clr-namespace:GloboTicket.Admin.Mobile.Converters"
+                       x:Class="GloboTicket.Admin.Mobile.Views.EventAddEditPage"
+                       Title="EventAddEditPage">
+    <ContentPage.Resources>
+        <converters:StatusEnumToTextConverter x:Key="StatusEnumToTextConverter" />
+        <toolkit:ListToStringConverter x:Key="ListToStringConverter" Separator=", " />
+    </ContentPage.Resources>
+    <Grid>
+        <ScrollView>
+            <Grid>
+                <VerticalStackLayout Padding="10">
+                    <Label
+                     Style="{StaticResource TitleLabelStyle}"
+                     Text="{Binding PageTitle}"
+                     TextColor="{StaticResource Primary}" />
+
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid ColumnDefinitions=".3*,.7*"
+                              ColumnSpacing="5"
+                              RowDefinitions="*,*,*,*,*,*,*,*"
+                              RowSpacing="10">
+
+                            <!--  Row 1 Name  -->
+                            <Label Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="Name" />
+                            <Entry Grid.Row="0" 
+                                   Grid.Column="1" 
+                                   Text="{Binding Name, Mode=TwoWay}" 
+                                   VerticalOptions="End" />
+
+                            <!--  Row 2 Image  -->
+                            <Label Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="Image-url" 
+                                   VerticalOptions="Start"/>
+                            <Grid Grid.Row="1"
+                                  Grid.Column="1"
+                                  RowDefinitions="35, Auto">
+                                <Entry 
+                                    Text="{Binding ImageUrl, Mode=TwoWay}" 
+                                    VerticalOptions="Start" />
+
+                                <Image Grid.Row="1"
+                                       HeightRequest="100"
+                                       Source="{Binding ImageUrl, TargetNullValue=fallback.jpg}" />
+                            </Grid>
+
+                            <!--  Row 3 Price  -->
+                            <Label Grid.Row="2"
+                                   Grid.Column="0"
+                                   Text="Price"/>
+                            <Grid Grid.Row="2"
+                                  Grid.Column="1"
+                                  ColumnDefinitions="*, Auto"
+                                  HeightRequest="45">
+                                <Label Margin="10,0"
+                                       Text="{Binding Price, Mode=OneWay, StringFormat='{0:C}'}"/>
+
+                                <Stepper Grid.Column="1"
+                                         Increment="5"
+                                         Maximum="150"
+                                         Minimum="25"
+                                         Value="{Binding Price, Mode=TwoWay}" />
+                            </Grid>
+
+                            <!--  Row 4 Status  -->
+                            <Label Grid.Row="3"
+                                   Grid.Column="0"
+                                   Text="Status"
+                                   VerticalOptions="Center"/>
+                            <Picker Grid.Row="3"
+                                    Grid.Column="1"
+                                    ItemsSource="{Binding StatusList}"
+                                    ItemDisplayBinding="{Binding ., Converter={StaticResource StatusEnumToTextConverter}}"
+                                    SelectedItem="{Binding EventStatus}" />
+
+                            <!--  Row 5 Date  -->
+                            <Label Grid.Row="4"
+                                   Grid.Column="0"
+                                   Text="Date" />
+                            <DatePicker Grid.Row="4"
+                                        Grid.Column="1"
+                                        Date="{Binding Date}"
+                                        MinimumDate="{Binding MinDate}" />
+
+                            <!--  Row 6 Artists  -->
+                            <Label Grid.Row="5"
+                                   Grid.Column="0"
+                                   Text="Artists" 
+                                   VerticalOptions="Start"/>
+                            <Grid Grid.Row="5"
+                                  Grid.Column="1"
+                                  RowDefinitions="*,Auto">
+                                <CollectionView ItemsSource="{Binding Artists}">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Text="{Binding .}" />
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                                <Grid
+                                    Grid.Row="1"
+				    ColumnDefinitions="*, Auto"
+				    RowSpacing="10">
+                                    <Entry         
+					 HorizontalOptions="Fill"
+					 Placeholder="Add artist"
+					 Text="{Binding AddedArtist}" />
+                                    <Button
+					 Grid.Column="1"
+					 Command="{Binding AddArtistCommand}"
+					 Text="+"
+					 WidthRequest="50" />
+                                </Grid>
+                            </Grid>
+
+                            <!--  Row 7 Description  -->
+                            <Label Grid.Row="6"
+                                   Grid.Column="0"
+                                   Text="Description" 
+                                   VerticalOptions="Start"/>
+                            <Editor Grid.Row="6"
+                                    Grid.Column="1"
+                                    MinimumHeightRequest="100"
+                                    Text="{Binding Description, Mode=TwoWay}"
+                                    VerticalOptions="Start" />
+
+                            <!--  Row 8 Category  -->
+                            <Label Grid.Row="7"
+                                   Grid.Column="0"
+                                   Text="Category" />
+                            <Picker Grid.Row="7"
+                                    Grid.Column="1"
+                                    ItemsSource="{Binding Categories, Mode=OneWay}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding Category, Mode=TwoWay}" />
+                        </Grid>
+                    </Grid>
+
+                    <Button Margin="0,10,0,25"  Command="{Binding SubmitCommand}" Text="Submit" />
+                </VerticalStackLayout>
+
+            </Grid>
+        </ScrollView>
+        <Grid  BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" 
+            IsVisible="{Binding IsLoading}">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" />
+        </Grid>
+    </Grid>
+</views:ContentPageBase>
