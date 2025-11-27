@@ -18,6 +18,7 @@ namespace GloboTicket.Admin.Mobile
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIconsRegular");
                 }).RegisterRepositories()
                 .RegisterServices()
                 .RegisterViews()
@@ -33,6 +34,8 @@ namespace GloboTicket.Admin.Mobile
         private static MauiAppBuilder RegisterRepositories(this MauiAppBuilder builder)
         {
             builder.Services.AddTransient<IEventRepository, EventRepository>();
+            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+            
             var baseUrl = DeviceInfo.Platform == DevicePlatform.Android
                 ? "http://10.0.2.2:5191"
                 : "https://localhost:7185";
@@ -52,6 +55,7 @@ namespace GloboTicket.Admin.Mobile
             builder.Services.AddSingleton<EventListOverviewViewModel>();
 
             builder.Services.AddTransient<EventDetailViewModel>();
+            builder.Services.AddTransient<EventAddEditViewModel>();
             return builder;
         }
 
@@ -59,6 +63,7 @@ namespace GloboTicket.Admin.Mobile
         {
             builder.Services.AddTransient<IEventService, EventService>();
             builder.Services.AddTransient<INavigationService, NavigationService>();
+            builder.Services.AddTransient<ICategoryService, CategoryService>();
             return builder;
         }
 
@@ -66,6 +71,7 @@ namespace GloboTicket.Admin.Mobile
         {
             builder.Services.AddSingleton<EventOverViewPage>();
             builder.Services.AddTransient<EventDetailPage>();
+            builder.Services.AddTransient<EventAddEditPage>();
             return builder;
         }
     }

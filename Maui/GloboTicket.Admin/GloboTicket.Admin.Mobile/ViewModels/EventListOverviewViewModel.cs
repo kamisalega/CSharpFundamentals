@@ -29,6 +29,8 @@ namespace GloboTicket.Admin.Mobile.ViewModels
                 SelectedEvent = null;
             }
         }
+        [RelayCommand]
+        private async Task NavigateToAddEvent() => await _navigationService.GoToAddEvent();
 
         public override async Task LoadAsync()
         {

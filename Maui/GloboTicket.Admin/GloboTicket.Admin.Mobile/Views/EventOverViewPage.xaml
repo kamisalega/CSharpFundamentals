@@ -27,46 +27,53 @@
     </ContentPage.Resources>
     <Grid>
        <ScrollView>
-           <CollectionView 
-               ItemsSource ="{Binding Events}"
-               SelectedItem="{Binding SelectedEvent, Mode=TwoWay}"
-               SelectionMode="Single"
-               SelectionChangedCommand="{Binding NavigateToSelectedDetailCommand}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid
-                                    Padding="10" 
-                                    ColumnDefinitions="Auto,Auto">
-                            <Image 
-                                        Aspect="AspectFill"
-                                        Source="{Binding ImageUrl, TargetNullValue=fallback.jpg}"
-                                        VerticalOptions="Center"
-                                        WidthRequest="100"
-                                        HeightRequest="100"/>
-                            <VerticalStackLayout 
-                                        Grid.Column="1"
-                                        Padding="10"
-                                        HorizontalOptions="Center"
-                                        VerticalOptions="Center">
-                                <Label 
-                                            Style="{StaticResource ValueLabelStyle}"
-                                            Margin="0"
-                                            Text="{Binding Name}"/>
-                                <Label Text="{Binding Artists, Converter={StaticResource ListToStringConverter}}"/>
-                                <Label Text="{Binding Price, StringFormat='{0:C}'}" />
-                                <Label Text="{Binding Date, StringFormat='{0:d}'}" />
-                                <Label Text="{Binding Category.Name}" />
-                                <Label 
-                                            FontAttributes="Italic"
-                                            Text="{Binding Status, Converter={StaticResource StatusEnumToTextConverter}}"
-                                            TextColor="{StaticResource Primary}" />
-                            </VerticalStackLayout>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+           <StackLayout>
+               <Button
+                   Margin="5"
+                   Command="{Binding NavigateToAddEventCommand}"
+                   HorizontalOptions="Fill"
+                   Text="Add event"
+               />
 
-            </CollectionView>
+               <CollectionView 
+                   ItemsSource ="{Binding Events}"
+                   SelectedItem="{Binding SelectedEvent, Mode=TwoWay}"
+                   SelectionMode="Single"
+                   SelectionChangedCommand="{Binding NavigateToSelectedDetailCommand}">
+                   <CollectionView.ItemTemplate>
+                       <DataTemplate>
+                           <Grid
+                               Padding="10" 
+                               ColumnDefinitions="Auto,Auto">
+                               <Image 
+                                   Aspect="AspectFill"
+                                   Source="{Binding ImageUrl, TargetNullValue=fallback.jpg}"
+                                   VerticalOptions="Center"
+                                   WidthRequest="100"
+                                   HeightRequest="100"/>
+                               <VerticalStackLayout 
+                                   Grid.Column="1"
+                                   Padding="10"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+                                   <Label 
+                                       Style="{StaticResource ValueLabelStyle}"
+                                       Margin="0"
+                                       Text="{Binding Name}"/>
+                                   <Label Text="{Binding Artists, Converter={StaticResource ListToStringConverter}}"/>
+                                   <Label Text="{Binding Price, StringFormat='{0:C}'}" />
+                                   <Label Text="{Binding Date, StringFormat='{0:d}'}" />
+                                   <Label Text="{Binding Category.Name}" />
+                                   <Label 
+                                       FontAttributes="Italic"
+                                       Text="{Binding Status, Converter={StaticResource StatusEnumToTextConverter}}"
+                                       TextColor="{StaticResource Primary}" />
+                               </VerticalStackLayout>
+                           </Grid>
+                       </DataTemplate>
+                   </CollectionView.ItemTemplate>
+               </CollectionView>
+            </StackLayout>
        </ScrollView>
-
    </Grid>
 </views:ContentPageBase>
