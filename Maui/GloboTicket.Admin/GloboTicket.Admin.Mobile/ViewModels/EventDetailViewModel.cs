@@ -64,7 +64,6 @@ namespace GloboTicket.Admin.Mobile.ViewModels
 
         private async  Task GetEvent(Guid id)
         {
-            await Task.Delay(5000);
             var @event = await _eventService.GetEvent(id);
             if (@event != null)
             {
