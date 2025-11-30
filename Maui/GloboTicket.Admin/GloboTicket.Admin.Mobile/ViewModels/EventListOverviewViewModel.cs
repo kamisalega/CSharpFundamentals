@@ -4,12 +4,14 @@ using CommunityToolkit.Mvvm.Input;
 using GloboTicket.Admin.Mobile.Models;
 using GloboTicket.Admin.Mobile.Services;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Messaging;
+using GloboTicket.Admin.Mobile.Messages;
 using GloboTicket.Admin.Mobile.Repositories;
 using GloboTicket.Admin.Mobile.ViewModels.Base;
 
 namespace GloboTicket.Admin.Mobile.ViewModels
 {
-    public partial class EventListOverviewViewModel : ViewModelBase
+    public partial class EventListOverviewViewModel : ViewModelBase, IRecipient<EventAddedOrChangedMessage>
     {
         [ObservableProperty]
         private ObservableCollection<EventListItemViewModel> _events = new();
@@ -45,6 +47,7 @@ namespace GloboTicket.Admin.Mobile.ViewModels
             _eventService = eventService;
             _navigationService = navigationService;
 
+            WeakReferenceMessenger.Default.Register(this);
         }
 
         private async Task GetEvents()
@@ -76,6 +79,13 @@ namespace GloboTicket.Admin.Mobile.ViewModels
                 (EventStatusEnum)@event.Status,
                 @event.ImageUrl,
                 category);
+        }
+
+        public async void Receive(EventAddedOrChangedMessage message)
+        {
+         
+            Events.Clear();
+            await GetEvents();
         }
     }
 }

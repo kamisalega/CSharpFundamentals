@@ -20,5 +20,15 @@ namespace GloboTicket.Admin.Mobile.Repositories
             
             return Shell.Current.GoToAsync("event/edit", navigationParameter);
         }
+
+        public Task GoBack()
+        {
+            return Shell.Current.GoToAsync("..");
+        }
+
+        public Task GoToOverview()
+        {
+            return Shell.Current.GoToAsync("//MainPage");
+        }
     }
 }
