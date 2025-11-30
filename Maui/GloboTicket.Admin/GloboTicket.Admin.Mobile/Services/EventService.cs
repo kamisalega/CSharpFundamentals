@@ -15,5 +15,14 @@ namespace GloboTicket.Admin.Mobile.Services
         public Task<List<EventModel>> GetEvents() => _eventRepository.GetEvents();
         public Task<EventModel?> GetEvent(Guid id) => _eventRepository.GetEvent(id);
         public Task<bool> UpdateStatus(Guid id, EventStatusModel status) => _eventRepository.UpdateStatus(id, status);
+        public Task<bool> EditEvent(EventModel model)
+        {
+            return _eventRepository.EditEvent(model);
+        }
+
+        public Task<bool> CreateEvent(EventModel model)
+        {
+            return _eventRepository.CreateEvent(model);
+        }
     }
 }

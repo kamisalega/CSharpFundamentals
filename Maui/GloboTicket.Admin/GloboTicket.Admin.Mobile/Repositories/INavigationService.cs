@@ -7,5 +7,7 @@ namespace GloboTicket.Admin.Mobile.Repositories
         Task GoToEventDetail(Guid selectedEventId);
         Task GoToAddEvent();
         Task GoToEditEvent(EventModel detailModel);
+        Task GoBack();
+        Task GoToOverview();
     }
 }

@@ -4,6 +4,7 @@
                        xmlns:views="clr-namespace:GloboTicket.Admin.Mobile.Views"
                        xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                        xmlns:converters="clr-namespace:GloboTicket.Admin.Mobile.Converters"
+                       xmlns:dataAnnotations="clr-namespace:System.ComponentModel.DataAnnotations;assembly=System.ComponentModel.Annotations"
                        x:Class="GloboTicket.Admin.Mobile.Views.EventAddEditPage"
                        Title="EventAddEditPage">
     <ContentPage.Resources>
@@ -142,7 +143,17 @@
                                     SelectedItem="{Binding Category, Mode=TwoWay}" />
                         </Grid>
                     </Grid>
-
+                    <VerticalStackLayout
+                        Margin="0,10,0,0"
+                        BindableLayout.ItemsSource="{Binding Errors}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="dataAnnotations:ValidationResult">
+                                <Label
+                                    Text="{Binding ErrorMessage}"
+                                    Style="{StaticResource ErrorLabelStyle}"  />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                     <Button Margin="0,10,0,25"  Command="{Binding SubmitCommand}" Text="Submit" />
                 </VerticalStackLayout>
 

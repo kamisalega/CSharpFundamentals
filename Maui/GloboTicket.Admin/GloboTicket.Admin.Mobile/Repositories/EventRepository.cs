@@ -8,6 +8,7 @@ namespace GloboTicket.Admin.Mobile.Repositories
     public class EventRepository : IEventRepository
     {
         private readonly IHttpClientFactory _httpClientFactory;
+
         public EventRepository(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -53,6 +54,50 @@ namespace GloboTicket.Admin.Mobile.Repositories
                 var json = JsonSerializer.Serialize(status);
                 var content = new StringContent(JsonSerializer.Serialize(status), Encoding.UTF8, "application/json");
                 var response = await client.PatchAsync($"events/{id}/status", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> EditEvent(EventModel model)
+        {
+            using HttpClient client = _httpClientFactory.CreateClient
+                ("GloboTicketAdminApiClient");
+            try
+            {
+                var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8,
+                    "application/json");
+                var response = await client.PutAsync($"events/{model.Id}", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> CreateEvent(EventModel model)
+        {
+            using HttpClient client = _httpClientFactory.CreateClient
+                ("GloboTicketAdminApiClient");
+            try
+            {
+                var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8,
+                    "application/json");
+                var response = await client.PostAsync($"events", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
