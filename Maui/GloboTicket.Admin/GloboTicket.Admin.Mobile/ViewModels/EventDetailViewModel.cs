@@ -43,6 +43,7 @@ namespace GloboTicket.Admin.Mobile.ViewModels
 
         private readonly IEventService _eventService;
         private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
 
         public bool ShowThumbnailImage => !ShowLargerImage;
 
@@ -62,6 +63,19 @@ namespace GloboTicket.Admin.Mobile.ViewModels
         {
             EventModel detailModel = MapToEventModel(this);
             await _navigationService.GoToEditEvent(detailModel);
+        }
+
+        [RelayCommand]
+        private async Task DeleteEvent()
+        {
+            if (await _dialogService.Ask("Delete event", "Are you sure you want to delete this event?"))
+            {
+                if (await _eventService.DeleteEvent(Id))
+                {
+                    WeakReferenceMessenger.Default.Send(new EventDeletedMessage(Id));
+                    await _navigationService.GoToOverview();
+                }
+            }
         }
 
         private EventModel MapToEventModel(EventDetailViewModel eventDetailViewModel)
@@ -87,10 +101,13 @@ namespace GloboTicket.Admin.Mobile.ViewModels
         private bool CanCancelEvent() => EventStatus != EventStatusEnum.Cancelled && Date.AddHours(-4) >
             DateTime.Now;
 
-        public EventDetailViewModel(IEventService eventService, INavigationService navigationService)
+        public EventDetailViewModel(IEventService eventService, 
+            INavigationService navigationService, 
+            IDialogService dialogService)
         {
             _eventService = eventService;
             _navigationService = navigationService;
+            _dialogService = dialogService;
         }
 
         private async  Task GetEvent(Guid id)

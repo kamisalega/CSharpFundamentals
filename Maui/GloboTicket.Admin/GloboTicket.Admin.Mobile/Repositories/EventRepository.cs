@@ -109,5 +109,24 @@ namespace GloboTicket.Admin.Mobile.Repositories
             }
             return false;
         }
+
+        public async Task<bool> DeleteEvent(Guid id)
+        {
+            using HttpClient client = _httpClientFactory.CreateClient
+                ("GloboTicketAdminApiClient");
+            try
+            {
+                var response = await client.DeleteAsync($"events/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return false;
+        }
     }
 }

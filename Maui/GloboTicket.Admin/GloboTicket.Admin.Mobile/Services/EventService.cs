@@ -24,5 +24,10 @@ namespace GloboTicket.Admin.Mobile.Services
         {
             return _eventRepository.CreateEvent(model);
         }
+
+        public Task<bool> DeleteEvent(Guid id)
+        {
+            return _eventRepository.DeleteEvent(id);
+        }
     }
 }

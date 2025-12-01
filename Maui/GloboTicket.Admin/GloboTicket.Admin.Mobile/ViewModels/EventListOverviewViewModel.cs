@@ -11,7 +11,7 @@ using GloboTicket.Admin.Mobile.ViewModels.Base;
 
 namespace GloboTicket.Admin.Mobile.ViewModels
 {
-    public partial class EventListOverviewViewModel : ViewModelBase, IRecipient<EventAddedOrChangedMessage>
+    public partial class EventListOverviewViewModel : ViewModelBase, IRecipient<EventAddedOrChangedMessage>, IRecipient<EventDeletedMessage>
     {
         [ObservableProperty]
         private ObservableCollection<EventListItemViewModel> _events = new();
@@ -47,7 +47,8 @@ namespace GloboTicket.Admin.Mobile.ViewModels
             _eventService = eventService;
             _navigationService = navigationService;
 
-            WeakReferenceMessenger.Default.Register(this);
+            WeakReferenceMessenger.Default.Register<EventAddedOrChangedMessage>(this);
+            WeakReferenceMessenger.Default.Register<EventDeletedMessage>(this);
         }
 
         private async Task GetEvents()
@@ -86,6 +87,15 @@ namespace GloboTicket.Admin.Mobile.ViewModels
          
             Events.Clear();
             await GetEvents();
+        }
+
+        public void Receive(EventDeletedMessage message)
+        {
+            var deletedEvent = Events.FirstOrDefault(e => e.Id == message.EventId);
+            if (deletedEvent != null)
+            {
+                Events.Remove(deletedEvent);
+            }
         }
     }
 }
