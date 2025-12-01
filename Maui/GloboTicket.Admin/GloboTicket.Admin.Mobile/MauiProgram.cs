@@ -62,8 +62,9 @@ namespace GloboTicket.Admin.Mobile
         private static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
         {
             builder.Services.AddTransient<IEventService, EventService>();
-            builder.Services.AddTransient<INavigationService, NavigationService>();
+            builder.Services.AddSingleton<INavigationService, NavigationService>();
             builder.Services.AddTransient<ICategoryService, CategoryService>();
+            builder.Services.AddSingleton<IDialogService, DialogService>();
             return builder;
         }
 

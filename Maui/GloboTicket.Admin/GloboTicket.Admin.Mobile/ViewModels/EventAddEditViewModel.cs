@@ -19,6 +19,8 @@ namespace GloboTicket.Admin.Mobile.ViewModels
         private readonly IEventService _eventService;
         private readonly ICategoryService _categoryService;
         private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
+        
         public EventModel? eventDetail;
 
         [ObservableProperty]
@@ -71,7 +73,9 @@ namespace GloboTicket.Admin.Mobile.ViewModels
         [ObservableProperty]
         private DateTime _minDate = DateTime.Now;
 
-        
+   
+
+
         public ObservableCollection<ValidationResult> Errors { get; } = new();
 
         public List<EventStatusEnum> StatusList { get; set; } =
@@ -103,7 +107,12 @@ namespace GloboTicket.Admin.Mobile.ViewModels
                 if (await _eventService.CreateEvent(model))
                 {
                     WeakReferenceMessenger.Default.Send(new EventAddedOrChangedMessage());
+                    await _dialogService.Notify("Success", "The event is added");
                     await _navigationService.GoToOverview();
+                }
+                else
+                {
+                    await _dialogService.Notify("Failed", "Adding the event failed.");
                 }
             }
             else
@@ -112,7 +121,12 @@ namespace GloboTicket.Admin.Mobile.ViewModels
                 if (await _eventService.EditEvent(model))
                 {
                     WeakReferenceMessenger.Default.Send(new EventAddedOrChangedMessage());
+                    await _dialogService.Notify("Success", "The event is updated");
                     await _navigationService.GoBack();
+                }
+                else
+                {
+                    await _dialogService.Notify("Failed", "Editing the event failed.");
                 }
             }
         }
@@ -141,12 +155,12 @@ namespace GloboTicket.Admin.Mobile.ViewModels
 
         public EventAddEditViewModel(IEventService eventService, 
             ICategoryService categoryService, 
-            INavigationService navigationService)
+            INavigationService navigationService, IDialogService dialogService)
         {
             _eventService = eventService;
             _categoryService = categoryService;
             _navigationService = navigationService;
-
+            _dialogService = dialogService;
             ErrorsChanged += AddEventViewModel_ErrorsChanged;
         }
 

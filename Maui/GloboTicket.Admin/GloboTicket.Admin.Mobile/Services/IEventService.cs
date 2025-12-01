@@ -15,5 +15,6 @@ namespace GloboTicket.Admin.Mobile.Services
         Task<bool> UpdateStatus(Guid id, EventStatusModel status);
         Task<bool> EditEvent(EventModel model);
         Task<bool> CreateEvent(EventModel model);
+        Task<bool> DeleteEvent(Guid id);
     }
 }
