@@ -74,6 +74,21 @@ namespace DataStructuresTests
         }
 
         [TestMethod]
+        public void RemoveHead()
+        {
+            DoublyLinkedList<int> delete1to10 = create(1, 10);
+
+            for (int i = 1; i <= 1; i++)
+            {
+                delete1to10.RemoveHead();
+
+            }
+            
+            Assert.AreEqual(9, delete1to10.Count);
+            Assert.AreEqual(2, delete1to10.Head.Value);
+        }
+
+        [TestMethod]
         public void ContainsTest()
         {
             DoublyLinkedList<int> ints = create(1, 10);
