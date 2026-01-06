@@ -39,7 +39,9 @@ export class ProductDetailComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+      if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   addToCart(product: Product) {
