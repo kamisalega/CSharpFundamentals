@@ -50,3 +50,17 @@ Algorithms_and_Data_Structures/DataStructures/DataStructures/obj/
 Algorithms_and_Data_Structures/DataStructures/DataStructures/bin/
 
 Algorithms_and_Data_Structures/DataStructures/DataStructuresTests/bin/
+
+CSharp/01_Modular_Monolith/Evently/.vs/
+
+CSharp/01_Modular_Monolith/Evently/obj/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Api/bin/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Api/obj/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Api/obj/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Api/bin/
+
+CSharp/01_Modular_Monolith/Evently/bin/
