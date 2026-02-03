@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using Evently.Modules.Events.Application.Abstractions.Messaging;
+using MediatR;
 
 namespace Evently.Modules.Events.Application.Events.GetEvent;
 
 public sealed record GetEventQuery(
-    Guid Id) : IRequest<EventResponse?>;
+    Guid EventId) : IQuery<EventResponse>;
