@@ -18,5 +18,3 @@ public sealed record TicketTypeResponse(
     decimal Price,
     string Currency,
     decimal Quantity);
-{
-}

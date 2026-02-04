@@ -21,6 +21,10 @@ public static class EventErrors
         "Events.StartDateInPast",
         "The event start date is in the past");
 
+    public static readonly Error NoTicketsFound = Error.Problem(
+        "Events.NoTicketsFound",
+        "The event does not have any ticket types defined");
+
     public static Error NotFound(Guid eventId) =>
         Error.NotFound("Events.NotFound", $"The event with the identifier {eventId} was not found");
 }

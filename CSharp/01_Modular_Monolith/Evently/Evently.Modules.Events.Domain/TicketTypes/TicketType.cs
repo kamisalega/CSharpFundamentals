@@ -57,8 +57,3 @@ public sealed class TicketType : Entity
         Raise(new TicketTypePriceChangedDomainEvent(Id, Price));
     }
 }
-
-public sealed class TicketTypeCreatedDomainEvent(Guid ticketTypeId) : DomainEvent
-{
-    public Guid TicketTypeId { get; init; } = ticketTypeId;
-}
