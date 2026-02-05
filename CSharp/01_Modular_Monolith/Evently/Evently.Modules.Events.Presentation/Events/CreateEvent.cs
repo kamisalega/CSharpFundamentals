@@ -11,7 +11,7 @@ internal static class CreateEvent
 {
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("events", async (Request request, ISender sender) =>
+        app.MapPost("events", async (CreateEventRequest request, ISender sender) =>
         {
             var command = new CreateEventCommand(
                 request.CategoryId,
@@ -26,7 +26,7 @@ internal static class CreateEvent
         }).WithTags(Tags.Events);
     }
 
-    internal sealed class Request
+    internal sealed class CreateEventRequest
     {
         public Guid CategoryId { get; init; }
         public string Title { get; init; }
