@@ -82,3 +82,17 @@ CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Presentation/bin/
 CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Presentation/obj/
 
 CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Infrastructure/obj/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Common.Application/bin/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Common.Application/obj/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Common.Domain/bin/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Common.Domain/obj/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Common.Infrastructure/obj/
+
+CSharp/01_Modular_Monolith/Evently.Common.Domain/obj/
+
+CSharp/01_Modular_Monolith/Evently/Evently.Common.Infrastructure/bin/
