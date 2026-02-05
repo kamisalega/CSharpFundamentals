@@ -1,4 +1,4 @@
-﻿using Evently.Modules.Events.Application.Abstractions.Clock;
+﻿using Evently.Common.Application.Clock;
 
 namespace Evently.Modules.Events.Infrastructure.Clock;
 internal sealed class DateTimeProvider : IDateTimeProvider

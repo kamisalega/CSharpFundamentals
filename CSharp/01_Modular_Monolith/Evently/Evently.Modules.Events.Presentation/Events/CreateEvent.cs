@@ -1,5 +1,5 @@
 ﻿using Evently.Modules.Events.Application.Events.CreateEvent;
-using Evently.Modules.Events.Domain.Abstractions;
+using Evently.Common.Domain;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
