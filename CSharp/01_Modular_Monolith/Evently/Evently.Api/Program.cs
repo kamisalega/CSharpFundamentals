@@ -21,7 +21,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Configuration.AddModuleConfiguration(["events"]);
 builder.Services.AddEventsModule(builder.Configuration);
 builder.Services.AddApplication([Evently.Modules.Events.Application.AssemblyReference.Assembly]);
-builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("Database")!);
+builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("Database")!,
+    builder.Configuration.GetConnectionString("Cache")!);
 WebApplication app = builder.Build();
 
 
