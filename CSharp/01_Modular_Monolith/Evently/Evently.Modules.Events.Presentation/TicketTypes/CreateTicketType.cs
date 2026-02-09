@@ -1,6 +1,7 @@
-﻿using Evently.Modules.Events.Application.TicketTypes.CreateTicketTypeCommand;
-using Evently.Common.Domain;
-using Evently.Modules.Events.Presentation.ApiResults;
+﻿using Evently.Common.Domain;
+using Evently.Common.Presentation.ApiResults;
+using Evently.Common.Presentation.Endpoints;
+using Evently.Modules.Events.Application.TicketTypes.CreateTicketTypeCommand;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -8,15 +9,15 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Evently.Modules.Events.Presentation.TicketTypes;
 
-internal static class CreateTicketType
+internal sealed class CreateTicketType : IEndpoint
 {
-    public static void MapEndpoint(IEndpointRouteBuilder app)
+    public  void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("ticket-types", async (CreateTicketTypeRequest request, ISender sender) =>
             {
                 Result<Guid> result = await sender.Send(new CreateTicketTypeCommand(request.EventId, request.Name,
                     request.Price, request.Currency, request.Quantity));
-                return result.Match(Results.Ok<Guid>, ApiResults.ApiResults.Problem);
+                return result.Match(Results.Ok<Guid>, ApiResults.Problem);
             })
             .WithTags(Tags.TicketTypes);
     }

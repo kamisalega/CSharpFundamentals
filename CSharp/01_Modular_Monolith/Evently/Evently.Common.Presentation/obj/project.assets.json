@@ -1,0 +1,139 @@
+{
+  "version": 3,
+  "targets": {
+    "net8.0": {
+      "SonarAnalyzer.CSharp/10.19.0.132793": {
+        "type": "package"
+      },
+      "Evently.Common.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Evently.Common.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Evently.Common.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SonarAnalyzer.CSharp/10.19.0.132793": {
+      "sha512": "vDQSFE+KU5pXfVNzz4R4CA0ZGuLO35Sn+a7z2nyV9EM/nHsvl+WFGZ61Uk9eTdbhta1YXzqCMXB2B+6dn6ykVA==",
+      "type": "package",
+      "path": "sonaranalyzer.csharp/10.19.0.132793",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/SonarAnalyzer.CSharp.dll",
+        "images/sonarsource_64.png",
+        "licenses/LICENSE.txt",
+        "licenses/THIRD_PARTY_LICENSES/Google.Protobuf-LICENSE.txt",
+        "licenses/THIRD_PARTY_LICENSES/StyleCop.Analyzers-LICENSE.txt",
+        "sonaranalyzer.csharp.10.19.0.132793.nupkg.sha512",
+        "sonaranalyzer.csharp.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    },
+    "Evently.Common.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Evently.Common.Domain/Evently.Common.Domain.csproj",
+      "msbuildProject": "../Evently.Common.Domain/Evently.Common.Domain.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net8.0": [
+      "Evently.Common.Domain >= 1.0.0",
+      "SonarAnalyzer.CSharp >= 10.19.0.132793"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\kamil\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\kamil\\Documents\\Programowanie\\CSharpFundamentals\\CSharp\\01_Modular_Monolith\\Evently\\Evently.Common.Presentation\\Evently.Common.Presentation.csproj",
+      "projectName": "Evently.Common.Presentation",
+      "projectPath": "C:\\Users\\kamil\\Documents\\Programowanie\\CSharpFundamentals\\CSharp\\01_Modular_Monolith\\Evently\\Evently.Common.Presentation\\Evently.Common.Presentation.csproj",
+      "packagesPath": "C:\\Users\\kamil\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\kamil\\Documents\\Programowanie\\CSharpFundamentals\\CSharp\\01_Modular_Monolith\\Evently\\Evently.Common.Presentation\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\kamil\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net8.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "C:\\Users\\kamil\\Documents\\Programowanie\\pluralsight-ddd-fundamentals\\FrontDesk\\src\\FrontDesk.Blazor\\deps\\Pluralsight.DDD.Deps": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "projectReferences": {
+            "C:\\Users\\kamil\\Documents\\Programowanie\\CSharpFundamentals\\CSharp\\01_Modular_Monolith\\Evently\\Evently.Common.Domain\\Evently.Common.Domain.csproj": {
+              "projectPath": "C:\\Users\\kamil\\Documents\\Programowanie\\CSharpFundamentals\\CSharp\\01_Modular_Monolith\\Evently\\Evently.Common.Domain\\Evently.Common.Domain.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "allWarningsAsErrors": true,
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.300"
+    },
+    "frameworks": {
+      "net8.0": {
+        "targetAlias": "net8.0",
+        "dependencies": {
+          "SonarAnalyzer.CSharp": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[10.19.0.132793, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.AspNetCore.App": {
+            "privateAssets": "none"
+          },
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
