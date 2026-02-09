@@ -1,98 +1,44 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
 
-Maui/Building_NET_MAUI_Applications_with_MVVM/GloboTicket.Admin/.vs/
+## IDE
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-Maui/Building_NET_MAUI_Applications_with_MVVM/GloboTicket.Admin/.idea/
+## NuGet
+**/packages/
+*.nupkg
+**/[Pp]ackages/
 
-Maui/Building_NET_MAUI_Applications_with_MVVM/GloboTicket.Admin/GloboTicket.Admin.API/obj/
+## .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.DotSettings.user
 
-Maui/Building_NET_MAUI_Applications_with_MVVM/GloboTicket.Admin/GloboTicket.Admin.API/bin/
+## User-specific files
+*.rsuser
+*.cache
+*.dbmdl
+*.jfm
 
-Maui/Building_NET_MAUI_Applications_with_MVVM/GloboTicket.Admin/GloboTicket.Admin.Mobile/bin/
+## Node / Angular
+**/node_modules/
+**/dist/
+**/.angular/
 
-Maui/Building_NET_MAUI_Applications_with_MVVM/GloboTicket.Admin/GloboTicket.Admin.Mobile/obj/
+## Docker
+.containers/
 
-Maui/GloboTicket.Admin/.idea/
-
-Maui/GloboTicket.Admin/.vs/
-
-Maui/GloboTicket.Admin/GloboTicket.Admin.Mobile/obj/
-
-Maui/GloboTicket.Admin/GloboTicket.Admin.Mobile/bin/
-
-Maui/GloboTicket.Admin/GloboTicket.Admin.API/obj/
-
-Maui/GloboTicket.Admin/GloboTicket.Admin.API/bin/
-
-Maui/GloboTicket.Admin/GloboTicket.Admin.Mobile.Tests/obj/
-
-Maui/GloboTicket.Admin/GloboTicket.Admin.Mobile.Tests/bin/
-
-Algorithms_and_Data_Structures/.vs/
-
-Algorithms_and_Data_Structures/ContactManager/cm/bin/
-
-Algorithms_and_Data_Structures/ContactManager/cm/obj/
-
-Algorithms_and_Data_Structures/ContactManager/ContactManager/bin/
-
-Algorithms_and_Data_Structures/ContactManager/ContactManager/obj/
-
-Algorithms_and_Data_Structures/ContactManager/ContactManagerTests/obj/
-
-Angular/RxJS_Angular_Signals/angular-rxjs-signals-fundamentals/apm-begin/.vscode/
-
-Angular/RxJS_Angular_Signals/angular-rxjs-signals-fundamentals/apm-final/.vscode/
-
-Algorithms_and_Data_Structures/DataStructures/DataStructuresTests/obj/
-
-Algorithms_and_Data_Structures/DataStructures/DataStructures/obj/
-
-Algorithms_and_Data_Structures/DataStructures/DataStructures/bin/
-
-Algorithms_and_Data_Structures/DataStructures/DataStructuresTests/bin/
-
-CSharp/01_Modular_Monolith/Evently/.vs/
-
-CSharp/01_Modular_Monolith/Evently/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Api/bin/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Api/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Api/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Api/bin/
-
-CSharp/01_Modular_Monolith/Evently/bin/
-
-CSharp/01_Modular_Monolith/Evently/.containers/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Application/bin/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Application/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Domain/bin/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Domain/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Infrastructure/bin/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Presentation/bin/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Presentation/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Modules.Events.Infrastructure/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Common.Application/bin/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Common.Application/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Common.Domain/bin/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Common.Domain/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Common.Infrastructure/obj/
-
-CSharp/01_Modular_Monolith/Evently.Common.Domain/obj/
-
-CSharp/01_Modular_Monolith/Evently/Evently.Common.Infrastructure/bin/
+## OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
