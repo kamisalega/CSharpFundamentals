@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <UserSecretsId>3a82b84e-ce48-49a3-a60f-1743d20a8bc6</UserSecretsId>
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Evently.Modules.Events.Infrastructure\Evently.Modules.Events.Infrastructure.csproj" />
+    <ProjectReference Include="..\Evently.Modules.Users.Infrastructure\Evently.Modules.Users.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
