@@ -37,7 +37,7 @@ builder.Services.AddApplication([
     Evently.Modules.Users.Application.AssemblyReference.Assembly,
     Evently.Modules.Ticketing.Application.AssemblyReference.Assembly
 ]);
-builder.Services.AddInfrastructure(databaseConnectionString,
+builder.Services.AddInfrastructure([TicketingModule.ConfigureConsumers], databaseConnectionString,
     redisConnectionString);
 
 builder.Services.AddHealthChecks()
