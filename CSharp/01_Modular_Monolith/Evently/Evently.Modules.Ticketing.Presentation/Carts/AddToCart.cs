@@ -30,10 +30,3 @@ public sealed class AddToCartRequest
     public Guid TicketTypeId { get; init; }
     public decimal Quantity { get; init; }
 };
-
-internal static class Tags
-{
-    internal const string Carts = "Carts";
-    internal const string Orders = "Orders";
-    internal const string Tickets = "Tickets";
-}
