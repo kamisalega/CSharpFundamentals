@@ -3,8 +3,10 @@
 		<PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
 		<PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+		<PackageReference Include="MassTransit" Version="8.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.12" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+		<PackageReference Include="System.Text.Json" Version="8.0.6" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Evently.Common.Application\Evently.Common.Application.csproj" />

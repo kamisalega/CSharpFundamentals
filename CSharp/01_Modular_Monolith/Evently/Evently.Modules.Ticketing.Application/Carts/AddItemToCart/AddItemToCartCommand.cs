@@ -3,7 +3,6 @@ using Evently.Common.Domain;
 using Evently.Modules.Events.PublicApi;
 using Evently.Modules.Ticketing.Domain.Customers;
 using Evently.Modules.Ticketing.Domain.Events;
-using Evently.Modules.Users.PublicApi;
 using FluentValidation;
 
 namespace Evently.Modules.Ticketing.Application.Carts.AddItemToCart;
