@@ -1,7 +1,6 @@
 ﻿using Evently.Common.Domain;
-using Evently.Modules.Events.Domain.Events;
 
-namespace Evently.Modules.Events.Domain.TicketTypes;
+namespace Evently.Modules.Ticketing.Domain.Events;
 
 public sealed class TicketType : Entity
 {
@@ -10,20 +9,16 @@ public sealed class TicketType : Entity
     }
 
     public Guid Id { get; private set; }
-
     public Guid EventId { get; private set; }
-
     public string Name { get; private set; }
-
     public decimal Price { get; private set; }
-
     public string Currency { get; private set; }
-
     public decimal Quantity { get; private set; }
-
     public decimal AvailableQuantity { get; private set; }
+
     public static TicketType Create(
-        Event @event,
+        Guid id,
+        Guid eventId,
         string name,
         decimal price,
         string currency,
@@ -31,29 +26,21 @@ public sealed class TicketType : Entity
     {
         var ticketType = new TicketType
         {
-            Id = Guid.NewGuid(),
-            EventId = @event.Id,
+            Id = id,
+            EventId = eventId,
             Name = name,
             Price = price,
             Currency = currency,
-            Quantity = quantity
+            Quantity = quantity,
+            AvailableQuantity = quantity
         };
 
-        ticketType.Raise(new TicketTypeCreatedDomainEvent(ticketType.Id));
-        
         return ticketType;
     }
 
     public void UpdatePrice(decimal price)
     {
-        if (Price == price)
-        {
-            return;
-        }
-
         Price = price;
-
-        Raise(new TicketTypePriceChangedDomainEvent(Id, Price));
     }
 
     public Result UpdateQuantity(decimal quantity)
@@ -64,7 +51,6 @@ public sealed class TicketType : Entity
         }
 
         AvailableQuantity -= quantity;
-
 
         if (AvailableQuantity == 0)
         {
