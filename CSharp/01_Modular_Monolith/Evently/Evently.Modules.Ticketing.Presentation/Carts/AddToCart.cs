@@ -22,11 +22,11 @@ internal sealed class AddToCart : IEndpoint
             return result.Match(() => Results.Ok(), ApiResults.Problem);
         }).WithTags(Tags.Carts);
     }
-}
 
-public sealed class AddToCartRequest
-{
-    public Guid CustomerId { get; init; }
-    public Guid TicketTypeId { get; init; }
-    public decimal Quantity { get; init; }
-};
+    internal sealed class AddToCartRequest
+    {
+        public Guid CustomerId { get; init; }
+        public Guid TicketTypeId { get; init; }
+        public decimal Quantity { get; init; }
+    };
+}

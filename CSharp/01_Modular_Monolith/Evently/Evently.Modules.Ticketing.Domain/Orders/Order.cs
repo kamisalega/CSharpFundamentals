@@ -1,6 +1,6 @@
 ﻿using Evently.Common.Domain;
-using Evently.Modules.Events.Domain.TicketTypes;
 using Evently.Modules.Ticketing.Domain.Customers;
+using Evently.Modules.Ticketing.Domain.Events;
 
 namespace Evently.Modules.Ticketing.Domain.Orders;
 
@@ -52,55 +52,18 @@ public sealed class Order : Entity
         TotalPrice = _orderItems.Sum(o => o.Price);
         Currency = currency;
     }
-}
 
-public sealed class OrderCreatedDomainEvent(Guid orderId) : DomainEvent
-{
-    public Guid OrderId { get; init; } = orderId;
-}
-
-public sealed class OrderItem
-{
-    public OrderItem()
+    public Result IssueTickets()
     {
-    }
-
-    public Guid Id { get; private set; }
-
-    public Guid OrderId { get; private set; }
-
-    public Guid TicketTypeId { get; private set; }
-
-    public decimal Quantity { get; private set; }
-
-    public decimal UnitPrice { get; private set; }
-
-    public decimal Price { get; private set; }
-
-    public string Currency { get; private set; }
-
-    internal static OrderItem Create(Guid orderId, Guid ticketTypeId, decimal quantity, decimal unitPrice,
-        string currency)
-    {
-        var orderItem = new OrderItem
+        if (TicketsIssued)
         {
-            Id = Guid.NewGuid(),
-            OrderId = orderId,
-            TicketTypeId = ticketTypeId,
-            Quantity = quantity,
-            UnitPrice = unitPrice,
-            Price = quantity * unitPrice,
-            Currency = currency
-        };
+            return Result.Failure(OrderErrors.TicketsAlreadyIssues);
+        }
 
-        return orderItem;
+        TicketsIssued = true;
+
+        Raise(new OrderTicketsIssuedDomainEvent(Id));
+
+        return Result.Success();
     }
-}
-
-public enum OrderStatus
-{
-    Pending = 0,
-    Paid = 1,
-    Refunded = 2,
-    Canceled = 3
 }

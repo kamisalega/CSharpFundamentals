@@ -11,7 +11,7 @@ services:
         - "5000:8080"
         - "5001:8081"
   evently.database:
-    image: postgres:latest
+    image: postgres:17
     container_name: Evently.Database
     environment:
         - POSTGRES_DB=evently

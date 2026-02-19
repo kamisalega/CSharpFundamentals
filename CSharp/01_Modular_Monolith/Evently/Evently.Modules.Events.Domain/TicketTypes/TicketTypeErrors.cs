@@ -12,4 +12,4 @@ public static class TicketTypeErrors
             "TicketTypes.NotEnoughQuantity",
             $"The ticket type has {availableQuantity} quantity available");
 }
-}
+

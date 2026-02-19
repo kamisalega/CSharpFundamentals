@@ -63,4 +63,14 @@ public sealed class Event : Entity
 
         Raise(new EventCanceledDomainEvent(Id));
     }
+
+    public void PaymentsRefunded()
+    {
+        Raise(new EventPaymentsRefundedDomainEvent(Id));
+    }
+
+    public void TicketsArchived()
+    {
+        Raise(new EventTicketsArchivedDomainEvent(Id));
+    }
 }

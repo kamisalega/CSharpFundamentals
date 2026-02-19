@@ -7,5 +7,4 @@ public interface ITicketTypeRepository
     Task<bool> ExistsAsync(Guid eventId, CancellationToken cancellationToken = default);
 
     void Insert(TicketType ticketType);
-    Task<TicketType?> GetWithLockAsync(Guid cartItemTicketTypeId, CancellationToken cancellationToken);
 }
