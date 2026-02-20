@@ -49,4 +49,5 @@ services:
         - ./.files:/opt/keycloak/data/import
     ports:
         - "18080:8080"
+        - "19000:9000"
       

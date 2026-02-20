@@ -8,6 +8,7 @@ using Evently.Modules.Ticketing.Infrastructure;
 using Evently.Modules.Users.Infrastructure;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -42,7 +43,8 @@ builder.Services.AddInfrastructure([TicketingModule.ConfigureConsumers], databas
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(databaseConnectionString)
-    .AddRedis(redisConnectionString);
+    .AddRedis(redisConnectionString)
+    .AddUrlGroup(new Uri(builder.Configuration.GetValue<string>("KeyCloak:HealthUrl")!), HttpMethod.Get, "keycloak");
 
 WebApplication app = builder.Build();
 
@@ -63,5 +65,8 @@ app.UseHttpsRedirection();
 app.MapEndpoints();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 await app.RunAsync();
