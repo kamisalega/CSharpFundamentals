@@ -19,52 +19,43 @@ export class ProductService {
   readonly productSelected$ = this.productSelectedSubject.asObservable();
 
   readonly products$ = this.http.get<Product[]>(this.productsUrl).pipe(
-      tap(p => console.log(JSON.stringify(p))),
-      shareReplay(1),
-      catchError(err => this.handleError(err))
-    );
+    tap(p => console.log(JSON.stringify(p))),
+    shareReplay(1),
+    catchError(err => this.handleError(err))
+  );
 
-  readonly product$ = this.productSelected$.pipe(
-    filter(Boolean),
-    switchMap(
-      id => {
-        const productUrl = this.productsUrl + '/' + id;
-        return this.http.get<Product>(productUrl).pipe(
-          switchMap(product => this.getProductWithReviews(product)),
-          tap(x => console.log(x)),
-          catchError(err => this.handleError(err))
-        );
-      }
-    )
-  );  
-
-  getProduct(id: number): Observable<Product>{
-    const productUrl = this.productsUrl + '/' + id;
-    return this.http.get<Product>(productUrl).pipe(
-      tap(() => console.log('In http.get by id pipeline')),
-      switchMap(product => this.getProductWithReviews(product)),
-      tap(x => console.log(x)),
-      catchError(err => this.handleError(err))
+  readonly product$ = this.productSelected$
+    .pipe(
+      filter(Boolean),
+      switchMap(
+        id => {
+          const productUrl = this.productsUrl + '/' + id;
+          return this.http.get<Product>(productUrl).pipe(
+            switchMap(product => this.getProductWithReviews(product)),
+            tap(x => console.log(x)),
+            catchError(err => this.handleError(err))
+          );
+        }
+      )
     );
-  }
 
   private getProductWithReviews(product: Product): Observable<Product> {
-      if(product.hasReviews){
-        return this.http.get<Review[]>(this.reviewService.getReviewUrl(product.id))
+    if (product.hasReviews) {
+      return this.http.get<Review[]>(this.reviewService.getReviewUrl(product.id))
         .pipe(
-          map(reviews => ({ ...product, reviews} as Product) )
+          map(reviews => ({ ...product, reviews } as Product))
         )
-      } else{
-        return of(product);
-      }
+    } else {
+      return of(product);
+    }
   }
 
   productSelected(selectedProductId: number): void {
-      this.productSelectedSubject.next(selectedProductId)
+    this.productSelectedSubject.next(selectedProductId)
   }
   private handleError(err: HttpErrorResponse): Observable<never> {
-      const formattedMessage = this.errorService.formatError(err);
-      //return throwError(() => formattedMessage);
-      throw formattedMessage;
+    const formattedMessage = this.errorService.formatError(err);
+    //return throwError(() => formattedMessage);
+    throw formattedMessage;
   }
 }
