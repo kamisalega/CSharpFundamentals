@@ -13,6 +13,10 @@ internal sealed class UserRepository(UsersDBContext context) : IUserRepository
 
     public void Insert(User user)
     {
+        foreach (Role role in user.Roles)
+        {
+            context.Attach(role);
+        }
         context.Users.Add(user);
     }
 }

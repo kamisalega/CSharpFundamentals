@@ -13,6 +13,9 @@ public sealed class UsersDBContext(DbContextOptions<UsersDBContext> options) : D
     {
         modelBuilder.HasDefaultSchema(Schemas.Users);
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new PermissionConfiguration());
+        
         base.OnModelCreating(modelBuilder);
     }
 }
