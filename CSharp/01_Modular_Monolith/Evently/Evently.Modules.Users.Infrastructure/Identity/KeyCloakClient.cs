@@ -7,7 +7,7 @@ internal sealed class KeyCloakClient(HttpClient httpClient)
     internal async Task<string> RegisterUserAsync(UserRepresentation user,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("user", user, cancellationToken);
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("users", user, cancellationToken);
 
         httpResponseMessage.EnsureSuccessStatusCode();
 

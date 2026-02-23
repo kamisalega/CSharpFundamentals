@@ -10,7 +10,7 @@ internal sealed class IdentityProviderService(KeyCloakClient keyCloakClient, ILo
 {
     private const string PasswordCredentialType = "password";
 
-    public async Task<Result<string>> RegisterUserAsync(UserModel user, CancellationToken cancellationToken = default)
+    public async Task<Result<string>> RegisterUserAsync(UserModel user, CancellationToken cancellation = default)
     {
         var userRepresentaion = new UserRepresentation(
             user.Email, user.Email, user.FirstName, user.LastName, true, true,
@@ -19,7 +19,7 @@ internal sealed class IdentityProviderService(KeyCloakClient keyCloakClient, ILo
         try
         {
             string identityId = await keyCloakClient
-                .RegisterUserAsync(userRepresentaion, cancellationToken);
+                .RegisterUserAsync(userRepresentaion, cancellation);
 
             return identityId;
         }
