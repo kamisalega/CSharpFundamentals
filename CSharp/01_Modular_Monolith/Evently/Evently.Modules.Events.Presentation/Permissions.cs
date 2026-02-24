@@ -1,6 +1,6 @@
 ﻿namespace Evently.Modules.Events.Presentation;
 
-internal class Permissions
+internal static class Permissions
 {
     internal const string GetEvents = "events:read";
     internal const string SearchEvents = "events:search";

@@ -25,7 +25,7 @@ internal sealed class RemoveFromCart : IEndpoint
             .WithTags(Tags.Carts);
     }
 
-    internal class RemoveFromCartRequest
+    internal sealed class RemoveFromCartRequest
     {
         public Guid TicketTypeId { get; init; }
     }
