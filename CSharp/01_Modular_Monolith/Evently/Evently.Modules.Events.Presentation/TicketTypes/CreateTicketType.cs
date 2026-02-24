@@ -17,8 +17,9 @@ internal sealed class CreateTicketType : IEndpoint
             {
                 Result<Guid> result = await sender.Send(new CreateTicketTypeCommand(request.EventId, request.Name,
                     request.Price, request.Currency, request.Quantity));
-                return result.Match(Results.Ok<Guid>, ApiResults.Problem);
+                return result.Match(Results.Ok, ApiResults.Problem);
             })
+            .RequireAuthorization(Permissions.ModifyTicketTypes)
             .WithTags(Tags.TicketTypes);
     }
 

@@ -18,7 +18,9 @@ internal sealed class CreateCategory : IEndpoint
             Result<Guid> result = await sender.Send(new CreateCategoryCommand(request.Name));
 
             return result.Match(Results.Ok<Guid>, ApiResults.Problem);
-        }).WithTags(Tags.Categories);
+        })
+        .RequireAuthorization(Permissions.ModifyCategories)
+        .WithTags(Tags.Categories);
     }
 
     internal sealed class CreateCategoryRequest

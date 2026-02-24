@@ -3,6 +3,7 @@ using Evently.Common.Presentation.ApiResults;
 using Evently.Common.Presentation.Endpoints;
 using Evently.Modules.Events.Application.Categories.ArchiveCategory;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -18,6 +19,8 @@ internal sealed class ArchiveCategory : IEndpoint
             Result result = await sender.Send(new ArchiveCategoryCommand(id));
 
             return result.Match(() => Results.Ok(), ApiResults.Problem);
-        }).WithTags(Tags.Categories);
+        })
+        .RequireAuthorization(Permissions.ModifyCategories)
+        .WithTags(Tags.Categories);
     }
 }

@@ -24,7 +24,9 @@ internal sealed class CreateEvent : IEndpoint
             Result<Guid> eventId = await sender.Send(command);
 
             return Results.Ok(eventId);
-        }).WithTags(Tags.Events);
+        })
+        .RequireAuthorization(Permissions.ModifyEvents)
+        .WithTags(Tags.Events);
     }
 
     internal sealed class CreateEventRequest

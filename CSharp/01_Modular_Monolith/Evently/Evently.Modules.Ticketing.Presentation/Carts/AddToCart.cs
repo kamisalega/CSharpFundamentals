@@ -14,13 +14,15 @@ internal sealed class AddToCart : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut("carts/add", async (AddToCartRequest request, ISender sender) =>
-        {
-            Result result = await sender.Send(
-                new AddItemToCartCommand(request.CustomerId,
-                    request.TicketTypeId,
-                    request.Quantity));
-            return result.Match(() => Results.Ok(), ApiResults.Problem);
-        }).WithTags(Tags.Carts);
+            {
+                Result result = await sender.Send(
+                    new AddItemToCartCommand(request.CustomerId,
+                        request.TicketTypeId,
+                        request.Quantity));
+                return result.Match(() => Results.Ok(), ApiResults.Problem);
+            })
+            .RequireAuthorization(Permissions.AddToCart)
+            .WithTags(Tags.Carts);
     }
 
     internal sealed class AddToCartRequest

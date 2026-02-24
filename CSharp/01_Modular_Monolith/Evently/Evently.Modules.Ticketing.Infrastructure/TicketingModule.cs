@@ -1,5 +1,6 @@
 ﻿using Evently.Common.Infrastructure.Interceptors;
 using Evently.Common.Presentation.Endpoints;
+using Evently.Modules.Ticketing.Application.Abstractions.Authentication;
 using Evently.Modules.Ticketing.Application.Abstractions.Data;
 using Evently.Modules.Ticketing.Application.Abstractions.Payments;
 using Evently.Modules.Ticketing.Application.Carts;
@@ -8,6 +9,7 @@ using Evently.Modules.Ticketing.Domain.Events;
 using Evently.Modules.Ticketing.Domain.Orders;
 using Evently.Modules.Ticketing.Domain.Payments;
 using Evently.Modules.Ticketing.Domain.Tickets;
+using Evently.Modules.Ticketing.Infrastructure.Authentication;
 using Evently.Modules.Ticketing.Infrastructure.Customers;
 using Evently.Modules.Ticketing.Infrastructure.Database;
 using Evently.Modules.Ticketing.Infrastructure.Events;
@@ -40,6 +42,7 @@ public static class TicketingModule
     {
         registrationConfigurator.AddConsumer<UserRegisteredIntegrationEventConsumer>();
     }
+
     private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<TicketingDBContext>((sp, options) =>
@@ -62,5 +65,6 @@ public static class TicketingModule
 
         services.AddSingleton<CartService>();
         services.AddSingleton<IPaymentService, PaymentService>();
+        services.AddSingleton<ICustomerContext, CustomerContext>();
     }
 }

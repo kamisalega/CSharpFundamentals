@@ -17,8 +17,9 @@ internal sealed class GetTicketType : IEndpoint
             {
                 Result<TicketTypeResponse> result = await sender.Send(new GetTicketTypeQuery(id));
 
-                return result.Match(Results.Ok<TicketTypeResponse>, ApiResults.Problem);
+                return result.Match(Results.Ok, ApiResults.Problem);
             })
+            .RequireAuthorization(Permissions.GetTicketTypes)
             .WithTags(Tags.TicketTypes);
     }
 }

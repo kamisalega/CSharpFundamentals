@@ -18,6 +18,8 @@ internal sealed class GetEvents : IEndpoint
             Result<IReadOnlyCollection<EventResponse>> result = await sender.Send(new GetEventsQuery());
 
             return result.Match(Results.Ok<IReadOnlyCollection<EventResponse>>, ApiResults.Problem);
-        }).WithTags(Tags.Events);
+        })
+        .RequireAuthorization(Permissions.GetEvents)
+        .WithTags(Tags.Events);
     }
 }

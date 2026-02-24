@@ -21,7 +21,13 @@ internal sealed class GetUserProfile : IEndpoint
 
                 return result.Match(Results.Ok, ApiResults.Problem);
             })
-            .RequireAuthorization("users:read")
+            .RequireAuthorization(Permissions.GetUser)
             .WithTags(Tags.Users);
     }
+}
+
+internal static class Permissions
+{
+    internal const string GetUser = "users:read";
+    internal const string ModifyUser = "users:update";
 }
