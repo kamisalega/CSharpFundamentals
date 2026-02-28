@@ -1,4 +1,5 @@
-using DataStructures;
+
+using DataStructures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DataStructuresTests
@@ -74,7 +75,7 @@ namespace DataStructuresTests
         }
 
         [TestMethod]
-        public void RemoveHead()
+        public void RemoveHeadTest()
         {
             DoublyLinkedList<int> delete1to10 = create(1, 10);
 
@@ -86,6 +87,21 @@ namespace DataStructuresTests
             
             Assert.AreEqual(9, delete1to10.Count);
             Assert.AreEqual(2, delete1to10.Head.Value);
+        }
+
+        [TestMethod]
+        public void RemoveTailTest()
+        {
+            DoublyLinkedList<int> delete1to10 = create(1, 10);
+
+            for (int i = 1; i <= 1; i++)
+            {
+                delete1to10.RemoveTail();
+
+            }
+
+            Assert.AreEqual(9, delete1to10.Count);
+            Assert.AreEqual(9, delete1to10.Tail.Value);
         }
 
         [TestMethod]
