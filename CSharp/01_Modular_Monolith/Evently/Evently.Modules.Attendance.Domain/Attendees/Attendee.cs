@@ -5,7 +5,7 @@ namespace Evently.Modules.Attendance.Domain.Attendees;
 
 public sealed class Attendee : Entity
 {
-    public Attendee()
+    private Attendee()
     {
     }
 

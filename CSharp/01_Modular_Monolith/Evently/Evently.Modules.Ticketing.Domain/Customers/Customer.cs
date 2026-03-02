@@ -4,7 +4,7 @@ namespace Evently.Modules.Ticketing.Domain.Customers;
 
 public sealed class Customer : Entity
 {
-    public Customer()
+    private Customer()
     {
     }
 
