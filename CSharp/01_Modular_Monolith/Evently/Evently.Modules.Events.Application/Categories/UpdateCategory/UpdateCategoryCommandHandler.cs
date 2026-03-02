@@ -4,7 +4,7 @@ using Evently.Common.Domain;
 using Evently.Modules.Events.Application.Abstractions.Data;
 using Evently.Modules.Events.Domain.Categories;
 
-namespace Evently.Modules.Events.Application.UpdateCategory;
+namespace Evently.Modules.Events.Application.Categories.UpdateCategory;
 
 internal sealed class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateCategoryCommand>

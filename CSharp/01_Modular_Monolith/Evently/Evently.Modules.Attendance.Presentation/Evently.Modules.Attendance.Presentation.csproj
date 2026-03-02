@@ -2,5 +2,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Evently.Common.Presentation\Evently.Common.Presentation.csproj" />
     <ProjectReference Include="..\Evently.Modules.Attendance.Application\Evently.Modules.Attendance.Application.csproj" />
+    <ProjectReference Include="..\Evently.Modules.Events.IntegrationEvents\Evently.Modules.Events.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\Evently.Modules.Ticketing.IntegrationEvents\Evently.Modules.Ticketing.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\Evently.Modules.Users.IntegrationEvents\Evently.Modules.Users.IntegrationEvents.csproj" />
   </ItemGroup>
 </Project>
