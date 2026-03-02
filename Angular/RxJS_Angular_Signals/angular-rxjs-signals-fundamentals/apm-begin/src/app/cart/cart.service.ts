@@ -1,4 +1,4 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { CartItem } from './cart';
 import { Product } from '../products/product';
 
@@ -7,6 +7,11 @@ import { Product } from '../products/product';
 })
 export class CartService {
   cartItems = signal<CartItem[]>([]);
+
+  cartCount = computed(() =>
+    this.cartItems().reduce((accQty, item) => accQty + item.quantity, 0),
+  );
+
   eLenght = effect(() =>
     console.log('Cart arry lenght:', this.cartItems().length),
   );
