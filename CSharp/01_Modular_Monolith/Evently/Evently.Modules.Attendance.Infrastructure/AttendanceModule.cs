@@ -1,4 +1,4 @@
-﻿using Evently.Common.Infrastructure.Interceptors;
+﻿using Evently.Common.Infrastructure.Outbox;
 using Evently.Common.Presentation.Endpoints;
 using Evently.Modules.Attendance.Application.Abstractions.Authentication;
 using Evently.Modules.Attendance.Application.Abstractions.Data;
@@ -51,7 +51,7 @@ public static class AttendanceModule
                     npgsqlOptions => npgsqlOptions
                         .MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Attendance))
                 .UseSnakeCaseNamingConvention()
-                .AddInterceptors(sp.GetRequiredService<PublishDomainEventsInterceptor>()));
+                .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>()));
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AttendanceDBContext>());
 

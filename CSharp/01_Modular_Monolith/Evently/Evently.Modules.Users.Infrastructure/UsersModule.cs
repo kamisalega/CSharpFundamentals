@@ -1,5 +1,5 @@
 ﻿using Evently.Common.Application.Authorization;
-using Evently.Common.Infrastructure.Interceptors;
+using Evently.Common.Infrastructure.Outbox;
 using Evently.Common.Presentation.Endpoints;
 using Evently.Modules.Users.Application.Abstractions.Data;
 using Evently.Modules.Users.Application.Abstractions.Identity;
@@ -7,6 +7,7 @@ using Evently.Modules.Users.Domain.Users;
 using Evently.Modules.Users.Infrastructure.Authorization;
 using Evently.Modules.Users.Infrastructure.Database;
 using Evently.Modules.Users.Infrastructure.Identity;
+using Evently.Modules.Users.Infrastructure.Outbox;
 using Evently.Modules.Users.Infrastructure.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -51,11 +52,14 @@ public static class UsersModule
                     configuration.GetConnectionString("Database"),
                     npgsqlOptions => npgsqlOptions
                         .MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Users))
-                .AddInterceptors(sp.GetRequiredService<PublishDomainEventsInterceptor>())
+                .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>())
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<UsersDBContext>());
+
+        services.Configure<OutboxOptions>(configuration.GetSection("Users:Outbox"));
+        services.ConfigureOptions<ConfigureProcessOutboxJob>();
     }
 }

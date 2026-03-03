@@ -7,24 +7,26 @@ using Evently.Common.Infrastructure.Authorization;
 using Evently.Common.Infrastructure.Caching;
 using Evently.Common.Infrastructure.Clock;
 using Evently.Common.Infrastructure.Data;
-using Evently.Common.Infrastructure.Interceptors;
+using Evently.Common.Infrastructure.Outbox;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
+using Quartz;
 using StackExchange.Redis;
 
 namespace Evently.Common.Infrastructure;
 
 public static class InfrastructureConfiguration
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services,
+        Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
         string databaseConnectionString, string redisConnectionString)
     {
         services.AddAuthenticationInternal();
         services.AddAuthorizationInternal();
-        
-        
+
+
         NpgsqlDataSource npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
         services.TryAddSingleton(npgsqlDataSource);
 
@@ -32,7 +34,11 @@ public static class InfrastructureConfiguration
 
         services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
-        services.TryAddSingleton<PublishDomainEventsInterceptor>();
+        services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
         try
         {
@@ -57,6 +63,7 @@ public static class InfrastructureConfiguration
             {
                 configureConsumer(configure);
             }
+
             configure.SetKebabCaseEndpointNameFormatter();
             configure.UsingInMemory((context, cfg) =>
             {
@@ -64,7 +71,6 @@ public static class InfrastructureConfiguration
             });
         });
 
-        
 
         return services;
     }
