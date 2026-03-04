@@ -4,10 +4,12 @@ using Evently.Modules.Ticketing.Domain.Tickets;
 using Evently.Modules.Ticketing.IntegrationEvents;
 
 namespace Evently.Modules.Ticketing.Application.Tickets.ArchiveTicket;
+
 internal sealed class TicketArchivedDomainEventHandler(IEventBus eventBus)
-    : IDomainEventHandler<TicketArchivedDomainEvent>
+    : DomainEventHandler<TicketArchivedDomainEvent>
 {
-    public async Task Handle(TicketArchivedDomainEvent domainEvent, CancellationToken cancellationToken)
+    public override async Task Handle(TicketArchivedDomainEvent domainEvent,
+        CancellationToken cancellationToken = default)
     {
         await eventBus.PublishAsync(
             new TicketArchivedIntegrationEvent(
@@ -18,4 +20,3 @@ internal sealed class TicketArchivedDomainEventHandler(IEventBus eventBus)
             cancellationToken);
     }
 }
-

@@ -7,6 +7,7 @@ using Evently.Modules.Events.Domain.TicketTypes;
 using Evently.Modules.Events.Infrastructure.Categories;
 using Evently.Modules.Events.Infrastructure.Database;
 using Evently.Modules.Events.Infrastructure.Events;
+using Evently.Modules.Events.Infrastructure.Outbox;
 using Evently.Modules.Events.Infrastructure.TicketTypes;
 
 using Microsoft.EntityFrameworkCore;
@@ -41,5 +42,9 @@ public static class EventsModule
         
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<ITicketTypeRepository, TicketTypeRepository>();
+
+        services.Configure<OutboxOptions>(configuration.GetSection("Events:Outbox"));
+
+        services.ConfigureOptions<ConfigureProcessOutboxJob>();
     }
 }

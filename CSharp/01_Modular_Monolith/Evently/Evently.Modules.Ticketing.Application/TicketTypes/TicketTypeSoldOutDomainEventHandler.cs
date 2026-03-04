@@ -4,10 +4,12 @@ using Evently.Modules.Ticketing.Domain.Events;
 using Evently.Modules.Ticketing.IntegrationEvents;
 
 namespace Evently.Modules.Ticketing.Application.TicketTypes;
+
 internal sealed class TicketTypeSoldOutDomainEventHandler(IEventBus eventBus)
-    : IDomainEventHandler<TicketTypeSoldOutDomainEvent>
+    : DomainEventHandler<TicketTypeSoldOutDomainEvent>
 {
-    public async Task Handle(TicketTypeSoldOutDomainEvent domainEvent, CancellationToken cancellationToken)
+    public override async Task Handle(TicketTypeSoldOutDomainEvent domainEvent,
+        CancellationToken cancellationToken = default)
     {
         await eventBus.PublishAsync(
             new TicketTypeSoldOutIntegrationEvent(

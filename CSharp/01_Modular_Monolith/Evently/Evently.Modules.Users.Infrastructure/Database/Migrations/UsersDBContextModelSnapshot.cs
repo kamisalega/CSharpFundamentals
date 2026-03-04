@@ -54,9 +54,26 @@ namespace Evently.Modules.Users.Infrastructure.Database.Migrations
                         .HasColumnName("type");
 
                     b.HasKey("Id")
-                        .HasName("pk_outbox_message");
+                        .HasName("pk_outbox_messages");
 
-                    b.ToTable("outbox_message", "users");
+                    b.ToTable("outbox_messages", "users");
+                });
+
+            modelBuilder.Entity("Evently.Common.Infrastructure.Outbox.OutboxMessageConsumer", b =>
+                {
+                    b.Property<Guid>("OutboxMessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("outbox_message_id");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("name");
+
+                    b.HasKey("OutboxMessageId", "Name")
+                        .HasName("pk_outbox_message_consumers");
+
+                    b.ToTable("outbox_message_consumers", "users");
                 });
 
             modelBuilder.Entity("Evently.Modules.Users.Domain.Users.Permission", b =>

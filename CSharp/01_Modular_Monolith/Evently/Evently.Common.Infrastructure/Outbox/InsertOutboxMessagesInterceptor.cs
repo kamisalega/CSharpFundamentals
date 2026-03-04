@@ -1,4 +1,5 @@
 ﻿using Evently.Common.Domain;
+using Evently.Common.Infrastructure.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
@@ -14,7 +15,7 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
     {
         if (eventData.Context is not null)
         {
-             InsertOutboxMessages(eventData.Context);
+            InsertOutboxMessages(eventData.Context);
         }
 
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
@@ -34,7 +35,7 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
             {
                 Id = domainEvent.Id,
                 Type = domainEvent.GetType().Name,
-                Content = JsonConvert.SerializeObject(domainEvent),
+                Content = JsonConvert.SerializeObject(domainEvent, SerializerSettings.Instance),
                 OccurredOnUtc = domainEvent.OccurredOnUtc
             })
             .ToList();
@@ -42,4 +43,3 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
         context.Set<OutboxMessage>().AddRange(outboxMessages);
     }
 }
-

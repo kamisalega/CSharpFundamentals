@@ -1,8 +1,8 @@
 {
   "Users": {
     "Outbox": {
-      "IntervalInSeconds": 5,
-      "BatchSize": 50
+      "IntervalInSeconds": 15,
+      "BatchSize": 20
     },
     "KeyCloak": {
       "AdminUrl": "http://evently.identity:8080/admin/realms/evently/",
