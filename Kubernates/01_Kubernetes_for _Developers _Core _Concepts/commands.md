@@ -89,3 +89,65 @@ kubectl rollout undo -f file.deployment.yml
 # Cofa Deployment do konkretnej rewizji (np. rewizja 2)
 kubectl rollout undo deployment [deployment-name] --to-revision=2
 ```
+
+
+
+## Canary Deployments
+
+```bash
+# Budowanie obrazu stable-app
+cd stable-app
+docker build -t stable-app -f dockerfile .
+
+# Zastosowanie Deploymentu i Service'u
+kubectl apply -f stable.deployment.yml
+kubectl apply -f stable.service.yml
+
+# Sprawdzenie podów canary deploymentu
+kubectl get pods -l app=aspnetcore -w
+```
+
+### Rollout canary deploymentu
+
+```bash
+# Status rolloutu
+kubectl rollout status deployment/stable-deployment
+
+# Historia rolloutów
+kubectl rollout history deployment/stable-deployment
+
+# Cofnięcie do poprzedniej wersji
+kubectl rollout undo deployment/stable-deployment
+
+# Cofnięcie do konkretnej rewizji
+kubectl rollout undo deployment/stable-deployment --to-revision=2
+
+# Pauza rolloutu
+kubectl rollout pause deployment/stable-deployment
+
+# Wznowienie rolloutu
+kubectl rollout resume deployment/stable-deployment
+
+# Restart (przebudowanie podów z nowym obrazem)
+kubectl rollout restart deployment/stable-deployment
+```
+
+### Debugowanie podów
+
+```bash
+# Szczegóły poda (eventy, status, konfiguracja)
+kubectl describe pod <pod-name>
+
+# Logi poda (stdout aplikacji)
+kubectl logs <pod-name>
+```
+
+## Usuwanie zasobów
+
+```bash
+# Usunięcie Service'u
+kubectl delete service/nginx-service
+
+# Usunięcie Deploymentu
+kubectl delete deployment/stable-deployment
+```
