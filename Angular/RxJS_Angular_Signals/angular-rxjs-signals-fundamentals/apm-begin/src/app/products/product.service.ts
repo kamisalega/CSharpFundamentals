@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   BehaviorSubject,
   catchError,
@@ -30,6 +30,8 @@ export class ProductService {
   private productSelectedSubject = new BehaviorSubject<number | undefined>(
     undefined,
   );
+  selectedProductId = signal<number | undefined>(undefined);
+
   readonly productSelected$ = this.productSelectedSubject.asObservable();
 
   private products$ = this.http.get<Product[]>(this.productsUrl).pipe(
@@ -83,6 +85,7 @@ export class ProductService {
 
   productSelected(selectedProductId: number): void {
     this.productSelectedSubject.next(selectedProductId);
+    this.selectedProductId.set(selectedProductId);
   }
   private handleError(err: HttpErrorResponse): Observable<never> {
     const formattedMessage = this.errorService.formatError(err);
