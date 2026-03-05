@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dapper;
 using Evently.Common.Application.Clock;
 using Evently.Common.Application.Data;
@@ -19,6 +14,7 @@ using Newtonsoft.Json;
 using Quartz;
 
 namespace Evently.Modules.Attendance.Infrastructure.Outbox;
+
 [DisallowConcurrentExecution]
 internal sealed class ProcessOutboxJob(
     IDbConnectionFactory dbConnectionFactory,
@@ -127,29 +123,4 @@ internal sealed class ProcessOutboxJob(
     }
 
     internal sealed record OutboxMessageResponse(Guid Id, string Content);
-}
-internal sealed class OutboxOptions
-{
-    public int IntervalInSeconds { get; init; }
-
-    public int BatchSize { get; init; }
-}
-
-internal sealed class ConfigureProcessOutboxJob(IOptions<OutboxOptions> outboxOptions)
-    : IConfigureOptions<QuartzOptions>
-{
-    private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
-
-    public void Configure(QuartzOptions options)
-    {
-        string jobName = typeof(ProcessOutboxJob).FullName!;
-
-        options
-            .AddJob<ProcessOutboxJob>(configure => configure.WithIdentity(jobName))
-            .AddTrigger(configure =>
-                configure
-                    .ForJob(jobName)
-                    .WithSimpleSchedule(schedule =>
-                        schedule.WithIntervalInSeconds(_outboxOptions.IntervalInSeconds).RepeatForever()));
-    }
 }

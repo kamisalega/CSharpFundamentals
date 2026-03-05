@@ -9,11 +9,13 @@ namespace Evently.Modules.Users.Infrastructure.Outbox;
 
 internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
     IDomainEventHandler<TDomainEvent> decorated,
-    IDbConnectionFactory dbConnectionFactory) : DomainEventHandler<TDomainEvent> where TDomainEvent : IDomainEvent
+    IDbConnectionFactory dbConnectionFactory)
+    : DomainEventHandler<TDomainEvent>
+    where TDomainEvent : IDomainEvent
 {
     public override async Task Handle(TDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
         var outboxMessageConsumer = new OutboxMessageConsumer(domainEvent.Id, decorated.GetType().Name);
 
@@ -27,7 +29,25 @@ internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
         await InsertOutboxConsumerAsync(connection, outboxMessageConsumer);
     }
 
-    private static async Task InsertOutboxConsumerAsync(DbConnection dbConnection,
+    private static async Task<bool> OutboxConsumerExistsAsync(
+        DbConnection dbConnection,
+        OutboxMessageConsumer outboxMessageConsumer)
+    {
+        const string sql = 
+            """
+            SELECT EXISTS(
+                SELECT 1
+                FROM users.outbox_message_consumers
+                WHERE outbox_message_id = @OutboxMessageId AND
+                      name = @Name
+            )
+            """;
+
+        return await dbConnection.ExecuteScalarAsync<bool>(sql, outboxMessageConsumer);
+    }
+
+    private static async Task InsertOutboxConsumerAsync(
+        DbConnection dbConnection,
         OutboxMessageConsumer outboxMessageConsumer)
     {
         const string sql =
@@ -37,18 +57,5 @@ internal sealed class IdempotentDomainEventHandler<TDomainEvent>(
             """;
 
         await dbConnection.ExecuteAsync(sql, outboxMessageConsumer);
-    }
-
-    private static async Task<bool> OutboxConsumerExistsAsync(DbConnection dbConnection,
-        OutboxMessageConsumer outboxMessageConsumer)
-    {
-        const string sql = """
-                           SELECT EXISTS(
-                               SELECT 1
-                               FROM users.outbox_message_consumers
-                               WHERE outbox_message_id = @OutboxMessageId AND
-                                     name = @Name)
-                           """;
-        return await dbConnection.ExecuteScalarAsync<bool>(sql, outboxMessageConsumer);
     }
 }

@@ -31,7 +31,7 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
                 IReadOnlyCollection<IDomainEvent> domainEvents = entity.DomainEvents;
                 entity.ClearDomainEvents();
                 return domainEvents;
-            }).Select(domainEvent => new OutboxMessage()
+            }).Select(domainEvent => new InboxMessage()
             {
                 Id = domainEvent.Id,
                 Type = domainEvent.GetType().Name,
@@ -40,6 +40,6 @@ public sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
             })
             .ToList();
 
-        context.Set<OutboxMessage>().AddRange(outboxMessages);
+        context.Set<InboxMessage>().AddRange(outboxMessages);
     }
 }

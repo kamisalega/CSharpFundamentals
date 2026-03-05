@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dapper;
 using Evently.Common.Application.Clock;
 using Evently.Common.Application.Data;
@@ -19,6 +14,7 @@ using Newtonsoft.Json;
 using Quartz;
 
 namespace Evently.Modules.Events.Infrastructure.Outbox;
+
 [DisallowConcurrentExecution]
 internal sealed class ProcessOutboxJob(
     IDbConnectionFactory dbConnectionFactory,

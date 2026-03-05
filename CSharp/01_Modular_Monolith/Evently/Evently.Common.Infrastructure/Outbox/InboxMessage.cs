@@ -1,6 +1,6 @@
 ﻿namespace Evently.Common.Infrastructure.Outbox;
 
-public sealed class OutboxMessage
+public sealed class InboxMessage
 {
     public Guid Id { get; init; }
     public string Type { get; init; }

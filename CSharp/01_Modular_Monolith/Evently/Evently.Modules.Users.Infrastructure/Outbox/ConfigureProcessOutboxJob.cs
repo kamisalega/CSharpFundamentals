@@ -12,11 +12,12 @@ internal sealed class ConfigureProcessOutboxJob(IOptions<OutboxOptions> outboxOp
     {
         string jobName = typeof(ProcessOutboxJob).FullName!;
 
-        options.AddJob<ProcessOutboxJob>(configure => configure.WithIdentity(jobName))
+        options
+            .AddJob<ProcessOutboxJob>(configure => configure.WithIdentity(jobName))
             .AddTrigger(configure =>
-                configure.ForJob(jobName)
+                configure
+                    .ForJob(jobName)
                     .WithSimpleSchedule(schedule =>
-                        schedule.WithIntervalInSeconds(_outboxOptions.IntervalInSeconds)
-                            .RepeatForever()));
+                        schedule.WithIntervalInSeconds(_outboxOptions.IntervalInSeconds).RepeatForever()));
     }
 }

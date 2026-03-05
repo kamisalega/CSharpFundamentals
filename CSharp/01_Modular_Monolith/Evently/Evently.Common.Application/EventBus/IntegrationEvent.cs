@@ -9,6 +9,6 @@ public abstract class IntegrationEvent : IIntegrationEvent
     }
 
     public Guid Id { get; init; }
-    public DateTime OccurredOnUtc { get; init; }
 
+    public DateTime OccurredOnUtc { get; init; }
 }

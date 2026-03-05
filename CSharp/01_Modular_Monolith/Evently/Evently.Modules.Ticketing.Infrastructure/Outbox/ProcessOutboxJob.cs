@@ -126,5 +126,3 @@ internal sealed class ProcessOutboxJob(
 
     internal sealed record OutboxMessageResponse(Guid Id, string Content);
 }
-
-
