@@ -1,5 +1,3 @@
 ﻿using BenchmarkDotNet.Running;
 
-var summary = BenchmarkRunner.Run(typeof(CSharpPerformancePlaybook.Benchmarker.Loops));
-
-
+var summary = BenchmarkRunner.Run(typeof(CSharpPerformancePlaybook.Benchmarker.ClassVsStruct));
