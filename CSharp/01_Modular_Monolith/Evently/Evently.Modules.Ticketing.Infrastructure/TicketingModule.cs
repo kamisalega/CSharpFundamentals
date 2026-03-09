@@ -81,9 +81,15 @@ public static class TicketingModule
         services.AddSingleton<ICustomerContext, CustomerContext>();
 
 
+
         services.Configure<OutboxOptions>(configuration.GetSection("Ticketing:Outbox"));
 
         services.ConfigureOptions<ConfigureProcessOutboxJob>();
+
+        services.Configure<InboxOptions>(configuration.GetSection("Ticketing:Inbox"));
+
+        services.ConfigureOptions<ConfigureProcessInboxJob>();
+
     }
 
     private static void AddDomainEventHandlers(this IServiceCollection services)
