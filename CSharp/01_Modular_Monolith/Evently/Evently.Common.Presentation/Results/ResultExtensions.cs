@@ -1,6 +1,6 @@
 ﻿using Evently.Common.Domain;
 
-namespace Evently.Common.Presentation.ApiResults;
+namespace Evently.Common.Presentation.Results;
 public static class ResultExtensions
 {
     public static TOut Match<TOut>(

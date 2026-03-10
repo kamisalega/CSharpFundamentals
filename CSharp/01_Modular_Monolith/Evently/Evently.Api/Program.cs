@@ -41,6 +41,7 @@ builder.Services.AddApplication([
     Evently.Modules.Attendance.Application.AssemblyReference.Assembly
 ]);
 builder.Services.AddInfrastructure([
+        EventsModule.ConfigureConsumers(redisConnectionString),
         TicketingModule.ConfigureConsumers,
         AttendanceModule.ConfigureConsumers
     ], databaseConnectionString,

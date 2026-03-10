@@ -1,6 +1,6 @@
 ﻿using Evently.Common.Domain;
-using Evently.Common.Presentation.ApiResults;
 using Evently.Common.Presentation.Endpoints;
+using Evently.Common.Presentation.Results;
 using Evently.Modules.Attendance.Application.EventStatistics.GetEventStatistics;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Evently.Modules.Attendance.Presentation.EventStatistics;
-internal class GetEventStatistics : IEndpoint
+internal sealed class GetEventStatistics : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

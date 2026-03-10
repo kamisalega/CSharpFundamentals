@@ -1,7 +1,7 @@
 ﻿using Evently.Common.Domain;
 using Microsoft.AspNetCore.Http;
 
-namespace Evently.Common.Presentation.ApiResults;
+namespace Evently.Common.Presentation.Results;
 public static class ApiResults
 {
     public static IResult Problem(Result result)

@@ -1,4 +1,5 @@
-﻿using Evently.Common.Application.Caching;
+﻿using Dapper;
+using Evently.Common.Application.Caching;
 using Evently.Common.Application.Clock;
 using Evently.Common.Application.Data;
 using Evently.Common.Application.EventBus;
@@ -31,7 +32,7 @@ public static class InfrastructureConfiguration
         services.TryAddSingleton(npgsqlDataSource);
 
         services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
-
+        SqlMapper.AddTypeHandler(new GenericArrayHandler<string>());
         services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
         services.TryAddSingleton<InsertOutboxMessagesInterceptor>();
@@ -39,7 +40,7 @@ public static class InfrastructureConfiguration
         services.AddQuartz();
 
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
+        
         try
         {
             IConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnectionString);

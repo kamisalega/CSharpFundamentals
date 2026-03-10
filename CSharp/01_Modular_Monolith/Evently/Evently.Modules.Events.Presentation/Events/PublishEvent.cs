@@ -1,7 +1,7 @@
 ﻿using Evently.Modules.Events.Application.Events.PublishEvent;
 using Evently.Common.Domain;
-using Evently.Common.Presentation.ApiResults;
 using Evently.Common.Presentation.Endpoints;
+using Evently.Common.Presentation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
