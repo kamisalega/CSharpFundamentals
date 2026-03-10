@@ -2,7 +2,7 @@
 
 namespace Evently.Modules.Attendance.Domain.Attendees;
 
-internal sealed class InvalidCheckInAttemptedDomainEvent(
+public sealed class InvalidCheckInAttemptedDomainEvent(
     Guid attendeeId,
     Guid eventId,
     Guid ticketId,

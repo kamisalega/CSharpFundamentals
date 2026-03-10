@@ -19,6 +19,8 @@ public sealed class AttendanceDBContext(DbContextOptions<AttendanceDBContext> op
 
     internal DbSet<Ticket> Tickets { get; set; }
 
+    internal DbSet<EventStatistics> EventStatistics { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schemas.Attendance);
@@ -29,11 +31,6 @@ public sealed class AttendanceDBContext(DbContextOptions<AttendanceDBContext> op
         modelBuilder.ApplyConfiguration(new AttendeeConfiguration());
         modelBuilder.ApplyConfiguration(new EventConfiguration());
         modelBuilder.ApplyConfiguration(new TicketConfiguration());
+        modelBuilder.ApplyConfiguration(new EventStatisticsConfiguration());
     }
-}
-
-
-internal static class Schemas
-{
-    internal const string Attendance = "attendance";
 }
