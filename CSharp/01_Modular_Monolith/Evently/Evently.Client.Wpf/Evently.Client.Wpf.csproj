@@ -13,11 +13,11 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+		<PackageReference Include="System.Reactive" Version="6.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="ApiClient\Dtos\" />
-	  <Folder Include="Core\" />
 	  <Folder Include="Features\Events\" />
 	  <Folder Include="Features\Cart\" />
 	  <Folder Include="Features\Statistics\" />
