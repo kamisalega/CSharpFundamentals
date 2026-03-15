@@ -1,13 +1,16 @@
 ﻿using Evently.Common.Domain;
 using Evently.Common.Presentation.Endpoints;
 using Evently.Common.Presentation.Results;
+using Evently.Modules.Ticketing.Application.Customers.CreateCustomer;
 using Evently.Modules.Ticketing.Application.Orders.GetOrder;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using OrderResponse = Evently.Modules.Ticketing.Application.Orders.GetOrder.OrderResponse;
 
 namespace Evently.Modules.Ticketing.Presentation.Orders;
+
 internal sealed class GetOrder : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)

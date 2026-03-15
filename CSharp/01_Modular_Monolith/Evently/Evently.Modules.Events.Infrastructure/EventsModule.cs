@@ -41,7 +41,7 @@ public static class EventsModule
     public static Action<IRegistrationConfigurator> ConfigureConsumers(string redisConnectionString)
     {
        return registrationConfigurator => registrationConfigurator.AddSagaStateMachine<CancelEventSaga, CancelEventState>()
-            .RedisRepository();
+            .RedisRepository(redisConnectionString);
     }
     
     private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
