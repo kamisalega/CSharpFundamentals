@@ -1,24 +1,40 @@
-﻿using System.Reactive.Linq;
+﻿using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Windows;
-using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Evently.Client.Wpf.Core;
 
 public abstract class MvuViewModel<TModel, TMsg> : ObservableObject, IDisposable where TModel : notnull
 {
-
+    private readonly Subject<TMsg> _messages = new();
+    private readonly CompositeDisposable _disposables = new();
+    private readonly SerialDisposable _effectSubscription = new();
     private TModel _model;
-    private readonly Dispatcher _dispatcher = Application.Current.Dispatcher;
-    private CancellationTokenSource _effectCts = new();
     private bool _disposed;
 
     protected MvuViewModel(TModel initialModel)
     {
         _model = initialModel;
-       
+        SynchronizationContext context = SynchronizationContext.Current
+                                         ?? throw new InvalidOperationException("MvuViewModel must be created on the UI thread.");
+
+        var uiScheduler = new SynchronizationContextScheduler(context);
+        _messages.ObserveOn(uiScheduler)
+            .Scan(initialModel, (model, msg) =>
+            {
+                (TModel newModel, IObservable<TMsg>? effect) = Update(model, msg);
+                SubscribeToEffect(effect, uiScheduler);
+                return newModel;
+            }).Subscribe(onNext: newModel => Model = newModel,
+                onError: ex => System.Diagnostics.Debug.WriteLine($"[MVU Fatal] {ex}"));
+
+        _effectSubscription.DisposeWith(_disposables);
     }
+
+    protected IObservable<TMsg> Messages => _messages;
+    protected CompositeDisposable Disposables => _disposables;
 
     public TModel Model
     {
@@ -26,63 +42,44 @@ public abstract class MvuViewModel<TModel, TMsg> : ObservableObject, IDisposable
         private set => SetProperty(ref _model, value);
     }
 
-    protected abstract (TModel NewModel, IEffect<TMsg>? Effect) Update(TModel model, TMsg message);
+    protected abstract (TModel NewModel, IObservable<TMsg>? Effect) Update(TModel model, TMsg message);
 
-    public void Dispatch(TMsg message)
+    public void Dispatch(TMsg message) =>
+        _messages.OnNext(message);
+
+    private void SubscribeToEffect(IObservable<TMsg>? effect, IScheduler uiSheduler)
     {
-        if (!_dispatcher.CheckAccess())
+        if (effect is null)
         {
-            _dispatcher.Invoke(() => Dispatch(message));
             return;
         }
 
-        (TModel newModel, IEffect<TMsg>? effect) = Update(Model, message);
-        Model = newModel;
-
-        if (effect is not null)
-        {
-            _ = ExecuteEffectAsync(effect);
-        }
-    }
-
-    private async Task ExecuteEffectAsync(IEffect<TMsg> effect)
-    {
-        try
-        {
-            TMsg? resultMsg = await effect.ExecuteAsync(_effectCts.Token);
-            if (resultMsg is not null)
-            {
-                Dispatch(resultMsg);
-            }
-        }
-        catch (Exception exception)
-        {
-            TMsg? errorMsg = CreateErrorMessage(exception);
-            if (errorMsg is not null)
-            {
-                Dispatch(errorMsg);
-            }
-        }
+        _effectSubscription.Disposable = effect
+            .ObserveOn(uiSheduler)
+            .Subscribe(
+                onNext: msg => Dispatch(msg),
+                onError: ex =>
+                {
+                    TMsg? errorMsg = CreateErrorMessage(ex);
+                    if (errorMsg is not null)
+                    {
+                        Dispatch(errorMsg);
+                    }
+                });
     }
 
     protected virtual TMsg? CreateErrorMessage(Exception ex) =>
         default;
 
-    public void CancelEffects()
-    {
-        _effectCts.Cancel();
-        _effectCts.Dispose();
-        _effectCts = new CancellationTokenSource();
-    }
-
     public void Dispose()
     {
-        if (!_disposed)
+        if (_disposed)
         {
-            CancelEffects();
-            _disposed = true;
+            return;
         }
+
+        _disposables.Dispose();
+        _messages.Dispose();
+        _disposed = true;
     }
 }
-
-
