@@ -38,9 +38,10 @@ public class AuthorsController : ControllerBase
     public async Task<ActionResult<AuthorDto>> GetAuthor(Guid authorId)
     {
         // get author from repo
-        var authorFromRepo = await _courseLibraryRepository.GetAuthorAsync(authorId);
+        var authorFromRepo = await _courseLibraryRepository
+            .GetAuthorAsync(authorId);
 
-        if (authorFromRepo == null)
+        if (authorFromRepo is null)
         {
             return NotFound();
         }
