@@ -21,7 +21,7 @@
                 Click="BackButton_Click" />
 
         <!-- Loading -->
-        <TextBlock Grid.Row="1" Text="Ładowanie..."
+        <TextBlock Grid.Row="1" Text="Loading..."
                    FontSize="16"
                    Visibility="{Binding Model.IsLoading,
   Converter={StaticResource BoolToVisibility}}"

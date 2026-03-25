@@ -6,5 +6,6 @@
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <shared:NullToCollapsedConverter x:Key="NullToCollapsed"/>
+        <shared:InvertBoolConverter x:Key="InvertBool"/>
     </Application.Resources>
 </Application>
