@@ -18,7 +18,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\Cart\" />
 	  <Folder Include="Features\Statistics\" />
 	  <Folder Include="Features\Orders\" />
 	  <Folder Include="Shared\Styles\" />

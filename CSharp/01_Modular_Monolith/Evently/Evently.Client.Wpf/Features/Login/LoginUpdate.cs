@@ -1,5 +1,4 @@
 ﻿using Evently.Client.Wpf.ApiClient;
-using Evently.Client.Wpf.ApiClient.Dtos;
 
 namespace Evently.Client.Wpf.Features.Login;
 

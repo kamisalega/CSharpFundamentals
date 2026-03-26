@@ -1,4 +1,6 @@
-﻿namespace Evently.Client.Wpf.ApiClient.Dtos;
+﻿using Evently.Client.Wpf.ApiClient.Dtos;
+
+namespace Evently.Client.Wpf.Features.Events;
 
 public abstract record EventDetailMsg
 {

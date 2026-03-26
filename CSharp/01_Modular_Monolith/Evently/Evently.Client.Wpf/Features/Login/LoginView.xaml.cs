@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Evently.Client.Wpf.ApiClient.Dtos;
 
 namespace Evently.Client.Wpf.Features.Login;
 

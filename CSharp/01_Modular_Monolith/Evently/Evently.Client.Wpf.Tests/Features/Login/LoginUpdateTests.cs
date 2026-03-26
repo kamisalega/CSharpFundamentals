@@ -1,5 +1,4 @@
-﻿using Evently.Client.Wpf.ApiClient.Dtos;
-using Evently.Client.Wpf.Features.Login;
+﻿using Evently.Client.Wpf.Features.Login;
 using FluentAssertions;
 
 namespace Evently.Client.Wpf.Tests.Features.Login;

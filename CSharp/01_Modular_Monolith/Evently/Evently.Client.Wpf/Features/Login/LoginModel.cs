@@ -1,4 +1,4 @@
-﻿namespace Evently.Client.Wpf.ApiClient.Dtos;
+﻿namespace Evently.Client.Wpf.Features.Login;
 
 public sealed record LoginModel(string Email, string Password, bool IsLoading, string? Error)
 {

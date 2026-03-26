@@ -3,6 +3,7 @@ using System.Windows;
 using Evently.Client.Wpf.ApiClient;
 using Evently.Client.Wpf.Core;
 using Evently.Client.Wpf.Core.Auth;
+using Evently.Client.Wpf.Features.Cart;
 using Evently.Client.Wpf.Features.Events;
 using Evently.Client.Wpf.Features.Login;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,10 +56,11 @@ public partial class App : Application
         services.AddTransient<EventListView>();
         services.AddTransient<EventDetailViewModel>();
         services.AddTransient<EventDetailView>();
-
         services.AddTransient<LoginView>();
         services.AddTransient<LoginViewModel>();
-        
+        services.AddTransient<CartViewModel>();
+        services.AddTransient<CartView>();
+
         services.AddSingleton<MainWindow>();
     }
 
@@ -70,6 +72,7 @@ public partial class App : Application
         navigation.Register(() => _serviceProvider.GetRequiredService<EventListView>());
         navigation.Register(() => _serviceProvider.GetRequiredService<EventDetailView>());
         navigation.Register(() => _serviceProvider.GetRequiredService<LoginView>());
+        navigation.Register(() => _serviceProvider.GetRequiredService<CartView>());
 
         MainWindow mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
         mainWindow.Show();

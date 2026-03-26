@@ -1,5 +1,4 @@
 ﻿using Evently.Client.Wpf.ApiClient;
-using Evently.Client.Wpf.ApiClient.Dtos;
 using Evently.Client.Wpf.Features.Events;
 using FluentAssertions;
 using Microsoft.Reactive.Testing;

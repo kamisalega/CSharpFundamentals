@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
 
         <!-- Back button -->
-        <Button Content="← Powrót do listy"
+        <Button Content="← Back to Event List"
                 HorizontalAlignment="Left" Margin="0,0,0,16"
                 Padding="12,6" Background="Transparent"
                 Foreground="#4A90D9"
@@ -57,8 +57,10 @@
                 <Border Background="#E8F5E9" CornerRadius="4"
                         Padding="8,4" Margin="0,8,0,0"
                         HorizontalAlignment="Left">
-                    <TextBlock Text="{Binding
-  Model.Event.Status}" Foreground="#2E7D32" FontSize="12" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="Status: " Foreground="#2E7D32" FontSize="12" />
+                        <TextBlock Text="{Binding Model.Event.Status}" Foreground="#2E7D32" FontSize="12" />
+                    </StackPanel>
                 </Border>
 
                 <StackPanel Margin="0,16,0,0">
@@ -84,7 +86,7 @@
 
             <!-- Right: Ticket types -->
             <StackPanel Grid.Column="1">
-                <TextBlock Text="Bilety" FontSize="20"
+                <TextBlock Text="Tickets" FontSize="20"
                            FontWeight="SemiBold" Margin="0,0,0,12" />
 
                 <ItemsControl ItemsSource="{Binding
@@ -109,9 +111,12 @@
                                     </StackPanel>
                                     <TextBlock
                                         Foreground="#888" FontSize="12" Margin="0,4,0,0">
-                                        <Run Text="Dostępne:
+                                        <Run Text="Accessible:
   " /><Run Text="{Binding Quantity}" />
                                     </TextBlock>
+                                    <Button Content="Add to Cart" Margin="0,8,0,0" Padding="10,6" 
+                                            Background="#4A90D9" Foreground="White" BorderThickness="0"
+                                            Cursor="Hand" Tag="{Binding TicketTypeId}" Click="AddToCart_Click"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

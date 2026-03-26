@@ -1,4 +1,4 @@
-﻿namespace Evently.Client.Wpf.ApiClient.Dtos;
+﻿namespace Evently.Client.Wpf.Features.Login;
 
 public abstract record LoginMsg
 {

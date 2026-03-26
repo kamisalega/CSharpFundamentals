@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using Evently.Client.Wpf.ApiClient;
-using Evently.Client.Wpf.ApiClient.Dtos;
 using Evently.Client.Wpf.Core;
 using Evently.Client.Wpf.Core.Auth;
 using Evently.Client.Wpf.Features.Events;
