@@ -7,6 +7,8 @@ namespace Evently.Client.Wpf.Tests.Features.Cart;
 
 public sealed class CartUpdateTests
 {
+    private readonly Guid _userId = Guid.NewGuid();
+
     [Fact]
     public void Update_WhenLoadCart_ShouldSetIsLoading()
     {
@@ -16,7 +18,7 @@ public sealed class CartUpdateTests
         // Act
         (CartModel newModel, IObservable<CartMsg>? effect) = CartUpdate.Update(model,
             new CartMsg.LoadCart(),
-            EventlyApiClientStub.Create());
+            EventlyApiClientStub.Create(), _userId);
 
         // Assert
         newModel.IsLoading.Should().BeTrue();
@@ -33,7 +35,7 @@ public sealed class CartUpdateTests
         // Act
         (CartModel newModel, IObservable<CartMsg>? effect) = CartUpdate.Update(model,
             new CartMsg.CartLoaded(SampleCart()),
-            EventlyApiClientStub.Create());
+            EventlyApiClientStub.Create(), _userId);
 
         // Assert
         newModel.IsLoading.Should().BeFalse();
@@ -52,7 +54,7 @@ public sealed class CartUpdateTests
         // Act
         (CartModel newModel, IObservable<CartMsg>? effect) = CartUpdate.Update(model,
             new CartMsg.CartLoaded(new CartDto(Guid.NewGuid(), new List<CartItemDto>())),
-            EventlyApiClientStub.Create());
+            EventlyApiClientStub.Create(), _userId);
 
         // Assert
         newModel.IsLoading.Should().BeFalse();
@@ -70,7 +72,7 @@ public sealed class CartUpdateTests
         // Act
         (CartModel newModel, IObservable<CartMsg>? effect) = CartUpdate.Update(model,
             new CartMsg.AddItem(Guid.NewGuid(), 3),
-            EventlyApiClientStub.Create());
+            EventlyApiClientStub.Create(), _userId);
 
         // Assert
         newModel.IsLoading.Should().BeTrue();
@@ -88,7 +90,7 @@ public sealed class CartUpdateTests
         // Act
         (CartModel newModel, IObservable<CartMsg>? effect) = CartUpdate.Update(model,
             new CartMsg.RemoveItem(Guid.NewGuid()),
-            EventlyApiClientStub.Create());
+            EventlyApiClientStub.Create(), _userId);
 
         // Assert
         newModel.IsLoading.Should().BeTrue();
@@ -106,7 +108,7 @@ public sealed class CartUpdateTests
         // Act
         (CartModel newModel, IObservable<CartMsg>? effect) = CartUpdate.Update(model,
             new CartMsg.CartUpdated(),
-            EventlyApiClientStub.Create());
+            EventlyApiClientStub.Create(), _userId);
 
         // Assert
         newModel.IsLoading.Should().BeTrue();
@@ -124,7 +126,7 @@ public sealed class CartUpdateTests
         // Act
         (CartModel newModel, IObservable<CartMsg>? effect) = CartUpdate.Update(model,
             new CartMsg.LoadFailed("TestError"),
-            EventlyApiClientStub.Create());
+            EventlyApiClientStub.Create(), _userId);
 
         // Assert
         newModel.IsLoading.Should().BeFalse();

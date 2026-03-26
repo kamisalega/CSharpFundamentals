@@ -32,11 +32,12 @@ public sealed class EventlyApiClient(HttpClient http)
         return await http.GetFromJsonAsync<CartDto>("carts", cancellation);
     }
 
-    public async Task AddToCartAsync(Guid ticketTypeId, int quantity,
+    public async Task AddToCartAsync(Guid customerId, Guid ticketTypeId, int quantity,
         CancellationToken cancellation = default)
     {
         await http.PutAsJsonAsync("carts/add", new
         {
+            CustomerId = customerId,
             TicketTypeId = ticketTypeId,
             Quantity = quantity
         }, cancellation);
@@ -64,5 +65,10 @@ public sealed class EventlyApiClient(HttpClient http)
     public async Task<EventStatisticsDto?> GetEventStatisticsAsync(Guid eventId, CancellationToken cancellation = default)
     {
         return await http.GetFromJsonAsync<EventStatisticsDto>($"event-statistics/{eventId}", cancellation);
+    }
+
+    public async Task<UserResponse?> GetProfileAsync(CancellationToken cancellation = default)
+    {
+        return await http.GetFromJsonAsync<UserResponse>($"users/profile", cancellation);
     }
 }

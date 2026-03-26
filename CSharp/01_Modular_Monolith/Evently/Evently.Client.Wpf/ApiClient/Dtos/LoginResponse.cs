@@ -9,3 +9,5 @@ public sealed record LoginResponse(
     string RefreshToken,
     [property: JsonPropertyName("expires_in")]
     int ExpiresIn);
+
+public sealed record UserResponse(Guid Id, string Email, string FirstName, string LastName);

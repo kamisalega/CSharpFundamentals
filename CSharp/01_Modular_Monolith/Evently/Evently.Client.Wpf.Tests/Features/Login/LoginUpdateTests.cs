@@ -1,4 +1,5 @@
 ﻿using Evently.Client.Wpf.Features.Login;
+using Evently.Client.Wpf.Tests.Features.Events;
 using FluentAssertions;
 
 namespace Evently.Client.Wpf.Tests.Features.Login;
@@ -14,7 +15,7 @@ public sealed class LoginUpdateTests
         // Act
         (LoginModel newModel, IObservable<LoginMsg>? effect) = LoginUpdate.Update(model,
             new LoginMsg.EmailChanged("kamilsalega@gmail.com"),
-            LoginApiClientStub.Create());
+            LoginApiClientStub.Create(), EventlyApiClientStub.Create());
 
         //Assert
         newModel.IsLoading.Should().BeFalse();
@@ -33,7 +34,7 @@ public sealed class LoginUpdateTests
         // Act
         (LoginModel newModel, IObservable<LoginMsg>? effect) = LoginUpdate.Update(model,
             new LoginMsg.PasswordChanged(password),
-            LoginApiClientStub.Create());
+            LoginApiClientStub.Create(), EventlyApiClientStub.Create());
 
         //Assert
         newModel.IsLoading.Should().BeFalse();
@@ -56,7 +57,7 @@ public sealed class LoginUpdateTests
         // Act
         (LoginModel newModel, IObservable<LoginMsg>? effect) = LoginUpdate.Update(model,
             new LoginMsg.Submit(),
-            LoginApiClientStub.Create());
+            LoginApiClientStub.Create(), EventlyApiClientStub.Create());
 
         //Assert
         newModel.IsLoading.Should().BeTrue();
@@ -73,7 +74,7 @@ public sealed class LoginUpdateTests
         // Act
         (LoginModel newModel, IObservable<LoginMsg>? effect) = LoginUpdate.Update(model,
             new LoginMsg.Submit(),
-            LoginApiClientStub.Create());
+            LoginApiClientStub.Create(), EventlyApiClientStub.Create());
 
         //Assert
         newModel.IsLoading.Should().BeFalse();
@@ -90,7 +91,7 @@ public sealed class LoginUpdateTests
         // Act
         (LoginModel newModel, IObservable<LoginMsg>? effect) = LoginUpdate.Update(model,
             new LoginMsg.Submit(),
-            LoginApiClientStub.Create());
+            LoginApiClientStub.Create(), EventlyApiClientStub.Create());
 
         //Assert
         newModel.IsLoading.Should().BeFalse();
@@ -107,12 +108,12 @@ public sealed class LoginUpdateTests
         // Act
         (LoginModel newModel, IObservable<LoginMsg>? effect) = LoginUpdate.Update(model,
             new LoginMsg.LoginSuccess("accessToken", "refreshToken"),
-            LoginApiClientStub.Create());
+            LoginApiClientStub.Create(), EventlyApiClientStub.Create());
 
         //Assert
         newModel.IsLoading.Should().BeFalse();
         newModel.Error.Should().BeNull();
-        effect.Should().BeNull();
+        effect.Should().NotBeNull();
     }
 
     [Fact]
@@ -124,7 +125,7 @@ public sealed class LoginUpdateTests
         // Act
         (LoginModel newModel, IObservable<LoginMsg>? effect) = LoginUpdate.Update(model,
             new LoginMsg.LoginFailed("Invalid credentials"),
-            LoginApiClientStub.Create());
+            LoginApiClientStub.Create(), EventlyApiClientStub.Create());
 
         //Assert
         newModel.IsLoading.Should().BeFalse();

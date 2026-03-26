@@ -2,4 +2,4 @@
 
 public sealed record CartDto(
     Guid CustomerId,
-    IReadOnlyList<CartItemDto> Item);
+    List<CartItemDto> Items);

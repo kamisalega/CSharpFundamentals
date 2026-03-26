@@ -13,4 +13,6 @@ public abstract record LoginMsg
     public sealed record LoginSuccess(string AccessToken, string RefreshToken) : LoginMsg;
 
     public sealed record LoginFailed(string Error) : LoginMsg;
+
+    public sealed record ProfileLoaded(Guid UserId, string FirstName, string LastName) : LoginMsg;
 }

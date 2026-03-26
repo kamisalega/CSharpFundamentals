@@ -14,9 +14,9 @@ public static class CartEffects
                 Observable.Return((CartMsg)new CartMsg.LoadFailed(ex.Message)));
     }
 
-    public static IObservable<CartMsg> AddItem(EventlyApiClient api, Guid ticketTypeId, int quantity)
+    public static IObservable<CartMsg> AddItem(EventlyApiClient api, Guid customerId, Guid ticketTypeId, int quantity)
     {
-        return Observable.FromAsync(async ct => await api.AddToCartAsync(ticketTypeId, quantity, ct))
+        return Observable.FromAsync(async ct => await api.AddToCartAsync(customerId, ticketTypeId, quantity, ct))
             .Select(_ =>
                 (CartMsg)new CartMsg.CartUpdated())
             .Catch<CartMsg, Exception>(ex =>
