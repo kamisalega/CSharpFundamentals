@@ -1,5 +1,4 @@
-﻿using Evently.Common.Application.Data;
-using Evently.Common.Application.Messaging;
+﻿using Evently.Common.Application.Messaging;
 using Evently.Common.Domain;
 using Evently.Modules.Events.Application.Abstractions.Data;
 using Evently.Modules.Events.Domain.Events;
@@ -7,7 +6,7 @@ using Evently.Modules.Events.Domain.TicketTypes;
 
 namespace Evently.Modules.Events.Application.Events.PublishEvent;
 
-internal sealed class PublishEventCommandHandler (IEventRepository eventRepository,
+internal sealed class PublishEventCommandHandler(IEventRepository eventRepository,
     ITicketTypeRepository ticketTypeRepository,
     IUnitOfWork unitOfWork) : ICommandHandler<PublishEventCommand>
 {

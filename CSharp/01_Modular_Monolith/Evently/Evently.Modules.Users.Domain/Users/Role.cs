@@ -5,7 +5,7 @@ public sealed class Role
     public static readonly Role Member = new("Member");
     private Role()
     {
-        
+
     }
 
     private Role(string name)

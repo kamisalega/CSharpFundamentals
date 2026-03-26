@@ -1,7 +1,6 @@
 ﻿using Evently.Common.Application.Authorization;
 using Evently.Common.Application.EventBus;
 using Evently.Common.Application.Messaging;
-using Evently.Common.Domain;
 using Evently.Common.Infrastructure.Outbox;
 using Evently.Common.Presentation.Endpoints;
 using Evently.Modules.Users.Application.Abstractions.Data;

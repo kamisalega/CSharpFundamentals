@@ -1,5 +1,5 @@
 ﻿namespace Evently.Common.Infrastructure.Inbox;
-public  sealed class InboxMessage
+public sealed class InboxMessage
 {
     public Guid Id { get; init; }
     public string Type { get; init; }

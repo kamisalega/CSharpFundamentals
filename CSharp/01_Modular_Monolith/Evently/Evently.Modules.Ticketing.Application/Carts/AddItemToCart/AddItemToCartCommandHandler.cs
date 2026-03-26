@@ -39,7 +39,7 @@ internal sealed class AddItemToCartCommandHandler(CartService cartService, ICust
         };
 
         await cartService.AddItemAsync(customer.Id, cartItem, cancellationToken);
-        
+
         return Result.Success();
     }
 }

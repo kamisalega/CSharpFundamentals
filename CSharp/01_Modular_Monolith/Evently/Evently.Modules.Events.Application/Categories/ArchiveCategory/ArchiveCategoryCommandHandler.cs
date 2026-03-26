@@ -22,11 +22,11 @@ internal sealed class ArchiveCategoryCommandHandler(ICategoryRepository category
         {
             return Result.Failure(CategoryErrors.AlreadyArchived);
         }
-       
+
         category.Archive();
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-       
+
         return Result.Success();
     }
 

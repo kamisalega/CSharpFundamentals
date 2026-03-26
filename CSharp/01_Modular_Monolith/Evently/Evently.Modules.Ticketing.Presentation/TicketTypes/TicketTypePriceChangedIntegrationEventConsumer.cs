@@ -3,7 +3,6 @@ using Evently.Common.Application.Exceptions;
 using Evently.Common.Domain;
 using Evently.Modules.Events.IntegrationEvents;
 using Evently.Modules.Ticketing.Application.TicketTypes.UpdateTicketTypePrice;
-using MassTransit;
 using MediatR;
 
 namespace Evently.Modules.Ticketing.Presentation.TicketTypes;

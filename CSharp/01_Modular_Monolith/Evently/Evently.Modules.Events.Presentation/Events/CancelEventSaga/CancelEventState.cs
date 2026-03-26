@@ -54,7 +54,7 @@ public sealed class CancelEventSaga : MassTransitStateMachine<CancelEventState>
             EventPaymentsRefunded, EventTicketsArchived);
 
         DuringAny(When(EventCancellationCompleted).Publish(context =>
-            new EventCanceledIntegrationEvent(Guid.NewGuid(), 
+            new EventCanceledIntegrationEvent(Guid.NewGuid(),
                 DateTime.UtcNow, context.Saga.CorrelationId))
             .Finalize());
     }

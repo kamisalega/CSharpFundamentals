@@ -11,7 +11,7 @@ namespace Evently.Modules.Events.Presentation.TicketTypes;
 
 internal sealed class ChangeTicketTypePrice : IEndpoint
 {
-    public  void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPut("ticket-types/{id}/price", async (Guid id, UpdateTicketTypePriceRequest request, ISender sender) =>
             {

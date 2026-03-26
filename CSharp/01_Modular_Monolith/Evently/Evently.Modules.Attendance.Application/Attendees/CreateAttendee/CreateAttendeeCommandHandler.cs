@@ -10,11 +10,11 @@ internal sealed class CreateAttendeeCommandHandler(IAttendeeRepository attendeeR
     public async Task<Result> Handle(CreateAttendeeCommand request, CancellationToken cancellationToken)
     {
         var attendee = Attendee.Create(request.AttendeeId, request.Email, request.FirstName, request.LastName);
-        
+
         attendeeRepository.Insert(attendee);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return Result.Success();
     }
 }

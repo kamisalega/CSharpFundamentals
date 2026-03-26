@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Evently.Modules.Users.Domain.Users;
+﻿namespace Evently.Modules.Users.Domain.Users;
 
 public interface IUserRepository
 {

@@ -46,5 +46,5 @@ internal sealed class CheckInAttendeeCommandHandler(
         return result;
     }
 
-  
+
 }

@@ -3,7 +3,7 @@ using Evently.Modules.Events.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Evently.Modules.Events.Infrastructure.TicketTypes;
-internal sealed class TicketTypeRepository (EventsDBContext context) : ITicketTypeRepository
+internal sealed class TicketTypeRepository(EventsDBContext context) : ITicketTypeRepository
 {
     public async Task<TicketType?> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {

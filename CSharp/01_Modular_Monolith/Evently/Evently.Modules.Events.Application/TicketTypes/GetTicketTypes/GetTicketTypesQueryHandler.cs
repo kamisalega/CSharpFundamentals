@@ -2,8 +2,8 @@
 using Dapper;
 using Evently.Common.Application.Data;
 using Evently.Common.Application.Messaging;
-using Evently.Modules.Events.Application.TicketTypes.GetTicketType;
 using Evently.Common.Domain;
+using Evently.Modules.Events.Application.TicketTypes.GetTicketType;
 
 namespace Evently.Modules.Events.Application.TicketTypes.GetTicketTypes;
 

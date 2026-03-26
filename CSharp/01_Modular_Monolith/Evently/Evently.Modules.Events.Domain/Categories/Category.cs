@@ -20,7 +20,7 @@ public sealed class Category : Entity
             Name = name,
             IsArchived = false
         };
-        
+
         category.Raise(new CategoryCreatedDomainEvent(category.Id));
 
         return category;

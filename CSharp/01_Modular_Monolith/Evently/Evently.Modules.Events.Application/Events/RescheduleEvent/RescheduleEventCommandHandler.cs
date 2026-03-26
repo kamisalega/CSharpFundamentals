@@ -1,5 +1,4 @@
 ﻿using Evently.Common.Application.Clock;
-using Evently.Common.Application.Data;
 using Evently.Common.Application.Messaging;
 using Evently.Common.Domain;
 using Evently.Modules.Events.Application.Abstractions.Data;
@@ -24,7 +23,7 @@ internal sealed class RescheduleEventCommandHandler(IDateTimeProvider dateTimePr
         {
             return Result.Failure(EventErrors.StartDateInPast);
         }
-        
+
         @event.Reschedule(request.StartsAtUtc, request.EndsAtUtc);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -9,7 +9,7 @@ namespace Evently.Modules.Attendance.Application.EventStatistics.GetEventStatist
 
 internal sealed class GetEventStatisticsQueryHandler(IDbConnectionFactory dbConnectionFactory) : IQueryHandler<GetEventStatisticsQuery, EventStatisticsResponse>
 {
-    public  async Task<Result<EventStatisticsResponse>> Handle(GetEventStatisticsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<EventStatisticsResponse>> Handle(GetEventStatisticsQuery request, CancellationToken cancellationToken)
     {
         await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
         const string sql =

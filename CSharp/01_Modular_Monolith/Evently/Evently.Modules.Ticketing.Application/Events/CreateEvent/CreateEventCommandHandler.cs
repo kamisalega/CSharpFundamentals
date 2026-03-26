@@ -17,7 +17,7 @@ internal sealed class CreateEventCommandHandler(IEventRepository eventRepository
 
         IEnumerable<TicketType> ticketTypes = request.TicketTypes.Select(t =>
             TicketType.Create(t.TicketTypeId, t.EventId, t.Name, t.Price, t.Currency, t.Quantity));
-        
+
         ticketTypeRepository.InsertRange(ticketTypes);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

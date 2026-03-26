@@ -15,7 +15,7 @@ internal sealed class UserRegisteredDomainEventHandler(ISender sender, IEventBus
     public override async Task Handle(UserRegisteredDomainEvent notification,
         CancellationToken cancellationToken = default)
     {
-        Result<UserResponse> result = 
+        Result<UserResponse> result =
             await sender.Send(new GetUserQuery(notification.UserId), cancellationToken);
         if (result.IsFailure)
         {

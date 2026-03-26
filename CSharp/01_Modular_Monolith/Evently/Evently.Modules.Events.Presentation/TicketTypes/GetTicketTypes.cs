@@ -12,7 +12,7 @@ namespace Evently.Modules.Events.Presentation.TicketTypes;
 
 internal sealed class GetTicketTypes : IEndpoint
 {
-    public  void MapEndpoint(IEndpointRouteBuilder app)
+    public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("ticket-types", async (Guid eventId, ISender sender) =>
             {

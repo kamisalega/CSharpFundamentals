@@ -2,7 +2,6 @@
 using Dapper;
 using Evently.Common.Application.Data;
 using Evently.Common.Application.EventBus;
-using Evently.Common.Infrastructure.EventBus;
 using Evently.Common.Infrastructure.Inbox;
 using Evently.Common.Infrastructure.Serialization;
 using MassTransit;

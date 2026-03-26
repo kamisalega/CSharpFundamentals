@@ -40,7 +40,7 @@ public sealed class TicketType : Entity
         };
 
         ticketType.Raise(new TicketTypeCreatedDomainEvent(ticketType.Id));
-        
+
         return ticketType;
     }
 

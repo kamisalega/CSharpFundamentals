@@ -16,7 +16,7 @@ internal sealed class UpdateAttendeeCommandHandler(IAttendeeRepository attendeeR
         }
         attendee.Update(request.FirstName, request.LastName);
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return Result.Success();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 using Evently.Common.Application.EventBus;
-using Evently.Common.Infrastructure.EventBus;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Evently.Common.Infrastructure.Inbox;

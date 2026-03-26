@@ -1,5 +1,4 @@
 ﻿using Evently.Common.Application.EventBus;
-using Evently.Common.Domain;
 
 namespace Evently.Modules.Events.IntegrationEvents;
 

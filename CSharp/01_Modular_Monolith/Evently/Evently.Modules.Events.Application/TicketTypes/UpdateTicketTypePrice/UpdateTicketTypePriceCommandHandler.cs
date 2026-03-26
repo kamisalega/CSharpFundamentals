@@ -1,5 +1,4 @@
-﻿using Evently.Common.Application.Data;
-using Evently.Common.Application.Messaging;
+﻿using Evently.Common.Application.Messaging;
 using Evently.Common.Domain;
 using Evently.Modules.Events.Application.Abstractions.Data;
 using Evently.Modules.Events.Domain.TicketTypes;
@@ -17,11 +16,11 @@ internal sealed class UpdateTicketTypePriceCommandHandler(ITicketTypeRepository 
         {
             return Result.Failure(TicketTypeErrors.NotFound(request.TicketTypeId));
         }
-        
+
         ticketType.UpdatePrice(request.Price);
-        
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return Result.Success();
     }
 }

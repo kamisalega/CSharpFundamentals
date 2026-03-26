@@ -26,7 +26,7 @@ public sealed class Event : Entity
         {
             return Result.Failure<Event>(EventErrors.EndDatePrecedesStartDate);
         }
-        
+
         var @event = new Event
         {
             Id = Guid.NewGuid(),

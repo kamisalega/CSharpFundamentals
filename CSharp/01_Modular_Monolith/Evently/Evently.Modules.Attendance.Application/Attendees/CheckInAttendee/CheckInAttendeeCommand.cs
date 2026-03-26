@@ -1,5 +1,4 @@
 ﻿using Evently.Common.Application.Messaging;
-using Serilog.Core;
 
 namespace Evently.Modules.Attendance.Application.Attendees.CheckInAttendee;
 

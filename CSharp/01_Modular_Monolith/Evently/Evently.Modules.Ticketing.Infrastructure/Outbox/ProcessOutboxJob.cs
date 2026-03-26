@@ -1,7 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
-using System.Reflection;
 using Dapper;
 using Evently.Common.Application.Clock;
 using Evently.Common.Application.Data;

@@ -9,6 +9,6 @@ public abstract class DomainEventHandler<TDomainEvent> :
 
     public Task Handle(IDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
-       return Handle((TDomainEvent)domainEvent, cancellationToken);
+        return Handle((TDomainEvent)domainEvent, cancellationToken);
     }
 }

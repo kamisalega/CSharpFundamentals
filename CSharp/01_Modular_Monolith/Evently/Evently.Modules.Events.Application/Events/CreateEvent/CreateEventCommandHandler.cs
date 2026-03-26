@@ -34,7 +34,7 @@ internal sealed class CreateEventCommandHandler(
             return Result.Failure<Guid>(result.Error);
         }
 
-      
+
         eventRepository.Insert(result.Value);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
