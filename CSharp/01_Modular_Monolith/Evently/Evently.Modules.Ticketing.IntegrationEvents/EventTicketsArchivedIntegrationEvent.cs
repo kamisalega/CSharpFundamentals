@@ -1,6 +1,6 @@
 ﻿using Evently.Common.Application.EventBus;
 
-namespace Evently.Modules.Events.IntegrationEvents;
+namespace Evently.Modules.Ticketing.IntegrationEvents;
 
 public sealed class EventTicketsArchivedIntegrationEvent : IntegrationEvent
 {

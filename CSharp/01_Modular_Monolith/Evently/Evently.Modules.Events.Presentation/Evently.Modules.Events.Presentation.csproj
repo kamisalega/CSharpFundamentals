@@ -5,6 +5,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Evently.Common.Presentation\Evently.Common.Presentation.csproj" />
 		<ProjectReference Include="..\Evently.Modules.Events.Application\Evently.Modules.Events.Application.csproj" />
+		<ProjectReference Include="..\Evently.Modules.Ticketing.IntegrationEvents\Evently.Modules.Ticketing.IntegrationEvents.csproj" />
 	</ItemGroup>
 
 </Project>
