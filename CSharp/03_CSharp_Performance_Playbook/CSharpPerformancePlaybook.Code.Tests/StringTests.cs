@@ -1,33 +1,34 @@
-﻿namespace CSharpPerformancePlaybook.Code.Tests
+﻿using CSharpPerformancePlaybook.Benchmarker;
+
+namespace CSharpPerformancePlaybook.Code.Tests;
+
+public class StringTests
 {
-    public class StringTests
+    [Fact]
+    public void BuildStringBadly()
     {
-        [Fact]
-        public void BuildStringBadly()
-        {
-            var s = new StringWorker().BuildStringBadly("test");
+        var s = new StringWorker().BuildStringBadly("test");
 
-            Assert.Equal(
-                "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
-                s);
-        }
+        Assert.Equal(
+            "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+            s);
+    }
 
-        [Fact]
-        public void BuildStringBetter()
-        {
-            var s = new StringWorker().BuildStringBetter("test");
-            Assert.Equal(
-                "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
-                s);
-        }
+    [Fact]
+    public void BuildStringBetter()
+    {
+        var s = new StringWorker().BuildStringBetter("test");
+        Assert.Equal(
+            "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+            s);
+    }
 
-        [Fact]
-        public void FunctionsAreEquivalent()
-        {
-            var sw = new StringWorker();
-            var sbad = sw.BuildStringBadly("test");
-            var sbetter = sw.BuildStringBetter("test");
-            Assert.Equal(sbad, sbetter);
-        }
+    [Fact]
+    public void FunctionsAreEquivalent()
+    {
+        var sw = new StringWorker();
+        var sbad = sw.BuildStringBadly("test");
+        var sbetter = sw.BuildStringBetter("test");
+        Assert.Equal(sbad, sbetter);
     }
 }
