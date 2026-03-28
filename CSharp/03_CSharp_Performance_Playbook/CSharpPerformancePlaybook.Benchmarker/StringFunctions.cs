@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using CSharpPerformancePlaybook.Code;
-using System.Resources;
 
 namespace CSharpPerformancePlaybook.Benchmarker;
 

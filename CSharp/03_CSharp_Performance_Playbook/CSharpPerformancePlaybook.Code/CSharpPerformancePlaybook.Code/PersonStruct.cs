@@ -1,4 +1,4 @@
-﻿namespace CSharpPerformancePlaybook.Benchmarker;
+﻿namespace CSharpPerformancePlaybook.Code;
 
 public struct PersonStruct
 {
