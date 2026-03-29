@@ -103,6 +103,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evently.Client.Wpf", "Event
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evently.Client.Wpf.Tests", "Evently.Client.Wpf.Tests\Evently.Client.Wpf.Tests.csproj", "{F44A89F9-77E6-43F0-AD05-60D3486916BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evently.Modules.Events.UnitTests", "Evently.Modules.Events.UnitTests\Evently.Modules.Events.UnitTests.csproj", "{AD146A5E-0DAD-41C1-8F92-D5EAC216C773}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -241,6 +243,10 @@ Global
 		{F44A89F9-77E6-43F0-AD05-60D3486916BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F44A89F9-77E6-43F0-AD05-60D3486916BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F44A89F9-77E6-43F0-AD05-60D3486916BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD146A5E-0DAD-41C1-8F92-D5EAC216C773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD146A5E-0DAD-41C1-8F92-D5EAC216C773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD146A5E-0DAD-41C1-8F92-D5EAC216C773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD146A5E-0DAD-41C1-8F92-D5EAC216C773}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -290,6 +296,7 @@ Global
 		{3F3897FA-BEE3-4206-A978-F113DF3E0A12} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{46063E98-DC45-4C99-8C9E-3F6C6BD4BB4E} = {3F3897FA-BEE3-4206-A978-F113DF3E0A12}
 		{F44A89F9-77E6-43F0-AD05-60D3486916BA} = {3F3897FA-BEE3-4206-A978-F113DF3E0A12}
+		{AD146A5E-0DAD-41C1-8F92-D5EAC216C773} = {1915F967-B8C2-4FEA-AD1A-5228B203A7BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5547DF34-5323-45B8-BCF8-80F272982016}

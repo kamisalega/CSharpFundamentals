@@ -1,6 +1,5 @@
 ﻿using Evently.Common.Application.EventBus;
 using Evently.Common.Application.Messaging;
-using Evently.Modules.Events.IntegrationEvents;
 using Evently.Modules.Ticketing.Domain.Events;
 using Evently.Modules.Ticketing.IntegrationEvents;
 
