@@ -6,4 +6,9 @@
     <ProjectReference Include="..\Evently.Modules.Users.Application\Evently.Modules.Users.Application.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalVisibleTo Include="Evently.Modules.Users.IntegrationTests" />
+		<InternalVisibleTo Include="Evently.IntegrationTests" />
+	</ItemGroup>  
+
 </Project>
