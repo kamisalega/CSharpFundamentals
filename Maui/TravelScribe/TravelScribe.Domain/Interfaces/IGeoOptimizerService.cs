@@ -2,7 +2,7 @@
 
 namespace TravelScribe.API.Services;
 
-internal interface IGeoOptimizerService
+public interface IGeoOptimizerService
 {
     GeoScore ScoreDescription(string descriptionContent);
 }
