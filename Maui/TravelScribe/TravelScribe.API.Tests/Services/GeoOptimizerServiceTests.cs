@@ -32,4 +32,33 @@ public sealed class GeoOptimizerServiceTests
         // Assert
         result.HasEntityMentions.ShouldBeTrue();
     }
+
+    [Fact]
+    public void ScoreDescription_WithSpecificClaims_HasSpecificClaimsIsTrue()
+    {
+        // Arrange
+        var sut = new GeoOptimizerService();
+        string content = "Hotel has 12 rooms, built in 1923, renovated in 2022. Located 300m from the beach.";
+
+        // Act
+        GeoScore result = sut.ScoreDescription(content);
+
+        // Assert
+        result.HasSpecificClaims.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ScoreDescription_WithNaturalQuestionAnswers_HasNaturalQuestionAnswersIsTrue()
+    {
+        // Arrange
+        var sut = new GeoOptimizerService();
+        string content = "Hotel Aurora offers rooftop dining with panoramic views. The property features an outdoor swimming " +
+                         "pool and free parking.";
+
+        // Act
+        GeoScore result = sut.ScoreDescription(content);
+
+        // Assert
+        result.HasNaturalQuestionAnswers.ShouldBeTrue();
+    }
 }
