@@ -14,15 +14,22 @@ internal sealed class GeoOptimizerService : IGeoOptimizerService
 
         bool hasEntityMentions = DetectEntityMentions(descriptionContent);
         bool hasSpecificClaims = DetectSpecificClaims(descriptionContent);
+        bool hasNaturalQuestionAnswers = DetectNaturalQuestionAnswers(descriptionContent);
 
         return new GeoScore
         {
             HasEntityMentions = hasEntityMentions,
             HasSpecificClaims = hasSpecificClaims,
-            OverallScore = CalculateOverallScore(hasEntityMentions, hasSpecificClaims)
+            HasNaturalQuestionAnswers = hasNaturalQuestionAnswers,
+            OverallScore = CalculateOverallScore(hasEntityMentions, hasSpecificClaims, hasNaturalQuestionAnswers)
         };
     }
 
+    private static bool DetectNaturalQuestionAnswers(string content)
+    {
+        string pattern = @"\b(offers|features|provides|includes|located|situated)\b";
+        return Regex.IsMatch(content, pattern, RegexOptions.IgnoreCase);
+    }
     private static bool DetectEntityMentions(string content)
     {
         string pattern = @"(?<![.!?]\s)[a-z,]\s+([A-Z][a-zA-Zà-ÿ]+)";
@@ -35,7 +42,7 @@ internal sealed class GeoOptimizerService : IGeoOptimizerService
         return Regex.IsMatch(content, pattern);
     }
 
-    private static double CalculateOverallScore(bool hasEntityMentions, bool hasSpecificClaims)
+    private static double CalculateOverallScore(bool hasEntityMentions, bool hasSpecificClaims, bool hasNaturalQuestionAnswers)
     {
         double score = 0.0;
         if (hasEntityMentions)
@@ -44,6 +51,11 @@ internal sealed class GeoOptimizerService : IGeoOptimizerService
         }
 
         if (hasSpecificClaims)
+        {
+            score += 0.25;
+        }
+
+        if (hasNaturalQuestionAnswers)
         {
             score += 0.25;
         }
