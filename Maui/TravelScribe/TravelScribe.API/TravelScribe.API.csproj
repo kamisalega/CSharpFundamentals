@@ -7,6 +7,6 @@
 		<InternalsVisibleTo Include="TravelScribe.API.Tests" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="OllamaSharp" Version="5.4.25" />
+	  <PackageReference Include="OllamaSharp" Version="4.0.22" />
 	</ItemGroup>
 </Project>
