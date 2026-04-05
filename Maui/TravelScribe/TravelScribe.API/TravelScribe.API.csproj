@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<ItemGroup>
+		<ProjectReference Include="..\TravelScribe.Domain\TravelScribe.Domain.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="TravelScribe.API.Tests" />
+	</ItemGroup>
+</Project>
