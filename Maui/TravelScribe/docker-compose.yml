@@ -1,0 +1,11 @@
+services:
+  travelscribe.api:
+    image: ${DOCKER_REGISTRY-}travelscribeapi
+    container_name: TravelScribe.API
+    build:
+      context: .
+      dockerfile: TravelScribe.API/Dockerfile
+    ports:
+       -  "5191:8080"    
+    environment:
+       - OLLAMA_BASE_URL=http://192.168.1.15:11434
