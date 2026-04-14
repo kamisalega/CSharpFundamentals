@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>1a809354-8a44-4818-bf34-06dfb83d1cf8</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="WolverineFx" Version="5.30.0" />
+    <PackageReference Include="WolverineFx.FluentValidation" Version="5.30.0" />
+    <PackageReference Include="WolverineFx.Redis" Version="5.30.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SalegaTech.Application\SalegaTech.Application.csproj" />
+    <ProjectReference Include="..\SalegaTech.ACL\SalegaTech.ACL.csproj" />
+    <ProjectReference Include="..\SalegaTech.Legacy\SalegaTech.Legacy.csproj" />
+    <ProjectReference Include="..\SalegaTech.Infrastructure\SalegaTech.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
