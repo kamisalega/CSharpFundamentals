@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:leg="http://legacy.salega.tech/">
+  <soap:Body>
+    <leg:Simuler>
+      <leg:request>
+        <leg:CDE_PARTENAIRE>DEALER01</leg:CDE_PARTENAIRE>
+        <leg:CDE_TYPE>1</leg:CDE_TYPE>
+        <leg:MNT_FINANCEMENT>15000.00</leg:MNT_FINANCEMENT>
+        <leg:MNT_VR>5000.00</leg:MNT_VR>
+        <leg:NBR_ECHEANCES>36</leg:NBR_ECHEANCES>
+      </leg:request>
+    </leg:Simuler>
+  </soap:Body>
+</soap:Envelope>

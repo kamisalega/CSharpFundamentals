@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\SalegaTech.Domain\SalegaTech.Domain.csproj" />
+    <ProjectReference Include="..\SalegaTech.Application\SalegaTech.Application.csproj" />
+    <ProjectReference Include="..\SalegaTech.Legacy\SalegaTech.Legacy.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
