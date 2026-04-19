@@ -1,7 +1,9 @@
 import currencyFormatter from "../helpers/currencyFormatter";
+import { useLocation } from "react-router";
 
-const House = ({ house }) => {
-  // const [visible, setVisibility] = useState(false);
+const House = () => {
+  const location = useLocation();
+  const { house } = location.state;
   return (
     <>
       <div className="row">

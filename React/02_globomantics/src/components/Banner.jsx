@@ -1,5 +1,6 @@
 import logo from "../assets/Globologo.png";
 import { logo as logoClass } from "./Banner.module.css";
+import { useNavigate } from "react-router";
 
 const subtitleStyle = {
   fontStyle: "italic",
@@ -7,11 +8,17 @@ const subtitleStyle = {
   color: "coral",
 };
 
-const Banner = ({children}) => {
+const Banner = ({ children }) => {
+  const { navigate } = useNavigate();
   return (
     <header className="row mb-4">
       <div className="col-5">
-        <img src={logo} className={logoClass} alt="logo" />
+        <img
+          src={logo}
+          className={logoClass}
+          alt="logo"
+          onClick={() => navigate("/")}
+        />
       </div>
       <div className="col-7 mt-5" style={subtitleStyle}>
         {children}
@@ -19,6 +26,5 @@ const Banner = ({children}) => {
     </header>
   );
 };
-
 
 export default Banner;
