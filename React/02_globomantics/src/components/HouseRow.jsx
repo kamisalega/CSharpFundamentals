@@ -1,9 +1,10 @@
-import React from "react";
 import currencyFormatter from "../helpers/currencyFormatter";
+import { useNavigate } from "react-router";
 
-const HouseRow = ({ house, selectHouse }) => {
+const HouseRow = ({ house }) => {
+  const navigate = useNavigate();
   return (
-    <tr onClick={() => selectHouse(house)}>
+    <tr onClick={() => navigate(`/house/${house.id}`)}>
       <td>{house.address}</td>
       <td>{house.country}</td>
       {house.price && (
