@@ -20,7 +20,7 @@ const schema = z
   .superRefine((val, ctx) => {
     if (val.AI_PROVIDER === "claude" && val.ANTHROPIC_API_KEY.length === 0) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         path: ["ANTHROPIC_API_KEY"],
         message: "ANTHROPIC_API_KEY is required when AI_PROVIDER=claude",
       });
@@ -28,7 +28,7 @@ const schema = z
 
     if (val.AI_PROVIDER === "openai" && val.OPENAI_API_KEY.length === 0) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         path: ["OPENAI_API_KEY"],
         message: "OPENAI_API_KEY is required when AI_PROVIDER=openai",
       });
