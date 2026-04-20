@@ -4,15 +4,150 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+ provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
 }
 
 model Room {
-  id   String
-  name String
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  capacity    Int
+  basePrice   Int // grosze/centy
+  createdAt   DateTime @default(now())
+
+  ratePlans RatePlan[]
+  nights    RoomNight[]
+}
+
+model RatePlan {
+  id        String   @id @default(cuid())
+  roomId    String
+  date      DateTime
+  price     Int
+  available Boolean  @default(true)
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, date])
+  @@index([date])
+}
+
+model RoomNight {
+  id            String   @id @default(cuid())
+  roomId        String
+  date          DateTime
+  reservationId String?
+
+  room        Room         @relation(fields: [roomId], references: [id])
+  reservation Reservation? @relation(fields: [reservationId], references: [id])
+
+  @@unique([roomId, date])
+  @@index([reservationId])
+}
+
+model Conversation {
+  id             String    @id @default(cuid())
+  phone          String    @unique
+  state          String    @default("GREETING")
+  botPaused      Boolean   @default(false)
+  guestName      String?
+  guestEmail     String?
+  selectedRoomId String?
+  checkIn        DateTime?
+  checkOut       DateTime?
+  adults         Int?
+  children       Int?
+  unknownCount   Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  messages Message[]
+  outbox   OutboxMessage[]
+
+  @@index([phone])
+}
+
+model Message {
+  id                String   @id @default(cuid())
+  conversationId    String
+  whatsappMessageId String?  @unique
+  direction         String // INBOUND | OUTBOUND
+  body              String
+  createdAt         DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+model Reservation {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  conversationId String
+  roomId         String
+  checkIn        DateTime
+  checkOut       DateTime
+  adults         Int
+  children       Int
+  guestName      String
+  guestEmail     String
+  guestPhone     String
+  total          Int
+  status         String   @default("PENDING") // PENDING|PAYMENT_SENT|CONFIRMED|CANCELLED|EXPIRED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  paymentLink PaymentLink?
+  nights      RoomNight[]
+
+  @@index([conversationId])
+  @@index([guestPhone])
+}
+
+model PaymentLink {
+  id              String   @id @default(cuid())
+  reservationId   String   @unique
+  stripeSessionId String   @unique
+  url             String
+  expiresAt       DateTime
+  status          String   @default("ACTIVE") // ACTIVE|PAID|EXPIRED|CANCELLED
+  createdAt       DateTime @default(now())
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model ProcessedWebhookEvent {
+  id          String   @id @default(cuid())
+  source      String // META | STRIPE
+  externalId  String
+  processedAt DateTime @default(now())
+
+  @@unique([source, externalId])
+}
+
+model OutboxMessage {
+  id             String    @id @default(cuid())
+  conversationId String
+  payload        String // JSON
+  attempts       Int       @default(0)
+  nextRetryAt    DateTime?
+  status         String    @default("PENDING") // PENDING|SENT|FAILED
+  lastError      String?
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+
+  @@index([status, nextRetryAt])
 }
