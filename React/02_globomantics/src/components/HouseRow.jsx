@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 const HouseRow = ({ house }) => {
   const navigate = useNavigate();
   return (
-    <tr onClick={() => navigate(`/house/${house.id}`)}>
+    <tr onClick={() => navigate("/house", { state: { house } })}>
       <td>{house.address}</td>
       <td>{house.country}</td>
       {house.price && (
