@@ -32,7 +32,7 @@
   ];
 
   async function main() {
-    console.log("🌱 Seeding database...");
+    console.log("Seeding database...");
 
     const passwordHash = await bcrypt.hash("admin123", 12);
     await prisma.adminUser.upsert({
@@ -69,7 +69,7 @@
       }
     }
 
-    console.log("✅ Seed done.");
+    console.log("Seed done.");
   }
 
   main()
