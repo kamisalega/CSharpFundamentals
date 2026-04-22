@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:db:setup": "tsx tests/helpers/setupTestDb.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
