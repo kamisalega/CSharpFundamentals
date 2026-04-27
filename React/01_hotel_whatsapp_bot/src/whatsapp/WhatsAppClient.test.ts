@@ -17,7 +17,7 @@ function makeClient(overrides: Partial<WhatsAppClientConfig> = {}) {
     baseUrl: BASE_URL,
     phoneNumberId: PHONE_NUMBER_ID,
     accessToken:
-      "EAAOL9OaJosEBRYzFTX2ZBPhFSfZCOhl25E0KpT4qnErWgzW1ZAKDE5LLlif1gVfy0QbkutNvW6rG01Cq9gZBXfybA8wg3VZC7vbfZBP57n6FaJB4PHAizQX9TEBZC1akCeph05rdRxpjDAzz7ytUQRpCFkuJ4bZBy5ZCpbpJH2TkPEd6C7pjno07APCpZBqoo7uGvaz2yHKhv3J7FSHuIsd8BWEvBsto5MjfLh5Tf9wiI8XDyVdMQUWtEodEXIsVoxUBZCYL8xY76OlkvuBi9DoBb4Lkzf0SQZDZD",
+      "accessToken_Token_Test",
     timeoutMs: 50,
     retryDelaysMs: [1, 2, 3],
     ...overrides,
@@ -40,7 +40,7 @@ describe("WhatsAppClient.sendText", () => {
 
     expect(capturedRequest).toBeDefined();
     expect(capturedRequest!.headers.get("authorization")).toBe(
-      "Bearer EAAOL9OaJosEBRYzFTX2ZBPhFSfZCOhl25E0KpT4qnErWgzW1ZAKDE5LLlif1gVfy0QbkutNvW6rG01Cq9gZBXfybA8wg3VZC7vbfZBP57n6FaJB4PHAizQX9TEBZC1akCeph05rdRxpjDAzz7ytUQRpCFkuJ4bZBy5ZCpbpJH2TkPEd6C7pjno07APCpZBqoo7uGvaz2yHKhv3J7FSHuIsd8BWEvBsto5MjfLh5Tf9wiI8XDyVdMQUWtEodEXIsVoxUBZCYL8xY76OlkvuBi9DoBb4Lkzf0SQZDZD",
+      "Bearer accessToken_Token_Test",
     );
 
     expect(capturedRequest!.headers.get("content-type")).toContain(
@@ -50,7 +50,7 @@ describe("WhatsAppClient.sendText", () => {
     const body = await capturedRequest!.json();
     expect(body).toEqual({
       messaging_product: "whatsapp",
-      to: "+33683771210",
+      to: "+33683**71210",
       type: "text",
       text: { body: "Bonjour" },
     });
