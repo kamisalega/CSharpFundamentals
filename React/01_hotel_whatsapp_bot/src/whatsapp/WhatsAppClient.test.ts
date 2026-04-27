@@ -8,7 +8,8 @@ import {
 } from "./WhatsAppClient";
 
 const BASE_URL = "https://graph.facebook.com/v25.0/";
-const PHONE_NUMBER_ID = "1089296297598882";
+const PHONE_NUMBER_ID = "212121212121"
+const PHONE_NUMBER = "+33611111111"
 
 const ENDPOINT = `${BASE_URL}/${PHONE_NUMBER_ID}/messages`;
 
@@ -36,7 +37,7 @@ describe("WhatsAppClient.sendText", () => {
 
     const client = makeClient();
 
-    await client.sendText({ to: "+33683771210", text: "Bonjour" });
+    await client.sendText({ to: PHONE_NUMBER, text: "Bonjour" });
 
     expect(capturedRequest).toBeDefined();
     expect(capturedRequest!.headers.get("authorization")).toBe(
@@ -50,7 +51,7 @@ describe("WhatsAppClient.sendText", () => {
     const body = await capturedRequest!.json();
     expect(body).toEqual({
       messaging_product: "whatsapp",
-      to: "+33683**71210",
+      to: PHONE_NUMBER,
       type: "text",
       text: { body: "Bonjour" },
     });
@@ -67,7 +68,7 @@ describe("WhatsAppClient.sendText", () => {
     const client = makeClient();
 
     const err = await client
-      .sendText({ to: "+33683771210", text: "Hi" })
+      .sendText({ to: PHONE_NUMBER, text: "Hi" })
       .catch((e: unknown) => e);
 
     expect(err).toBeInstanceOf(WhatsAppSendError);
@@ -91,7 +92,7 @@ describe("WhatsAppClient.sendText", () => {
     const client = makeClient();
 
     const result = await client.sendText({
-      to: "+33683771210",
+      to: PHONE_NUMBER,
       text: "Persisted",
     });
 
@@ -110,7 +111,7 @@ describe("WhatsAppClient.sendText", () => {
     const client = makeClient(); // retryDelaysMs: [1, 2, 3] -> 4 proby
 
     const err = await client
-      .sendText({ to: "+33683771210", text: "Hi" })
+      .sendText({ to: PHONE_NUMBER, text: "Hi" })
       .catch((e: unknown) => e);
 
     expect(err).toBeInstanceOf(WhatsAppSendError);
@@ -131,7 +132,7 @@ describe("WhatsAppClient.sendText", () => {
     const client = makeClient({ timeoutMs: 20 });
 
     const err = await client
-      .sendText({ to: "+33683771210", text: "Hi" })
+      .sendText({ to: PHONE_NUMBER, text: "Hi" })
       .catch((e: unknown) => e);
 
     expect(err).toBeInstanceOf(WhatsAppSendError);
