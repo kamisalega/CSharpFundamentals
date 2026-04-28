@@ -1,5 +1,6 @@
 import { AiProvider, ConversationMessage, ToolResult } from "@/ai/AiProvider";
 import { BookingService } from "@/booking/BookingService";
+import { StripeService } from "@/payments/StripeService";
 import { WhatsAppClient } from "@/whatsapp/WhatsAppClient";
 import { PrismaClient } from "@prisma/client";
 import {
@@ -28,6 +29,7 @@ export type OrchestratorDeps = Readonly<{
   ai: AiProvider;
   whatsapp: WhatsAppClient;
   booking: BookingService;
+  stripe: StripeService;
   logger: OrchestratorLogger;
   now: () => Date;
 }>;
@@ -294,6 +296,7 @@ export class Orchestrator {
           guest: { name: merged.guestName, email: merged.guestEmail, phone },
           now: this.deps.now(),
         });
+
         toolResults.push({
           name: "hold_reservation",
           result: {
@@ -301,6 +304,23 @@ export class Orchestrator {
             reservationId: reservation.id,
           },
         });
+
+        try {
+          const checkout = await this.deps.stripe.createCheckoutSession({
+            reservation,
+            now: this.deps.now(),
+          });
+          toolResults.push({
+            name: "stripe_checkout_url",
+            result: { url: checkout.url, sessionId: checkout.sessionId },
+          });
+        } catch (stripeErr) {
+          this.deps.logger.error({
+            event: "orchestrator.stripe_failed",
+            correlationId,
+            err: stripeErr,
+          });
+        }
       } catch {
         this.deps.logger.error({
           event: "orchestrator.hold_failed",
