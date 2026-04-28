@@ -1,7 +1,6 @@
 import {
   AiError,
   AiProvider,
-  ClassifyIntentArgs,
   GenerateReplyArgs,
   GenerateReplyOutput,
 } from "@/ai/AiProvider";
@@ -12,10 +11,20 @@ import {
   WhatsAppClient,
 } from "@/whatsapp/WhatsAppClient";
 import { err, ok, Result } from "neverthrow";
-import { Orchestrator, OrchestratorDeps } from "./Orchestrator";
-import { resetTestDb, seedTestRoom, testPrisma } from "../../tests/helpers/testDb";
+import { Orchestrator, OrchestratorDeps } from "./orchestrator";
+import {
+  resetTestDb,
+  seedTestRoom,
+  testPrisma,
+} from "../../tests/helpers/testDb";
 import { BookingService } from "@/booking/BookingService";
 import { beforeEach, describe, expect, it } from "vitest";
+import {
+  CheckoutSession,
+  CreateCheckoutSessionInput,
+  StripeService,
+} from "@/payments/StripeService";
+import { PrismaClient } from "@prisma/client";
 
 class StubAiProvider implements AiProvider {
   private intentQueue: IntentResponse[] = [];
@@ -32,9 +41,7 @@ class StubAiProvider implements AiProvider {
     this.replyQueue.push(text);
   }
 
-  async classifyIntent(
-    _args: ClassifyIntentArgs,
-  ): Promise<Result<IntentResponse, AiError>> {
+  async classifyIntent(): Promise<Result<IntentResponse, AiError>> {
     this.classifyIntentCallCount++;
     const intent = this.intentQueue.shift();
     if (!intent) {
@@ -68,7 +75,32 @@ class StubWhatsAppClient implements WhatsAppClient {
   }
 }
 
-// --- pomocnicy ---------------------------------------------------------------
+class StubStripeService implements StripeService {
+  readonly sessions: Array<{ reservationId: string }> = [];
+  shouldFail = false;
+
+  constructor(private readonly prisma: PrismaClient) {}
+
+  async createCheckoutSession(
+    input: CreateCheckoutSessionInput,
+  ): Promise<CheckoutSession> {
+    if (this.shouldFail) {
+      throw new Error("Stripe API unavailable");
+    }
+    this.sessions.push({ reservationId: input.reservation.id });
+    const sessionId = `cs_stub_${this.sessions.length}`;
+    const url = `https://checkout.stripe.com/c/pay/${sessionId}`;
+    const expiresAt = new Date(input.now.getTime() + 30 * 60 * 1000);
+
+    await this.prisma.paymentLink.upsert({
+      where: { reservationId: input.reservation.id },
+      create: { reservationId: input.reservation.id, stripeSessionId: sessionId, url, expiresAt, status: "ACTIVE" },
+      update: { stripeSessionId: sessionId, url, expiresAt, status: "ACTIVE" },
+    });
+
+    return { url, sessionId };
+  }
+}
 
 const nullLogger = { info: () => {}, warn: () => {}, error: () => {} };
 const FIXED_NOW = new Date("2026-04-28T10:00:00Z");
@@ -77,12 +109,14 @@ const FUTURE_CHECK_IN = new Date("2026-08-12T00:00:00Z");
 function buildDeps(
   ai: StubAiProvider,
   whatsapp: StubWhatsAppClient,
+  stripe: StubStripeService = new StubStripeService(testPrisma),
 ): OrchestratorDeps {
   return {
     prisma: testPrisma,
     ai,
     whatsapp,
     booking: new BookingService(testPrisma),
+    stripe,
     logger: nullLogger,
     now: () => FIXED_NOW,
   };
@@ -92,7 +126,119 @@ beforeEach(async () => {
   await resetTestDb();
 });
 
+describe("Orchestrator.handle — Stripe checkout po hold (D1)", () => {
+  it("po PAYMENT_SENT toolResults zawiera stripe_checkout_url z URL i sessionId", async () => {
+    const room = await seedTestRoom({ from: FUTURE_CHECK_IN, days: 10 });
+    const ai = new StubAiProvider();
+    const whatsapp = new StubWhatsAppClient();
+    const stripe = new StubStripeService(testPrisma);
+    const orch = new Orchestrator(buildDeps(ai, whatsapp, stripe));
+    const phone = "+33699000001";
 
+    await testPrisma.conversation.create({
+      data: {
+        phone,
+        state: "SUMMARY",
+        checkIn: new Date("2026-08-12T00:00:00Z"),
+        checkOut: new Date("2026-08-15T00:00:00Z"),
+        adults: 2,
+        children: 0,
+        selectedRoomId: room.id,
+        guestName: "Jean Dupont",
+        guestEmail: "jean@example.com",
+      },
+    });
+
+    ai.enqueueIntent({
+      intent: "confirm_booking",
+      confidence: 0.95,
+      slots: {},
+    });
+    ai.enqueueReply("Voici votre lien de paiement.");
+
+    await orch.handle({
+      phone,
+      text: "jean@example.com",
+      whatsappMessageId: "wamid.d1",
+      correlationId: "corr-d1",
+    });
+
+    expect(stripe.sessions).toHaveLength(1);
+
+    const stripeResult = ai.lastGenerateReplyArgs?.toolResults.find(
+      (r) => r.name === "stripe_checkout_url",
+    );
+    expect(stripeResult).toBeDefined();
+    expect(stripeResult!.result).toMatchObject({
+      url: expect.stringContaining("checkout.stripe.com"),
+      sessionId: expect.stringContaining("cs_stub"),
+    });
+
+    const conv = await testPrisma.conversation.findUnique({ where: { phone } });
+    expect(conv!.state).toBe("PAYMENT_SENT");
+
+    const paymentLink = await testPrisma.paymentLink.findFirst({
+      where: { reservation: { conversationId: conv!.id } },
+    });
+    expect(paymentLink).not.toBeNull();
+  });
+});
+
+describe("Orchestrator.handle — Stripe down, graceful degradation (D3)", () => {
+  it("gdy Stripe rzuca błąd orchestrator nie pada, wysyła odpowiedź AI bez URL", async () => {
+    // Arrange
+    const room = await seedTestRoom({ from: FUTURE_CHECK_IN, days: 10 });
+    const ai = new StubAiProvider();
+    const whatsapp = new StubWhatsAppClient();
+    const stripe = new StubStripeService(testPrisma);
+    stripe.shouldFail = true;
+    const orch = new Orchestrator(buildDeps(ai, whatsapp, stripe));
+    const phone = "+33699000002";
+
+    await testPrisma.conversation.create({
+      data: {
+        phone,
+        state: "SUMMARY",
+        checkIn: new Date("2026-08-12T00:00:00Z"),
+        checkOut: new Date("2026-08-15T00:00:00Z"),
+        adults: 2,
+        children: 0,
+        selectedRoomId: room.id,
+        guestName: "Marie Curie",
+        guestEmail: "marie@example.com",
+      },
+    });
+
+    ai.enqueueIntent({
+      intent: "confirm_booking",
+      confidence: 0.95,
+      slots: {},
+    });
+    ai.enqueueReply("Désolé, problème de paiement.");
+
+    await expect(
+      orch.handle({
+        phone,
+        text: "marie@example.com",
+        whatsappMessageId: "wamid.d3",
+        correlationId: "corr-d3",
+      }),
+    ).resolves.toBeUndefined();
+
+    expect(whatsapp.sent).toHaveLength(1);
+
+    const stripeResult = ai.lastGenerateReplyArgs?.toolResults.find(
+      (r) => r.name === "stripe_checkout_url",
+    );
+    expect(stripeResult).toBeUndefined();
+
+    const conv = await testPrisma.conversation.findUnique({ where: { phone } });
+    const reservation = await testPrisma.reservation.findFirst({
+      where: { conversationId: conv!.id },
+    });
+    expect(reservation).not.toBeNull();
+  });
+});
 
 describe("Orchestrator.handle - New Conversation", () => {
   it("creates a Conversation, saves INBOUND and OUTBOUND for a new number", async () => {
@@ -339,6 +485,6 @@ describe("Orchestrator.handle — happy path do PAYMENT_SENT", () => {
     expect(reservations).toHaveLength(1);
     expect(reservations[0]!.guestName).toBe("Jean Dupont");
     expect(reservations[0]!.code).toMatch(/^RES-/);
-    expect(conv!.messages).toHaveLength(10); 
+    expect(conv!.messages).toHaveLength(10);
   });
 });
