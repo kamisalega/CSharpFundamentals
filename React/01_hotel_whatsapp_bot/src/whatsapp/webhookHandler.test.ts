@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { createWebhookHandlers, type WebhookDeps } from "./webhookHandler";
-import { RateLimitDecision } from "@/security/rateLimit";
+import {
+  createTokenBucketLimiter,
+  RateLimitDecision,
+} from "@/security/rateLimit";
 import { aMetaWebhook } from "../../tests/fixtures/meta-webhook";
 import { createHmac } from "crypto";
 
@@ -225,6 +228,81 @@ describe("createWebhookHandlers — POST (rate limit + idempotency + happy path)
   });
 });
 
+describe("createWebhookHandlers — POST (burst z prawdziwym limiterem)", () => {
+  it("pierwsze 3 wiadomości od tego samego telefonu przechodzą, 4. jest blokowana", async () => {
+    // Arrange
+    const clock = makeClock();
+    const {
+      deps,
+      process: processFn,
+      logger,
+    } = buildDeps({
+      rateLimiter: createTokenBucketLimiter({
+        capacity: 3,
+        refillTokens: 3,
+        refillIntervalMs: 60_000,
+        now: clock.fn,
+      }),
+      idempotency: { recordIfNew: vi.fn().mockResolvedValue({ isNew: true }) },
+    });
+    const { POST } = createWebhookHandlers(deps);
+
+    // Act
+    for (let i = 0; i < 4; i++) {
+      const rawBody = JSON.stringify(
+        aMetaWebhook()
+          .withPhone("+33611111111")
+          .withMessageId(`wamid-burst-${i}`)
+          .withText("hello")
+          .build(),
+      );
+      await POST(buildPostRequest({ rawBody, signature: sign(rawBody) }));
+    }
+
+    // Assert
+    expect(processFn).toHaveBeenCalledTimes(3);
+    expect(logger.warn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: "whatsapp.webhook.rate_limited",
+        phone: "+33611111111",
+      }),
+    );
+  });
+
+  it("niezależne buckety — 3 wiadomości z A i 3 z B, wszystkie 6 przechodzą", async () => {
+    // Arrange
+    const clock = makeClock();
+    const { deps, process: processFn } = buildDeps({
+      rateLimiter: createTokenBucketLimiter({
+        capacity: 3,
+        refillTokens: 3,
+        refillIntervalMs: 60_000,
+        now: clock.fn,
+      }),
+      idempotency: { recordIfNew: vi.fn().mockResolvedValue({ isNew: true }) },
+    });
+    const { POST } = createWebhookHandlers(deps);
+
+    // Act
+    let idx = 0;
+    for (const phone of ["+33611111111", "+33622222222"]) {
+      for (let i = 0; i < 3; i++) {
+        const rawBody = JSON.stringify(
+          aMetaWebhook()
+            .withPhone(phone)
+            .withMessageId(`wamid-iso-${idx++}`)
+            .withText("hello")
+            .build(),
+        );
+        await POST(buildPostRequest({ rawBody, signature: sign(rawBody) }));
+      }
+    }
+
+    // Assert — wszystkie 6 przeszły, brak rate_limited
+    expect(processFn).toHaveBeenCalledTimes(6);
+  });
+});
+
 function sign(rawBody: string): string {
   return (
     "sha256=" + createHmac("sha256", APP_SECRET).update(rawBody).digest("hex")
@@ -244,6 +322,16 @@ function buildPostRequest(args: {
     headers,
     body: args.rawBody,
   });
+}
+
+function makeClock() {
+  let t = 0;
+  return {
+    fn: () => t,
+    advance: (ms: number) => {
+      t += ms;
+    },
+  };
 }
 
 function buildDeps(overrides: Partial<WebhookDeps> = {}): {
