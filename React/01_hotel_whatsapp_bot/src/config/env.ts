@@ -15,6 +15,7 @@ const schema = z
     META_WHATSAPP_VERIFY_TOKEN: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
+    AUTH_SECRET: z.string().min(32),
     APP_BASE_URL: z.url(),
   })
   .superRefine((val, ctx) => {
