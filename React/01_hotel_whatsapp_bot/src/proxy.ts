@@ -1,7 +1,8 @@
+import { randomBytes, randomUUID } from "crypto";
 import { Session } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { buildCsp } from "./security/csp";
 import { auth } from "./auth";
-import { randomUUID } from "crypto";
 
 export async function handleProxy(
   request: NextRequest,
@@ -20,11 +21,21 @@ export async function handleProxy(
   }
 
   const correlationId = request.headers.get("x-correlation-id") ?? randomUUID();
+  const nonce = randomBytes(16).toString("base64url");
+
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-correlation-id", correlationId);
+  requestHeaders.set("x-csp-nonce", nonce);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set("x-correlation-id", correlationId);
+
+  const cspHeaderName =
+    process.env.NODE_ENV === "production"
+      ? "Content-Security-Policy"
+      : "Content-Security-Policy-Report-Only";
+  response.headers.set(cspHeaderName, buildCsp(nonce));
+
   return response;
 }
 

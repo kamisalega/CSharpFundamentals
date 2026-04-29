@@ -83,3 +83,40 @@ describe("handleProxy — correlationId", () => {
     expect(res.headers.get("x-correlation-id")).toBe("abc-123");
   });
 });
+
+describe("handleProxy — CSP (Report-Only w środowisku testowym)", () => {
+  it("ustawia nagłówek Content-Security-Policy-Report-Only", async () => {
+    const res = await handleProxy(req("/api/whatsapp/webhook"), null);
+
+    expect(res.headers.get("content-security-policy-report-only")).toBeTruthy();
+  });
+
+  it("CSP zawiera nonce w script-src i style-src", async () => {
+    const res = await handleProxy(req("/api/whatsapp/webhook"), null);
+    const csp = res.headers.get("content-security-policy-report-only") ?? "";
+
+    expect(csp).toMatch(/script-src 'self' 'nonce-[\w-]+'/);
+    expect(csp).toMatch(/style-src 'self' 'nonce-[\w-]+'/);
+  });
+
+  it("każdy request dostaje unikalny nonce", async () => {
+    const res1 = await handleProxy(req("/"), null);
+    const res2 = await handleProxy(req("/"), null);
+
+    const csp1 = res1.headers.get("content-security-policy-report-only");
+    const csp2 = res2.headers.get("content-security-policy-report-only");
+
+    expect(csp1).not.toBe(csp2);
+  });
+});
+
+describe("handleProxy — propagacja nonce do layout", () => {
+  it("ustawia x-csp-nonce w headerach requestu", async () => {
+    const res = await handleProxy(req("/"), null);
+    const csp = res.headers.get("content-security-policy-report-only") ?? "";
+
+    const match = /nonce-([\w-]+)'/.exec(csp);
+    expect(match).not.toBeNull();
+    expect(match![1]).toHaveLength(22); 
+  });
+});

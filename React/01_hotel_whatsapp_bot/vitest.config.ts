@@ -8,6 +8,12 @@ export default defineConfig({
     environment: "node",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
+    maxWorkers: 1,
+    server: {
+      deps: {
+        inline: ["next-auth"],
+      },
+    },
     include: ["src/**/*.test.{ts,tsx}", "tests/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
@@ -19,6 +25,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "next/server": fileURLToPath(
+        new URL("./node_modules/next/server.js", import.meta.url),
+      ),
     },
   },
 });

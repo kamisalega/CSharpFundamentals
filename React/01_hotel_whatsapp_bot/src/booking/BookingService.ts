@@ -9,6 +9,7 @@ function generateReservationCode(): string {
   const bytes = randomBytes(5);
   let code = "";
   for (let i = 0; i < 5; i++) {
+     // eslint-disable-next-line security/detect-object-injection
     const byte = bytes[i] ?? 0;
     code += RESERVATION_CODE_CHARS[byte % RESERVATION_CODE_CHARS.length];
   }
@@ -169,7 +170,6 @@ export class BookingService {
       });
 
       return reservation;
-    
     });
   }
 }

@@ -1,3 +1,5 @@
+"use server";
+
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
@@ -15,7 +17,7 @@ export async function loginAction(
     if (error instanceof AuthError) {
       return "Incorrect email or password";
     }
-    throw error; 
+    throw error;
   }
   return null;
 }
