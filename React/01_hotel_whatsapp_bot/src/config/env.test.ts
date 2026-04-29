@@ -15,6 +15,7 @@ describe("parsEnv", () => {
       META_WHATSAPP_VERIFY_TOKEN: "verify",
       STRIPE_SECRET_KEY: "sk_test_x",
       STRIPE_WEBHOOK_SECRET: "whsec_x",
+      AUTH_SECRET: "test-secret-minimum-32-characters-xx",
       APP_BASE_URL: "http://localhost:3000",
     };
 
@@ -37,6 +38,7 @@ describe("parsEnv", () => {
       META_WHATSAPP_VERIFY_TOKEN: "verify",
       STRIPE_SECRET_KEY: "sk_test_x",
       STRIPE_WEBHOOK_SECRET: "whsec_x",
+      AUTH_SECRET: "test-secret-minimum-32-characters-xx",
       APP_BASE_URL: "http://localhost:3000",
     };
 
@@ -57,6 +59,7 @@ describe("parsEnv", () => {
         META_WHATSAPP_VERIFY_TOKEN: "1",
         STRIPE_SECRET_KEY: "1",
         STRIPE_WEBHOOK_SECRET: "1",
+        AUTH_SECRET: "test-secret-minimum-32-characters-xx",
         APP_BASE_URL: "http://localhost:3000",
       }),
     ).toThrow(/AI_PROVIDER/);
@@ -76,10 +79,9 @@ describe("parsEnv", () => {
         META_WHATSAPP_VERIFY_TOKEN: "1",
         STRIPE_SECRET_KEY: "1",
         STRIPE_WEBHOOK_SECRET: "1",
+        AUTH_SECRET: "test-secret-minimum-32-characters-xx",
         APP_BASE_URL: "not-url",
       }),
     ).toThrow(/APP_BASE_URL/);
   });
 });
-
-
