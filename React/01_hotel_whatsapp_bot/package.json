@@ -11,7 +11,11 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit",
-    "test:db:setup": "tsx tests/helpers/setupTestDb.ts"
+    "test:db:setup": "tsx tests/helpers/setupTestDb.ts",
+    "audit": "npm audit --audit-level=high"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.1",
@@ -40,6 +44,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.4",
     "bcryptjs": "^3.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
