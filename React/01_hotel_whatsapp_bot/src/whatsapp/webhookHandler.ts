@@ -5,6 +5,7 @@ import {
   metaWebhookSchema,
 } from "./webhookSchema";
 import { verifyMetaSignature } from "./signature";
+import { maskPhone } from "@/security/maskPII";
 
 export type IdempotencyStore = Readonly<{
   recordIfNew(externalId: string): Promise<{ isNew: boolean }>;
@@ -109,7 +110,7 @@ export function createWebhookHandlers(deps: WebhookDeps): WebhookHandlers {
     if (!decision.allowed) {
       deps.logger.warn({
         event: "whatsapp.webhook.rate_limited",
-        phone: message.from,
+        phone: maskPhone(message.from),
         correlationId,
       });
       return new Response(null, { status: 200 });
