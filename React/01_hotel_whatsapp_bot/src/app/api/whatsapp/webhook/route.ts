@@ -2,10 +2,11 @@ import { getEnv } from "@/config/env";
 import { prisma } from "@/db/prisma";
 import { getCorrelationId } from "@/logging/correlationId";
 import { logger } from "@/logging/logger";
+import { maskPhone } from "@/security/maskPII";
 import { createTokenBucketLimiter } from "@/security/rateLimit";
 import { createWebhookHandlers } from "@/whatsapp/webhookHandler";
 import { Prisma } from "@prisma/client";
-import { after } from "node:test";
+import { after } from "next/server";
 
 const env = getEnv();
 
@@ -40,7 +41,7 @@ const handlers = createWebhookHandlers({
   process: async (message, ctx) => {
     logger.info({
       event: "whatsapp.message.received",
-      from: message.from,
+      from: maskPhone(message.from),
       messageId: message.messageId,
       length: message.text.length,
       correlationId: ctx.correlationId,

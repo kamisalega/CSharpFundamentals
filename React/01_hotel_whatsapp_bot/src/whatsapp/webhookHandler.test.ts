@@ -6,6 +6,7 @@ import {
 } from "@/security/rateLimit";
 import { aMetaWebhook } from "../../tests/fixtures/meta-webhook";
 import { createHmac } from "crypto";
+import { maskPhone } from "@/security/maskPII";
 
 const APP_SECRET = "test-app-secret";
 const VERIFY_TOKEN = "test-verify-token";
@@ -153,7 +154,7 @@ describe("createWebhookHandlers — POST (rate limit + idempotency + happy path)
     expect(logger.warn).toHaveBeenCalledWith(
       expect.objectContaining({
         event: "whatsapp.webhook.rate_limited",
-        phone: "+33611111111",
+        phone: maskPhone("+33611111111"),
       }),
     );
   });
@@ -264,7 +265,7 @@ describe("createWebhookHandlers — POST (burst z prawdziwym limiterem)", () => 
     expect(logger.warn).toHaveBeenCalledWith(
       expect.objectContaining({
         event: "whatsapp.webhook.rate_limited",
-        phone: "+33611111111",
+        phone: maskPhone("+33611111111"),
       }),
     );
   });
