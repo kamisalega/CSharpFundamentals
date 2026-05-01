@@ -1,4 +1,3 @@
-import { RateLimiter } from "@/security/rateLimit";
 import {
   extractFirstTextMessage,
   InboundTextMessage,
@@ -6,6 +5,7 @@ import {
 } from "./webhookSchema";
 import { verifyMetaSignature } from "./signature";
 import { maskPhone } from "@/security/maskPII";
+import { RateLimiter } from "@/security/rateLimit/types";
 
 export type IdempotencyStore = Readonly<{
   recordIfNew(externalId: string): Promise<{ isNew: boolean }>;

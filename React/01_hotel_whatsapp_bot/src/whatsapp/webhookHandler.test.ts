@@ -4,7 +4,7 @@ import { aMetaWebhook } from "../../tests/fixtures/meta-webhook";
 import { createHmac } from "crypto";
 import { maskPhone } from "@/security/maskPII";
 import { RateLimitDecision } from "@/security/rateLimit/types";
-import { createRateLimiter, createTokenBucketLimiter  } from "@/security/rateLimit";
+import { createTokenBucketLimiter } from "@/security/rateLimit";
 
 const APP_SECRET = "test-app-secret";
 const VERIFY_TOKEN = "test-verify-token";
