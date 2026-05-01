@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createTokenBucketLimiter } from "./rateLimit";
+import { createInMemoryTokenBucket } from "./inMemoryTokenBucket";
+
 
 function fakeNow() {
   let t = 0;
@@ -14,7 +15,7 @@ function fakeNow() {
 describe("createTokenBucketLimiter", () => {
   it("passes the first N requests until capacity is exhausted", async () => {
     const clock = fakeNow();
-    const limiter = createTokenBucketLimiter({
+    const limiter = createInMemoryTokenBucket({
       capacity: 3,
       refillTokens: 3,
       refillIntervalMs: 66_000,
@@ -33,7 +34,7 @@ describe("createTokenBucketLimiter", () => {
 
   it("blocks the request after the capacity is exhausted", async () => {
     const clock = fakeNow();
-    const limiter = createTokenBucketLimiter({
+    const limiter = createInMemoryTokenBucket({
       capacity: 2,
       refillTokens: 2,
       refillIntervalMs: 60_000,
@@ -50,7 +51,7 @@ describe("createTokenBucketLimiter", () => {
 
   it("replenishes tokens gradually (does not wait for the window to be full)", async () => {
     const clock = fakeNow();
-    const limiter = createTokenBucketLimiter({
+    const limiter = createInMemoryTokenBucket({
       capacity: 10,
       refillTokens: 10,
       refillIntervalMs: 60_000,
@@ -67,7 +68,7 @@ describe("createTokenBucketLimiter", () => {
 
   it("holds independent buckets for different keys", async () => {
     const clock = fakeNow();
-    const limiter = createTokenBucketLimiter({
+    const limiter = createInMemoryTokenBucket({
       capacity: 1,
       refillTokens: 1,
       refillIntervalMs: 60_000,
@@ -84,7 +85,7 @@ describe("createTokenBucketLimiter", () => {
 
   it("does not exceed capacity even after a long break", async () => {
     const clock = fakeNow();
-    const limiter = createTokenBucketLimiter({
+    const limiter = createInMemoryTokenBucket({
       capacity: 5,
       refillTokens: 5,
       refillIntervalMs: 60_000,

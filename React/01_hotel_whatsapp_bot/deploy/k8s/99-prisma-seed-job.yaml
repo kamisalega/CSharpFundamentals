@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prisma-seed
+  namespace: hotel-bot
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: seed
+          image: docker.io/<user>/hotel-bot:latest
+          command: ["npx", "prisma", "db", "seed"]
+          envFrom:
+            - secretRef:
+                name: hotel-bot-secret
+            - configMapRef:
+                name: hotel-bot-config
