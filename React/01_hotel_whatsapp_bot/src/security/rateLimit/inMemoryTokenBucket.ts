@@ -1,22 +1,12 @@
-export type RateLimitDecision = Readonly<{
-  allowed: boolean;
-  remaining: number;
-}>;
-
-export type RateLimiter = Readonly<{
-  take(key: string): Promise<RateLimitDecision>;
-}>;
-
-export type TokenBucketOptions = Readonly<{
-  capacity: number;
-  refillTokens: number;
-  refillIntervalMs: number;
-  now?: () => number;
-}>;
+import type {
+  RateLimiter,
+  RateLimitDecision,
+  TokenBucketOptions,
+} from "./types";
 
 type Bucket = { tokens: number; lastRefillAt: number };
 
-export function createTokenBucketLimiter(
+export function createInMemoryTokenBucket(
   opts: TokenBucketOptions,
 ): RateLimiter {
   const now = opts.now ?? (() => Date.now());
@@ -31,7 +21,7 @@ export function createTokenBucketLimiter(
   }
 
   return {
-    async take(key) {
+    async take(key: string): Promise<RateLimitDecision> {
       const t = now();
       let bucket = buckets.get(key);
       if (!bucket) {

@@ -3,17 +3,18 @@ import { prisma } from "@/db/prisma";
 import { getCorrelationId } from "@/logging/correlationId";
 import { logger } from "@/logging/logger";
 import { maskPhone } from "@/security/maskPII";
-import { createTokenBucketLimiter } from "@/security/rateLimit";
+import { createRateLimiter } from "@/security/rateLimit";
 import { createWebhookHandlers } from "@/whatsapp/webhookHandler";
 import { Prisma } from "@prisma/client";
 import { after } from "next/server";
 
 const env = getEnv();
 
-const rateLimiter = createTokenBucketLimiter({
+const rateLimiter = createRateLimiter({
   capacity: 10,
   refillTokens: 10,
   refillIntervalMs: 60_000,
+  namespace: "wa-webhook",
 });
 
 const handlers = createWebhookHandlers({

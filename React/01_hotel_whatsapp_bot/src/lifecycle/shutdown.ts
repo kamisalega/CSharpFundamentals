@@ -1,5 +1,6 @@
 import { logger } from "@/logging/logger";
 import { prisma } from "@/db/prisma";
+import { closeRedisClient } from "@/redis";
 
 let shuttingDown = false;
 
@@ -15,6 +16,7 @@ export function setupGracefulShutdown(): void {
     logger.info({ event: "process.shutdown", signal });
 
     await prisma.$disconnect().catch(() => {});
+    await closeRedisClient().catch(() => {});
     logger.flush();
     process.exit(0);
   }

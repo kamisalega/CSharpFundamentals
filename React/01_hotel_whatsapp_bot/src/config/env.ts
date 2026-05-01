@@ -17,6 +17,9 @@ const schema = z
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     AUTH_SECRET: z.string().min(32),
     APP_BASE_URL: z.url(),
+    AUTH_URL: z.url().optional(),
+    RATE_LIMIT_BACKEND: z.enum(["memory", "redis"]).default("memory"),
+    REDIS_URL: z.string().optional(),
   })
   .superRefine((val, ctx) => {
     if (val.AI_PROVIDER === "claude" && val.ANTHROPIC_API_KEY.length === 0) {
@@ -32,6 +35,13 @@ const schema = z
         code: "custom",
         path: ["OPENAI_API_KEY"],
         message: "OPENAI_API_KEY is required when AI_PROVIDER=openai",
+      });
+    }
+    if (val.RATE_LIMIT_BACKEND === "redis" && !val.REDIS_URL) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["REDIS_URL"],
+        message: "REDIS_URL is required when RATE_LIMIT_BACKEND=redis",
       });
     }
   });

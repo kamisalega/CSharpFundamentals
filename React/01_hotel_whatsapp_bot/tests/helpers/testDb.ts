@@ -1,7 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 
 export const testPrisma = new PrismaClient({
-  datasources: { db: { url: "file:./prisma/test.db" } },
+  datasources: {
+    db: {
+      url:
+        process.env.TEST_DATABASE_URL ??
+        "postgresql://postgres:postgres@localhost:5432/hotel_bot_test",
+    },
+  },
 });
 
 export async function resetTestDb(): Promise<void> {

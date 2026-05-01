@@ -38,5 +38,5 @@ export default async function RootLayout({
         </AppRouterCacheProvider>
       </body>
     </html>
-  );0
+  );
 }
