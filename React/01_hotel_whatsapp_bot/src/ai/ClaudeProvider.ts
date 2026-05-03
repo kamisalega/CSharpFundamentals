@@ -59,7 +59,9 @@ const anthropicMessageSchema = z.object({
 const SET_INTENT_TOOL = {
   name: "set_intent",
   description:
-    "Classify the user's intent in the hotel booking conversation. ALWAYS call this exactly once.",
+    "Classify the user's intent in the hotel booking conversation. ALWAYS call this exactly once. " +
+    "When extracting slots use these exact keys: checkIn (ISO date), checkOut (ISO date), " +
+    "adults (integer), children (integer), roomId (string), guestName (string), guestEmail (string).",
   input_schema: {
     type: "object",
     properties: {
@@ -309,6 +311,14 @@ export function createClaudeProvider(config: ClaudeProviderConfig): AiProvider {
   ): Promise<Result<IntentResponse, AiError>> {
     const sanitized = sanitizeUserMessage(args.userMessage);
     const fenced = buildUserMessage(sanitized);
+    const prefix =
+      `[Date actuelle : ${args.now.toISOString().slice(0, 10)}. ` +
+      `État actuel du bot : ${args.currentState}]\n` +
+      (args.availableRooms && args.availableRooms.length > 0
+        ? `[Chambres disponibles — utilise l'id exact dans le slot roomId: ${args.availableRooms
+            .map((r) => `"${r.name}" → id="${r.id}"`)
+            .join(", ")}]\n`
+        : "");
 
     const body = buildBaseBody({
       tools: [SET_INTENT_TOOL],
@@ -318,7 +328,7 @@ export function createClaudeProvider(config: ClaudeProviderConfig): AiProvider {
           role: m.role,
           content: m.content,
         })),
-        { role: "user", content: fenced },
+        { role: "user", content: prefix + fenced },
       ],
     });
 
@@ -371,6 +381,7 @@ export function createClaudeProvider(config: ClaudeProviderConfig): AiProvider {
         role: m.role,
         content: m.content,
       }));
+    const stateHint = `[Date actuelle : ${args.now.toISOString().slice(0, 10)}. État actuel du bot : ${args.currentState}. Réponds uniquement en fonction de cet état.]`;
 
     if (args.toolResults.length > 0) {
       const summary = args.toolResults
@@ -378,7 +389,12 @@ export function createClaudeProvider(config: ClaudeProviderConfig): AiProvider {
         .join("\n");
       messages.push({
         role: "user",
-        content: `<tool_results>\n${summary}\n</tool_results>`,
+        content: `<tool_results>\n${summary}\n</tool_results> \n${stateHint}`,
+      });
+    } else {
+         messages.push({
+        role: "user",
+        content: `${stateHint}`,
       });
     }
 
