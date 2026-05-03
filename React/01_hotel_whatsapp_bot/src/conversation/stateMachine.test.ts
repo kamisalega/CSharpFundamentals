@@ -37,7 +37,7 @@ describe("stateMachine.transition — happy path", () => {
     expect(result.next).toBe("COLLECT_DATES");
   });
 
-  it("from SHOW_OFFERS + select_room with the selected room → COLLECT_GUEST_INFO", () => {
+  it("from COLLECT_DATES + collect_dates with all dates → SHOW_OFFERS", () => {
     const result = transition(
       "COLLECT_DATES",
       { kind: "intent", intent: "collect_dates" },
@@ -57,14 +57,14 @@ describe("stateMachine.transition — happy path", () => {
     expect(result.next).toBe("COLLECT_DATES");
   });
 
-  it("from SHOW_OFFERS + select_room with the selected room → COLLECT_GUEST_INFO", () => {
+  it("from SHOW_OFFERS + select_room with the selected room → COLLECT_GUEST_NAME", () => {
     const result = transition(
       "SHOW_OFFERS",
       { kind: "intent", intent: "select_room" },
       { ...fullDatesCtx, hasSelectedRoom: true },
     );
 
-    expect(result.next).toBe("COLLECT_GUEST_INFO");
+    expect(result.next).toBe("COLLECT_GUEST_NAME");
   });
 
   it("with SHOW_OFFERS + select_room without selected room → SELECT_ROOM", () => {
@@ -77,34 +77,54 @@ describe("stateMachine.transition — happy path", () => {
     expect(result.next).toBe("SELECT_ROOM");
   });
 
-  it("with SELECT_ROOM + select_room with selected room → COLLECT_GUEST_INFO", () => {
+  it("with SELECT_ROOM + select_room with selected room → COLLECT_GUEST_NAME", () => {
     const result = transition(
       "SELECT_ROOM",
       { kind: "intent", intent: "select_room" },
       { ...fullDatesCtx, hasSelectedRoom: true },
     );
 
-    expect(result.next).toBe("COLLECT_GUEST_INFO");
+    expect(result.next).toBe("COLLECT_GUEST_NAME");
   });
 
-  it("with COLLECT_GUEST_INFO + collect_guest_info with set → OFFER_EXTRAS", () => {
+  it("with COLLECT_GUEST_NAME + collect_guest_info without name → stay in COLLECT_GUEST_NAME", () => {
     const result = transition(
-      "COLLECT_GUEST_INFO",
+      "COLLECT_GUEST_NAME",
+      { kind: "intent", intent: "collect_guest_info" },
+      { ...fullDatesCtx, hasSelectedRoom: true },
+    );
+
+    expect(result.next).toBe("COLLECT_GUEST_NAME");
+  });
+
+  it("with COLLECT_GUEST_NAME + collect_guest_info with name → COLLECT_GUEST_EMAIL", () => {
+    const result = transition(
+      "COLLECT_GUEST_NAME",
+      { kind: "intent", intent: "collect_guest_info" },
+      { ...fullDatesCtx, hasSelectedRoom: true, hasGuestName: true },
+    );
+
+    expect(result.next).toBe("COLLECT_GUEST_EMAIL");
+  });
+
+  it("with COLLECT_GUEST_EMAIL + collect_guest_info without email → stay in COLLECT_GUEST_EMAIL", () => {
+    const result = transition(
+      "COLLECT_GUEST_EMAIL",
+      { kind: "intent", intent: "collect_guest_info" },
+      { ...fullDatesCtx, hasSelectedRoom: true, hasGuestName: true },
+    );
+
+    expect(result.next).toBe("COLLECT_GUEST_EMAIL");
+  });
+
+  it("with COLLECT_GUEST_EMAIL + collect_guest_info with email → OFFER_EXTRAS", () => {
+    const result = transition(
+      "COLLECT_GUEST_EMAIL",
       { kind: "intent", intent: "collect_guest_info" },
       fullGuestCtx,
     );
 
     expect(result.next).toBe("OFFER_EXTRAS");
-  });
-
-  it("with COLLECT_GUEST_INFO + collect_guest_info without email → we stay in COLLECT_GUEST_INFO", () => {
-    const result = transition(
-      "COLLECT_GUEST_INFO",
-      { kind: "intent", intent: "collect_guest_info" },
-      { ...fullDatesCtx, hasSelectedRoom: true, hasGuestName: true },
-    );
-
-    expect(result.next).toBe("COLLECT_GUEST_INFO");
   });
 
   it("z OFFER_EXTRAS + offer_extras → SUMMARY", () => {
@@ -190,9 +210,9 @@ describe("stateMachine.transition — priorytety i rozgałęzienia", () => {
     expect(result.next).toBe("MANAGE_EXISTING");
   });
 
-  it("manage_existing z COLLECT_GUEST_INFO → MANAGE_EXISTING", () => {
+  it("manage_existing z COLLECT_GUEST_NAME → MANAGE_EXISTING", () => {
     const result = transition(
-      "COLLECT_GUEST_INFO",
+      "COLLECT_GUEST_NAME",
       { kind: "intent", intent: "manage_existing" },
       fullDatesCtx,
     );
@@ -214,11 +234,21 @@ describe("stateMachine.transition — modify_slots cofa flow", () => {
     expect(result.next).toBe("COLLECT_DATES");
   });
 
-  it("modify_slots from COLLECT_GUEST_INFO → SHOW_OFFERS", () => {
+  it("modify_slots from COLLECT_GUEST_NAME → SHOW_OFFERS", () => {
     const result = transition(
-      "COLLECT_GUEST_INFO",
+      "COLLECT_GUEST_NAME",
       { kind: "intent", intent: "modify_slots" },
       { ...fullDatesCtx, hasSelectedRoom: true },
+    );
+
+    expect(result.next).toBe("SHOW_OFFERS");
+  });
+
+  it("modify_slots from COLLECT_GUEST_EMAIL → SHOW_OFFERS", () => {
+    const result = transition(
+      "COLLECT_GUEST_EMAIL",
+      { kind: "intent", intent: "modify_slots" },
+      { ...fullDatesCtx, hasSelectedRoom: true, hasGuestName: true },
     );
 
     expect(result.next).toBe("SHOW_OFFERS");
@@ -320,14 +350,14 @@ describe("stateMachine.transition — terminal states and neutral intents", () =
     expect(result.next).toBe("SHOW_OFFERS");
   });
 
-  it("faq from COLLECT_GUEST_INFO → status unchanged", () => {
+  it("faq from COLLECT_GUEST_NAME → status unchanged", () => {
     const result = transition(
-      "COLLECT_GUEST_INFO",
+      "COLLECT_GUEST_NAME",
       { kind: "intent", intent: "faq" },
       { ...fullDatesCtx, hasSelectedRoom: true },
     );
 
-    expect(result.next).toBe("COLLECT_GUEST_INFO");
+    expect(result.next).toBe("COLLECT_GUEST_NAME");
   });
 
   it("HUMAN_HANDOFF jest terminalny — intent greet nic nie zmienia", () => {

@@ -5,7 +5,7 @@ export const testPrisma = new PrismaClient({
     db: {
       url:
         process.env.TEST_DATABASE_URL ??
-        "postgresql://postgres:postgres@localhost:5432/hotel_bot_test",
+        "postgresql://hotel:hotel@localhost:5432/hotel_bot_test",
     },
   },
 });

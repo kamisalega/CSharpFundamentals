@@ -49,6 +49,8 @@ function classifyArgs(
     userMessage: "Bonjour",
     conversationContext: [],
     correlationId: "test-correlation",
+    now: new Date("2026-05-03"),
+    currentState: "GREETING",
     ...overrides,
   };
 }
@@ -61,6 +63,8 @@ function generateArgs(
     toolResults: [],
     conversationContext: [],
     correlationId: "test-correlation",
+    currentState: "GREETING",
+    now: new Date("2026-05-03"),
     ...overrides,
   };
 }

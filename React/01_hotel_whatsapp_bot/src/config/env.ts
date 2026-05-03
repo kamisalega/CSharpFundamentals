@@ -10,6 +10,7 @@ const schema = z
     ANTHROPIC_API_KEY: z.string(),
     OPENAI_API_KEY: z.string(),
     META_WHATSAPP_PHONE_NUMBER_ID: z.string().min(1),
+    META_WHATSAPP_PHONE_ID: z.string().min(1),
     META_WHATSAPP_ACCESS_TOKEN: z.string().min(1),
     META_WHATSAPP_APP_SECRET: z.string().min(1),
     META_WHATSAPP_VERIFY_TOKEN: z.string().min(1),

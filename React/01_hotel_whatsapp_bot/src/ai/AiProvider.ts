@@ -14,6 +14,9 @@ export type ClassifyIntentArgs = Readonly<{
   userMessage: string;
   conversationContext: ReadonlyArray<ConversationMessage>;
   correlationId: string;
+  now: Date;
+  currentState: string;
+  availableRooms?: ReadonlyArray<Readonly<{ id: string; name: string }>>;
 }>;
 
 // --- generateReply --------------------------------------------------------
@@ -28,6 +31,8 @@ export type GenerateReplyArgs = Readonly<{
   toolResults: ReadonlyArray<ToolResult>;
   conversationContext: ReadonlyArray<ConversationMessage>;
   correlationId: string;
+  currentState: string;
+  now: Date;
 }>;
 
 export type GenerateReplyOutput = Readonly<{

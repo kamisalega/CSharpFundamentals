@@ -5,7 +5,7 @@ execSync("npx prisma migrate deploy", {
     ...process.env,
     DATABASE_URL:
       process.env.TEST_DATABASE_URL ??
-      "postgresql://postgres:postgres@localhost:5432/hotel_bot_test",
+      "postgresql://hotel:hotel@localhost:5432/hotel_bot_test",
   },
   stdio: "inherit",
 });
