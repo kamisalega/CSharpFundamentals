@@ -48,6 +48,8 @@ function classifyArgs(
     userMessage: "Bonjour",
     conversationContext: [],
     correlationId: "test-correlation",
+    now: new Date("2026-05-03"),
+    currentState: "GREETING",
     ...overrides,
   };
 }
@@ -60,6 +62,8 @@ function generateArgs(
     toolResults: [],
     conversationContext: [],
     correlationId: "test-correlation",
+    currentState: "GREETING",
+    now: new Date("2026-05-03"),
     ...overrides,
   };
 }
@@ -77,7 +81,9 @@ describe("ClaudeProvider.classifyIntent", () => {
       timeoutMs: 1000,
     });
 
-    const result = await provider.classifyIntent(classifyArgs());
+    const result = await provider.classifyIntent(
+      classifyArgs({ now: new Date() }),
+    );
 
     expect(result.isOk()).toBe(true);
     if (result.isOk()) {

@@ -34,7 +34,7 @@ describe("POST /api/admin/handoff", () => {
   });
 
   it("zwraca 401 gdy brak sesji", async () => {
-    mockAuth.mockResolvedValueOnce(null);
+    mockAuth.mockResolvedValueOnce(null as never);
 
     const res = await POST(
       makeRequest({ conversationId: "c-1", paused: true }),

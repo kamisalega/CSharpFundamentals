@@ -5,7 +5,8 @@ export const CONVERSATION_STATES = [
   "COLLECT_DATES",
   "SHOW_OFFERS",
   "SELECT_ROOM",
-  "COLLECT_GUEST_INFO",
+  "COLLECT_GUEST_NAME",
+  "COLLECT_GUEST_EMAIL",
   "OFFER_EXTRAS",
   "SUMMARY",
   "PAYMENT_SENT",
@@ -52,9 +53,6 @@ function hasDates(ctx: ConversationContext): boolean {
   return ctx.hasCheckIn && ctx.hasCheckOut && ctx.hasGuestCount;
 }
 
-function hasGuestInfo(ctx: ConversationContext): boolean {
-  return ctx.hasGuestName && ctx.hasGuestEmail;
-}
 
 export function transition(
   current: ConversationState,
@@ -85,8 +83,7 @@ export function transition(
 
   switch (current) {
     case "GREETING":
-      if (intent === "greet") return { next: "COLLECT_DATES" };
-      if (intent === "collect_dates") {
+      if (intent === "greet" || intent === "collect_dates") {
         return { next: hasDates(ctx) ? "SHOW_OFFERS" : "COLLECT_DATES" };
       }
       return { next: "COLLECT_DATES" };
@@ -101,7 +98,7 @@ export function transition(
     case "SHOW_OFFERS":
       if (intent === "select_room") {
         return {
-          next: ctx.hasSelectedRoom ? "COLLECT_GUEST_INFO" : "SELECT_ROOM",
+          next: ctx.hasSelectedRoom ? "COLLECT_GUEST_NAME" : "SELECT_ROOM",
         };
       }
       if (intent === "modify_slots") return { next: "COLLECT_DATES" };
@@ -110,17 +107,22 @@ export function transition(
     case "SELECT_ROOM":
       if (intent === "select_room") {
         return {
-          next: ctx.hasSelectedRoom ? "COLLECT_GUEST_INFO" : "SELECT_ROOM",
+          next: ctx.hasSelectedRoom ? "COLLECT_GUEST_NAME" : "SELECT_ROOM",
         };
       }
       if (intent === "modify_slots") return { next: "COLLECT_DATES" };
       return { next: current };
 
-    case "COLLECT_GUEST_INFO":
+    case "COLLECT_GUEST_NAME":
       if (intent === "collect_guest_info") {
-        return {
-          next: hasGuestInfo(ctx) ? "OFFER_EXTRAS" : "COLLECT_GUEST_INFO",
-        };
+        return { next: ctx.hasGuestName ? "COLLECT_GUEST_EMAIL" : "COLLECT_GUEST_NAME" };
+      }
+      if (intent === "modify_slots") return { next: "SHOW_OFFERS" };
+      return { next: current };
+
+    case "COLLECT_GUEST_EMAIL":
+      if (intent === "collect_guest_info") {
+        return { next: ctx.hasGuestEmail ? "OFFER_EXTRAS" : "COLLECT_GUEST_EMAIL" };
       }
       if (intent === "modify_slots") return { next: "SHOW_OFFERS" };
       return { next: current };

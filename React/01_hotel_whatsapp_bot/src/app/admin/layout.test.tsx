@@ -48,7 +48,7 @@ describe("AdminLayout", () => {
   });
 
   it("redirectuje do /login gdy brak sesji", async () => {
-    mockAuth.mockResolvedValueOnce(null);
+    mockAuth.mockResolvedValueOnce(null as never);
 
     await expect(AdminLayout({ children: <div /> })).rejects.toThrow(
       "NEXT_REDIRECT:/login",

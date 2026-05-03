@@ -338,6 +338,14 @@ export function createOpenAiProvider(config: OpenAiProviderConfig): AiProvider {
   ): Promise<Result<IntentResponse, AiError>> {
     const sanitized = sanitizeUserMessage(args.userMessage);
     const fenced = buildUserMessage(sanitized);
+    const prefix =
+      `[Date actuelle : ${args.now.toISOString().slice(0, 10)}. ` +
+      `État actuel du bot : ${args.currentState}]\n` +
+      (args.availableRooms && args.availableRooms.length > 0
+        ? `[Chambres disponibles — utilise l'id exact dans le slot roomId: ${args.availableRooms
+            .map((r) => `"${r.name}" → id="${r.id}"`)
+            .join(", ")}]\n`
+        : "");
 
     const body = {
       model,
@@ -350,7 +358,7 @@ export function createOpenAiProvider(config: OpenAiProviderConfig): AiProvider {
           role: m.role,
           content: m.content,
         })),
-        { role: "user", content: fenced },
+        { role: "user", content: prefix + fenced },
       ],
     };
 
