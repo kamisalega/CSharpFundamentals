@@ -76,7 +76,10 @@ function mergeSlots(
   return {
     checkIn: safeDate(slots?.["checkIn"]) ?? base.checkIn,
     checkOut: safeDate(slots?.["checkOut"]) ?? base.checkOut,
-    adults: safePosInt(slots?.["adults"]) ?? base.adults,
+    adults:
+      safePosInt(slots?.["adults"]) ??
+      safePosInt(slots?.["guests"]) ??
+      base.adults,
     children: safeNonNegInt(slots?.["children"]) ?? base.children,
     selectedRoomId: safeStr(slots?.["roomId"]) ?? base.selectedRoomId,
     guestName: safeStr(slots?.["guestName"]) ?? base.guestName,
@@ -101,7 +104,18 @@ function toConvCtx(
 }
 
 export class Orchestrator {
+  private roomsCache: Array<{ id: string; name: string }> | null = null;
+
   constructor(private readonly deps: OrchestratorDeps) {}
+
+  private async getRooms(): Promise<Array<{ id: string; name: string }>> {
+    if (!this.roomsCache) {
+      this.roomsCache = await this.deps.prisma.room.findMany({
+        select: { id: true, name: true },
+      });
+    }
+    return this.roomsCache;
+  }
 
   async handle({
     phone,
@@ -166,10 +180,15 @@ export class Orchestrator {
       unknownCount: conv.unknownCount,
     };
 
+    const allRooms = await this.getRooms();
+
     const intentResult = await this.deps.ai.classifyIntent({
       userMessage: sanitized,
       conversationContext,
       correlationId,
+      now: this.deps.now(),
+      currentState,
+      availableRooms: allRooms,
     });
 
     if (intentResult.isErr()) {
@@ -195,6 +214,7 @@ export class Orchestrator {
       intentResponse.slots !== undefined
         ? (intentResponse.slots as Record<string, unknown>)
         : undefined;
+
     const merged = mergeSlots(baseSlots, rawSlots);
 
     let unknownCount = baseSlots.unknownCount;
@@ -269,6 +289,7 @@ export class Orchestrator {
             event: "orchestrator.quote_failed",
             roomId: room.id,
             correlationId,
+            now: this.deps.now(),
           });
         }
       }
@@ -329,11 +350,32 @@ export class Orchestrator {
       }
     }
 
+    if (nextState === "SUMMARY") {
+      const roomName =
+        allRooms.find((r) => r.id === merged.selectedRoomId)?.name ??
+        merged.selectedRoomId ??
+        "inconnue";
+      toolResults.push({
+        name: "current_booking",
+        result: {
+          room: roomName,
+          checkIn: merged.checkIn?.toISOString().slice(0, 10) ?? null,
+          checkOut: merged.checkOut?.toISOString().slice(0, 10) ?? null,
+          adults: merged.adults,
+          children: merged.children,
+          guestName: merged.guestName,
+          guestEmail: merged.guestEmail,
+        },
+      });
+    }
+
     const replyResult = await this.deps.ai.generateReply({
       intent: intentResponse,
       toolResults,
       conversationContext,
       correlationId,
+      currentState: nextState,
+      now: this.deps.now(),
     });
 
     const replyText =

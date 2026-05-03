@@ -14,7 +14,7 @@ describe("authorize", () => {
     vi.clearAllMocks();
   });
 
-  it("zwraca null gdy verifyCredentials zwraca null", async () => {
+  it("returns null when verifyCredentials returns null", async () => {
     mockVerify.mockResolvedValue(null);
 
     const result = await authorize({ email: "x@x.com", password: "wrong" });
@@ -22,7 +22,7 @@ describe("authorize", () => {
     expect(result).toBeNull();
   });
 
-  it("zwraca usera gdy verifyCredentials zwraca użytkownika", async () => {
+  it("returns user when verifyCredentials returns user", async () => {
     const user: VerifiedUser = { id: "cuid-1", email: "admin@hotel.local" };
     mockVerify.mockResolvedValue(user);
 
@@ -34,7 +34,7 @@ describe("authorize", () => {
     expect(result).toEqual({ id: "cuid-1", email: "admin@hotel.local" });
   });
 
-  it("przekazuje credentials do verifyCredentials", async () => {
+  it("passes credentials to verifyCredentials", async () => {
     mockVerify.mockResolvedValue(null);
     const credentials = { email: "x@x.com", password: "pass" };
 
