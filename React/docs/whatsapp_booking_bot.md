@@ -1,204 +1,133 @@
-# Brief mission – WhatsApp Booking Bot
+# Brief mission – WhatsApp Flow Booking Bot
 
-## Przykład rozmowy #1
+## Domain Storytelling #1
 
-**Client :**  
-Bonjour, je voudrais réserver une chambre du 12 au 15 août pour 2 adultes.
+┌─────────────────────────────────────────────────────────────────┐
+│ HISTORIA: Rezerwacja przez WhatsApp Flow (3 templates) │
+│ AKTOR: Marie Dupont │
+└─────────────────────────────────────────────────────────────────┘
 
-**Bot :**  
-Bonjour et bienvenue 😊  
-Je regarde ça pour vous.
+[1] Klient ──── otwiera aplikację WhatsApp ──→ [Bot]
+(czat z B&B)
 
-**Bot :**  
-Bonne nouvelle, nous avons encore des disponibilités pour ces dates.
+[2] Bot ──── wyświetla TEMPLATE 1: Welcome Menu ──→ [Klient]
+(List Picker z 4 opcjami)
 
-Voici nos options :
+[3] Klient ──── wybiera "Réserver une chambre" ──→ [Bot]
 
-- Standard : 95€ / nuit  
-- Supérieure : 120€ / nuit  
-- Suite Junior : 165€ / nuit  
+[4] Bot ──── otwiera TEMPLATE 2: Date Picker Flow ──→ [Klient]
+(2 pola: arrivée / départ)
 
-Laquelle vous intéresse ?
+[5] Klient ──── wybiera daty 12.08 → 15.08 ──→ [Bot]
+i klika "Continuer"
 
-**Client :**  
-La supérieure.
+[6] Bot ──── otwiera TEMPLATE 3: Guests Picker Flow ──→ [Klient]
+(steppery: adultes / enfants)
 
-**Bot :**  
-Excellent choix ✨  
-La chambre supérieure est disponible pour 3 nuits, soit 360€ au total.
+[7] Klient ──── ustawia 2 adultes, 0 enfants ──→ [Bot]
+i klika "Rechercher"
 
-Voulez-vous réserver maintenant ?
+[8] Bot ──── wysyła zapytanie ──→ [System PMS]
+(dates + guests)
 
-**Client :**  
-Oui.
+[9] System PMS ──── zwraca dostępne pokoje ──→ [Bot]
 
-**Bot :**  
-Parfait. J’ai besoin de 3 informations :
+[10] Bot ──── wyświetla List Picker pokoi ──→ [Klient]
+• Standard 95€
+• Supérieure 120€
+• Suite Junior 165€
 
-1. votre nom complet  
-2. votre email  
-3. votre numéro de téléphone  
+[11] Klient ──── wybiera "Supérieure" ──→ [Bot]
 
-**Client :**  
-Marie Dupont, marie.dupont@email.com, 0612345678
+[12] Bot ──── pokazuje Detail Card ──→ [Klient]
+(1 grand lit, annulation 48h, 360€)
 
-**Bot :**  
-Merci Marie 🙌  
-Souhaitez-vous ajouter le petit-déjeuner pour 12€ / personne / jour ?
+[13] Klient ──── potwierdza wybór ──→ [Bot]
 
-**Client :**  
-Oui
+[14] Bot ──── otwiera Form Flow ──→ [Klient]
+(Nom, Email, Téléphone)
 
-**Bot :**  
-Très bien.  
-Le total de votre séjour passe à 432€ avec les petits-déjeuners inclus.
+[15] Klient ──── wypełnia dane ──→ [Bot]
 
-Je vous envoie le lien de paiement sécurisé :  
-[Lien de paiement]
+[16] Bot ──── proponuje petit-déjeuner (Toggle) ──→ [Klient]
 
-**Client :**  
-Merci
+[17] Klient ──── wybiera "Oui" ──→ [Bot]
 
-**Bot :**  
-Avec plaisir 😊  
-Dès validation du paiement, votre réservation sera confirmée automatiquement.
+[18] Bot ──── wyświetla Recap Screen ──→ [Klient]
+(Total: 432€)
+
+[19] Klient ──── potwierdza rezerwację ──→ [Bot]
+
+[20] Bot ──── tworzy rezerwację ──→ [System PMS]
+
+[21] System PMS ──── zwraca RES-2026-0812-4571 ──→ [Bot]
+
+[22] Bot ──── generuje link Stripe ──→ [System Płatności]
+
+[23] System Płatności ──── zwraca secure URL ──→ [Bot]
+
+[24] Bot ──── wysyła CTA Button "Payer" ──→ [Klient]
+
+[25] Klient ──── opłaca ──→ [System Płatności]
+
+[26] System Płatności ──── webhook success ──→ [System PMS]
+
+[27] System PMS ──── triggeruje email ──→ [System Email]
+
+[28] System Email ──── wysyła potwierdzenie ──→ [Klient]
+
+[29] Bot ──── wysyła final message ──→ [Klient]
+"✅ Réservation confirmée"
 
 ---
 
-## Przykład rozmowy #2
+### Konfiguracja Twilio
 
-**Client :**  
-Bonjour, je cherche une chambre pour 2 personnes du 12 au 15 août.
-
-**Bot :**  
-Bonjour 👋  
-Je peux vous aider à réserver votre séjour.  
-Je vérifie les disponibilités du 12 août au 15 août pour 2 personnes.
-
-**Bot :**  
-J’ai trouvé 3 options disponibles :
-
-1. Chambre Standard – 95€ / nuit  
-2. Chambre Supérieure – 120€ / nuit  
-3. Suite Junior – 165€ / nuit  
-
-Souhaitez-vous voir le détail d’une offre ?
-
-**Client :**  
-Oui, la chambre supérieure.
-
-**Bot :**  
-Très bien.  
-
-### Chambre Supérieure
-
-- 1 grand lit double  
-- Petit-déjeuner en option  
-- Annulation gratuite jusqu’à 48h avant l’arrivée  
-- Total pour 3 nuits : 360€  
-
-Souhaitez-vous réserver cette chambre ?
-
-**Client :**  
-Oui.
-
-**Bot :**  
-Parfait. Pour continuer, j’ai besoin de quelques informations.
-
-Quel est votre nom complet ?
-
-**Client :**  
-Marie Dupont
-
-**Bot :**  
-Merci Marie Dupont.  
-Quelle est votre adresse e-mail ?
-
-**Client :**  
-marie.dupont@email.com
-
-**Bot :**  
-Merci.  
-Quel est votre numéro de téléphone ?
-
-**Client :**  
-0612345678
-
-**Bot :**  
-Merci.  
-Souhaitez-vous ajouter le petit-déjeuner à votre réservation ?
-
-- Oui  
-- Non  
-
-**Client :**  
-Oui
-
-**Bot :**  
-Très bien. Le petit-déjeuner est à 12€ par personne et par jour.  
-Pour 2 personnes sur 3 jours, cela ajoute 72€.
-
-**Bot :**  
-Voici le récapitulatif de votre séjour :
-
-- Hébergement : Chambre Supérieure  
-- Dates : 12 août au 15 août  
-- Voyageurs : 2 adultes  
-- Hébergement : 360€  
-- Petit-déjeuner : 72€  
-- Total : 432€  
-
-Souhaitez-vous confirmer la réservation ?
-
-**Client :**  
-Oui, je confirme.
-
-**Bot :**  
-Parfait ✅  
-Votre demande est presque finalisée.
-
-Veuillez cliquer ici pour procéder au paiement sécurisé :  
-[Lien de paiement]
-
-**Client :**  
-C’est fait.
-
-**Bot :**  
-Merci 🙏  
-Votre réservation est confirmée.
-
-- Numéro de réservation : RES-2026-0812-4571
-
-Un email de confirmation vient de vous être envoyé à marie.dupont@email.com.  
-Souhaitez-vous aussi recevoir votre confirmation ici sur WhatsApp ?
+1. Votre Société → ouvre un compte → chez le BSP → (un jour)
+2. Votre Société → signe un contrat → avec le BSP
+3. Propriétaire du B&B → s'inscrit → sur votre plateforme
+4. Propriétaire du B&B → clique sur → « Connecter WhatsApp » → sur votre plateformeÒ
+5. Votre plateforme → redirige → vers la fenêtre du BSP → le Propriétaire du B&B
+6. Propriétaire du B&B → confirme → son numéro → chez le BSP
+7. BSP → déclare → le numéro → à Meta
+8. Meta → approuve → le numéro → (via le BSP)
+9. BSP → renvoie → une clé d'accès → à votre plateforme
+10. Votre plateforme → crée → les modèles → via le BSP
+11. Le bot → gère → les réservations → pour le Client du B&B
+12. BSP → prélève → une commission → à Votre Société (par message)
 
 ---
 
 ## Fonctionnalités attendues
 
-- Accueil automatique du client sur WhatsApp  
-- Réponse aux FAQ  
-- Collecte des informations de réservation  
-- Intégration avec moteur de réservation  
-- Présentation des offres  
-- Récapitulatif du séjour  
-- Collecte des données client  
-- Envoi du lien de paiement  
-- Confirmation automatique  
-- Possibilité de reprise par un humain  
+- Accueil automatique du client sur WhatsApp
+- Réponse aux FAQ
+- Collecte des informations de réservation
+- Intégration avec moteur de réservation
+- Présentation des offres
+- Récapitulatif du séjour
+- Collecte des données client
+- Envoi du lien de paiement
+- Confirmation automatique
+- Possibilité de reprise par un humain
 
 ---
 
 ## Cas particuliers à gérer
 
-- Aucune disponibilité  
-- Dates invalides  
-- Demande incomplète  
-- Modification en cours  
-- Incompréhension  
-- Indisponibilité API  
-- Échec de paiement  
-- Interruption de conversation  
-- Transfert vers humain  
-- Demandes spécifiques  
-- Risque de double réservation  
+- Aucune disponibilité
+- Dates invalides
+- Demande incomplète
+- Modification en cours
+- Incompréhension
+- Indisponibilité API
+- Échec de paiement
+- Interruption de conversation
+- Transfert vers humain
+- Demandes spécifiques
+- Risque de double réservation
+
+  Przeanalizuj wszystko co juz jest gotowe "React/01_hotel_whatsapp_bot". Przygotuj plan integracji Whatsapp Flow i Twillo dla projektu "React/01_hotel_whatsapp_bot". Integracja nie  
+  wykorzystuje orchiestratora AI z projektu. Opieraj sie na wymaganiach z dokument "React/docs/whatsapp_booking_bot.md" . Przygotuj konfiguracje Twilio (mam
+  skonfigurowane konto testowe) wedlug wymagan z dokumentu "React/docs/whatsapp_booking_bot.md". Wykorzystuj Dobre praktyki programowania dla React/Nextjs.
+  Integracja ma byc budowana wedlug dobrych praktyk TDD (Testy integracyjne), Testy E2E. Architektura ma byc tak skonstruktowana zeby byla otwarta na potencjalne zmiany. Zapisz plan do folderu "React/docs"

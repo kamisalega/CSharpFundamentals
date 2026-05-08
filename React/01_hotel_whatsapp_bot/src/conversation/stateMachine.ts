@@ -113,16 +113,11 @@ export function transition(
       if (intent === "modify_slots") return { next: "COLLECT_DATES" };
       return { next: current };
 
-    case "COLLECT_GUEST_NAME":
+    case "COLLECT_GUEST_INFO":
       if (intent === "collect_guest_info") {
-        return { next: ctx.hasGuestName ? "COLLECT_GUEST_EMAIL" : "COLLECT_GUEST_NAME" };
-      }
-      if (intent === "modify_slots") return { next: "SHOW_OFFERS" };
-      return { next: current };
-
-    case "COLLECT_GUEST_EMAIL":
-      if (intent === "collect_guest_info") {
-        return { next: ctx.hasGuestEmail ? "OFFER_EXTRAS" : "COLLECT_GUEST_EMAIL" };
+        return {
+          next: hasGuestInfo(ctx) ? "OFFER_EXTRAS" : "COLLECT_GUEST_INFO",
+        };
       }
       if (intent === "modify_slots") return { next: "SHOW_OFFERS" };
       return { next: current };
