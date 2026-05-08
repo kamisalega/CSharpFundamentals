@@ -127,7 +127,7 @@ i klika "Rechercher"
 - Demandes spécifiques
 - Risque de double réservation
 
-  Przeanalizuj wszystko co juz jest gotowe. Przygotuj plan integracji Whatsapp Flow i Twillo dla projektu "React/01_hotel_whatsapp_bot". Integracja nie  
+  Przeanalizuj wszystko co juz jest gotowe "React/01_hotel_whatsapp_bot". Przygotuj plan integracji Whatsapp Flow i Twillo dla projektu "React/01_hotel_whatsapp_bot". Integracja nie  
   wykorzystuje orchiestratora AI z projektu. Opieraj sie na wymaganiach z dokument "React/docs/whatsapp_booking_bot.md" . Przygotuj konfiguracje Twilio (mam
   skonfigurowane konto testowe) wedlug wymagan z dokumentu "React/docs/whatsapp_booking_bot.md". Wykorzystuj Dobre praktyki programowania dla React/Nextjs.
-  Integracja ma byc budowana wedlug dobrych praktyk TDD (Testy integracyjne), Testy E2E. Architektura ma byc tak skonstruktowana zeby byla otwarta na potencjalne zmiany
+  Integracja ma byc budowana wedlug dobrych praktyk TDD (Testy integracyjne), Testy E2E. Architektura ma byc tak skonstruktowana zeby byla otwarta na potencjalne zmiany. Zapisz plan do folderu "React/docs"
