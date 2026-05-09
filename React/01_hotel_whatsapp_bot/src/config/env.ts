@@ -21,6 +21,18 @@ const schema = z
     AUTH_URL: z.url().optional(),
     RATE_LIMIT_BACKEND: z.enum(["memory", "redis"]).default("memory"),
     REDIS_URL: z.string().optional(),
+    // Twilio channel
+    TWILIO_ACCOUNT_SID: z.string().optional(),
+    TWILIO_AUTH_TOKEN: z.string().optional(),
+    TWILIO_WHATSAPP_FROM: z.string().optional(),
+    TWILIO_WEBHOOK_PUBLIC_URL: z.string().url().optional(),
+    TWILIO_CONTENT_SID_WELCOME_MENU: z.string().optional(),
+    TWILIO_CONTENT_SID_DATE_PICKER_FLOW: z.string().optional(),
+    TWILIO_CONTENT_SID_GUESTS_PICKER_FLOW: z.string().optional(),
+    TWILIO_CONTENT_SID_GUEST_INFO_FLOW: z.string().optional(),
+    TWILIO_CONTENT_SID_ROOM_DETAIL_CARD: z.string().optional(),
+    TWILIO_CONTENT_SID_PAY_CTA: z.string().optional(),
+    TWILIO_CONTENT_SID_BOOKING_CONFIRMED: z.string().optional(),
   })
   .superRefine((val, ctx) => {
     if (val.AI_PROVIDER === "claude" && val.ANTHROPIC_API_KEY.length === 0) {

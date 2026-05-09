@@ -48,7 +48,7 @@ describe("TwilioMessagingAdapter.sendTemplate", () => {
     const adapter = makeAdapter();
     const result = await adapter.sendTemplate({
       to: "+33611111111",
-      templateKey: "WELCOME_MENU",
+      templateSid: "WELCOME_MENU",
       variables: { "1": "Bonjour" },
     });
 
@@ -74,7 +74,7 @@ describe("TwilioMessagingAdapter.sendTemplate", () => {
     const adapter = makeAdapter();
     await adapter.sendTemplate({
       to: "+33611111111",
-      templateKey: "BOOKING_CONFIRMED",
+      templateSid: "BOOKING_CONFIRMED",
       variables: {},
     });
 
@@ -96,7 +96,7 @@ describe("TwilioMessagingAdapter.sendFlow", () => {
     const adapter = makeAdapter();
     const result = await adapter.sendFlow({
       to: "+33611111111",
-      flowKey: "DATE_PICKER",
+      flowId: "DATE_PICKER",
       flowToken: "tok_abc123",
       cta: "Choisir les dates",
     });
@@ -147,7 +147,7 @@ describe("TwilioMessagingAdapter retry behaviour", () => {
     const err = await adapter
       .sendTemplate({
         to: "+33611111111",
-        templateKey: "WELCOME_MENU",
+        templateSid: "WELCOME_MENU",
         variables: {},
       })
       .catch((e: unknown) => e);
@@ -178,7 +178,7 @@ describe("TwilioMessagingAdapter retry behaviour", () => {
     const adapter = makeAdapter();
     const result = await adapter.sendTemplate({
       to: "+33611111111",
-      templateKey: "WELCOME_MENU",
+      templateSid: "WELCOME_MENU",
       variables: {},
     });
 
@@ -201,7 +201,7 @@ describe("TwilioMessagingAdapter retry behaviour", () => {
     const err = await adapter
       .sendTemplate({
         to: "+33611111111",
-        templateKey: "WELCOME_MENU",
+        templateSid: "WELCOME_MENU",
         variables: {},
       })
       .catch((e: unknown) => e);
@@ -228,7 +228,7 @@ describe("TwilioMessagingAdapter retry behaviour", () => {
     const err = await adapter
       .sendTemplate({
         to: "+33611111111",
-        templateKey: "WELCOME_MENU",
+        templateSid: "WELCOME_MENU",
         variables: {},
       })
       .catch((e: unknown) => e);
@@ -254,7 +254,7 @@ describe("TwilioMessagingAdapter retry behaviour", () => {
     const err = await adapter
       .sendTemplate({
         to: "+33611111111",
-        templateKey: "WELCOME_MENU",
+        templateSid: "WELCOME_MENU",
         variables: {},
       })
       .catch((e: unknown) => e);
