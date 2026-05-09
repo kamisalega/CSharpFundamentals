@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createMetaMessagingAdapter } from "./MetaMessagingAdapter";
+import { WhatsAppClient } from "@/whatsapp/WhatsAppClient";
 
 const mockClient: WhatsAppClient = {
   sendText: vi.fn().mockResolvedValue({ messageId: "wamid.ABC123" }),
@@ -24,7 +25,7 @@ describe("MetaMessagingAdapter", () => {
     await expect(
       adapter.sendTemplate({
         to: "+33611111111",
-        templateKey: "WELCOME_MENU",
+        templateSid: "WELCOME_MENU",
         variables: {},
       }),
     ).rejects.toThrow("MetaMessagingAdapter: sendTemplate not supported");
@@ -35,7 +36,7 @@ describe("MetaMessagingAdapter", () => {
     await expect(
       adapter.sendFlow({
         to: "+33611111111",
-        flowKey: "DATE_PICKER",
+        flowId: "DATE_PICKER",
         flowToken: "tok_abc",
         cta: "Choisir les dates",
       }),

@@ -114,7 +114,7 @@ export function createTwilioMessagingAdapter(
     },
 
     async sendTemplate(args: SendTemplateArgs) {
-      const contentSid = config.contentSidMap[args.templateKey];
+      const contentSid = config.contentSidMap[args.templateSid];
       return withRetry({
         to: `whatsapp:${args.to}`,
         contentSid,
@@ -125,7 +125,7 @@ export function createTwilioMessagingAdapter(
     },
 
     async sendFlow(args: SendFlowArgs) {
-      const templateKey = FLOW_TEMPLATE_KEY[args.flowKey];
+      const templateKey = FLOW_TEMPLATE_KEY[args.flowId];
       const contentSid = config.contentSidMap[templateKey];
       const contentVariables = JSON.stringify({
         cta: args.cta,

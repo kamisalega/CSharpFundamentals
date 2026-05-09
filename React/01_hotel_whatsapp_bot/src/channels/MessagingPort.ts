@@ -16,13 +16,13 @@ export type SendTextArgs = Readonly<{
 
 export type SendTemplateArgs = Readonly<{
   to: string;
-  templateKey: TemplateKey;
+  templateSid: string;
   variables: Record<string, string>;
 }>;
 
 export type SendFlowArgs = Readonly<{
   to: string;
-  flowKey: FlowKey;
+  flowId: string;
   flowToken: string;
   cta: string;
   variables?: Record<string, string>;
