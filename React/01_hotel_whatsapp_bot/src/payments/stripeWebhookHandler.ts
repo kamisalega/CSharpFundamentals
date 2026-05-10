@@ -1,5 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
+import type { MessagingPort } from "@/channels/MessagingPort";
+import type { EmailPort } from "@/email/EmailPort";
 
 export type StripeWebhookLogger = Readonly<{
   info: (obj: object) => void;
@@ -13,6 +15,9 @@ export type StripeWebhookDeps = Readonly<{
   webhookSecret: string;
   logger: StripeWebhookLogger;
   getCorrelationId: () => string;
+  messaging: MessagingPort;
+  email: EmailPort;
+  bookingConfirmedSid: string | undefined;
 }>;
 
 export function createStripeWebhookHandler(deps: StripeWebhookDeps) {
@@ -52,7 +57,6 @@ export function createStripeWebhookHandler(deps: StripeWebhookDeps) {
     event: Stripe.Event,
     correlationId: string,
   ): Promise<Response> {
-    // Claim first — idempotency, zapobiega replay
     try {
       await deps.prisma.processedWebhookEvent.create({
         data: { source: "STRIPE", externalId: event.id },
@@ -82,7 +86,7 @@ export function createStripeWebhookHandler(deps: StripeWebhookDeps) {
       return new Response(null, { status: 200 });
     }
 
-    await deps.prisma.$transaction([
+    const [updatedReservation] = await deps.prisma.$transaction([
       deps.prisma.reservation.update({
         where: { code: reservationCode },
         data: { status: "CONFIRMED" },
@@ -92,6 +96,57 @@ export function createStripeWebhookHandler(deps: StripeWebhookDeps) {
         data: { status: "PAID" },
       }),
     ]);
+
+    const conversation = await deps.prisma.conversation.findUnique({
+      where: { id: updatedReservation.conversationId },
+    });
+
+    if (conversation) {
+      if (conversation.channel === "TWILIO") {
+        if (deps.bookingConfirmedSid) {
+          try {
+            await deps.messaging.sendTemplate({
+              to: conversation.phone,
+              templateSid: deps.bookingConfirmedSid,
+              variables: { "1": reservationCode },
+            });
+            deps.logger.info({
+              event: "stripe.webhook.twilio.confirmation_sent",
+              reservationCode,
+              correlationId,
+            });
+          } catch (err) {
+            deps.logger.error({
+              event: "stripe.webhook.twilio.confirmation_failed",
+              reservationCode,
+              correlationId,
+              error: err instanceof Error ? err.message : String(err),
+            });
+          }
+        } else {
+          deps.logger.warn({
+            event: "stripe.webhook.twilio.confirmation_skipped",
+            reason: "bookingConfirmedSid not configured",
+            reservationCode,
+            correlationId,
+          });
+        }
+      }
+
+      try {
+        await deps.email.sendBookingConfirmation({
+          reservation: updatedReservation,
+          locale: conversation.locale,
+        });
+      } catch (err) {
+        deps.logger.error({
+          event: "stripe.webhook.email.confirmation_failed",
+          reservationCode,
+          correlationId,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
 
     deps.logger.info({
       event: "stripe.webhook.processed",
