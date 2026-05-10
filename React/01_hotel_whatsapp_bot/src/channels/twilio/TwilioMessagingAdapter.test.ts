@@ -48,7 +48,7 @@ describe("TwilioMessagingAdapter.sendTemplate", () => {
     const adapter = makeAdapter();
     const result = await adapter.sendTemplate({
       to: "+33611111111",
-      templateSid: "WELCOME_MENU",
+      templateSid: "HX_WELCOME",
       variables: { "1": "Bonjour" },
     });
 
@@ -74,7 +74,7 @@ describe("TwilioMessagingAdapter.sendTemplate", () => {
     const adapter = makeAdapter();
     await adapter.sendTemplate({
       to: "+33611111111",
-      templateSid: "BOOKING_CONFIRMED",
+      templateSid: "HX_CONFIRMED",
       variables: {},
     });
 

@@ -8,7 +8,7 @@ export type Effect =
   | {
       kind: "sendFlow";
       to: string;
-      flowId: string;
+      flowId: FlowKey;
       flowToken: string;
       cta: string;
       templateSid: string;
@@ -58,5 +58,6 @@ export type Effect =
       mergedSlots?: Partial<FlowSlots>;
     };
 
+import { FlowKey } from "@/channels/MessagingPort";
 import { FlowSlots } from "./FlowSlots";
 import { FlowState } from "./FlowState";

@@ -22,7 +22,7 @@ export type SendTemplateArgs = Readonly<{
 
 export type SendFlowArgs = Readonly<{
   to: string;
-  flowId: string;
+  flowId: FlowKey;
   flowToken: string;
   cta: string;
   variables?: Record<string, string>;

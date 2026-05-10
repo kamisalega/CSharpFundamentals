@@ -1,3 +1,4 @@
+import { FlowKey } from "@/channels/MessagingPort";
 import { Effect } from "./Effect";
 import { FlowEvent } from "./FlowEvent";
 import { FlowSlots } from "./FlowSlots";
@@ -23,9 +24,9 @@ export interface TemplateSids {
 }
 
 export interface FlowIds {
-  datePicker: string;
-  guestsPicker: string;
-  guestInfo: string;
+  datePicker: FlowKey;
+  guestsPicker: FlowKey;
+  guestInfo: FlowKey;
 }
 
 export interface TransitionResult {
