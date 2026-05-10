@@ -25,7 +25,10 @@ const schema = z
     TWILIO_ACCOUNT_SID: z.string().optional(),
     TWILIO_AUTH_TOKEN: z.string().optional(),
     TWILIO_WHATSAPP_FROM: z.string().optional(),
-    TWILIO_WEBHOOK_PUBLIC_URL: z.string().url().optional(),
+    TWILIO_WEBHOOK_PUBLIC_URL: z.preprocess(
+      (v) => (v === "" ? undefined : v),
+      z.string().url().optional(),
+    ),
     TWILIO_CONTENT_SID_WELCOME_MENU: z.string().optional(),
     TWILIO_CONTENT_SID_DATE_PICKER_FLOW: z.string().optional(),
     TWILIO_CONTENT_SID_GUESTS_PICKER_FLOW: z.string().optional(),
