@@ -114,10 +114,9 @@ export function createTwilioMessagingAdapter(
     },
 
     async sendTemplate(args: SendTemplateArgs) {
-      const contentSid = config.contentSidMap[args.templateSid];
       return withRetry({
         to: `whatsapp:${args.to}`,
-        contentSid,
+        contentSid: args.templateSid,
         ...(Object.keys(args.variables).length > 0
           ? { contentVariables: JSON.stringify(args.variables) }
           : {}),
@@ -126,6 +125,10 @@ export function createTwilioMessagingAdapter(
 
     async sendFlow(args: SendFlowArgs) {
       const templateKey = FLOW_TEMPLATE_KEY[args.flowId];
+      
+      if (!Object.hasOwn(config.contentSidMap, templateKey)) {
+        throw new Error(`No content SID mapped for template: ${templateKey}`);
+      }
       const contentSid = config.contentSidMap[templateKey];
       const contentVariables = JSON.stringify({
         cta: args.cta,

@@ -33,6 +33,7 @@ const schema = z
     TWILIO_CONTENT_SID_ROOM_DETAIL_CARD: z.string().optional(),
     TWILIO_CONTENT_SID_PAY_CTA: z.string().optional(),
     TWILIO_CONTENT_SID_BOOKING_CONFIRMED: z.string().optional(),
+    TWILIO_FLOW_PRIVATE_KEY: z.string().optional(),
   })
   .superRefine((val, ctx) => {
     if (val.AI_PROVIDER === "claude" && val.ANTHROPIC_API_KEY.length === 0) {

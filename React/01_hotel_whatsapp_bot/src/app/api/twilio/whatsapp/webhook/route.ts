@@ -216,15 +216,11 @@ function buildTemplateSids(): TemplateSids {
   };
 }
 
-function reviveDateSlots(slots: FlowSlots): FlowSlots  {
+function reviveDateSlots(slots: FlowSlots): FlowSlots {
   return {
     ...slots,
-    checkIn: slots.checkIn
-      ? new Date(slots.checkIn as unknown as string)
-      : undefined,
-    checkOut: slots.checkOut
-      ? new Date(slots.checkOut as unknown as string)
-      : undefined,
+    ...(slots.checkIn ? { checkIn: new Date(slots.checkIn as unknown as string) } : {}),
+    ...(slots.checkOut ? { checkOut: new Date(slots.checkOut as unknown as string) } : {}),
   };
 }
 

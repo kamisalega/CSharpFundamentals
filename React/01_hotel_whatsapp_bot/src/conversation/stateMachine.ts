@@ -53,7 +53,6 @@ function hasDates(ctx: ConversationContext): boolean {
   return ctx.hasCheckIn && ctx.hasCheckOut && ctx.hasGuestCount;
 }
 
-
 export function transition(
   current: ConversationState,
   event: SystemEvent,
@@ -111,15 +110,6 @@ export function transition(
         };
       }
       if (intent === "modify_slots") return { next: "COLLECT_DATES" };
-      return { next: current };
-
-    case "COLLECT_GUEST_INFO":
-      if (intent === "collect_guest_info") {
-        return {
-          next: hasGuestInfo(ctx) ? "OFFER_EXTRAS" : "COLLECT_GUEST_INFO",
-        };
-      }
-      if (intent === "modify_slots") return { next: "SHOW_OFFERS" };
       return { next: current };
 
     case "OFFER_EXTRAS":
