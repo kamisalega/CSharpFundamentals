@@ -28,60 +28,7 @@ import Stripe from "stripe";
 
 const env = getEnv();
 
-function requireTwilioEnv() {
-  const missing: string[] = [];
-  if (!env.TWILIO_ACCOUNT_SID) missing.push("TWILIO_ACCOUNT_SID");
-  if (!env.TWILIO_AUTH_TOKEN) missing.push("TWILIO_AUTH_TOKEN");
-  if (!env.TWILIO_WHATSAPP_FROM) missing.push("TWILIO_WHATSAPP_FROM");
-  if (!env.TWILIO_WEBHOOK_PUBLIC_URL) missing.push("TWILIO_WEBHOOK_PUBLIC_URL");
-  if (missing.length > 0) {
-    throw new Error(`Twilio env vars missing: ${missing.join(", ")}`);
-  }
-  return {
-    accountSid: env.TWILIO_ACCOUNT_SID!,
-    authToken: env.TWILIO_AUTH_TOKEN!,
-    from: env.TWILIO_WHATSAPP_FROM!,
-    publicUrl: env.TWILIO_WEBHOOK_PUBLIC_URL!,
-  };
-}
-
-const twilio = requireTwilioEnv();
-
-const messaging = createTwilioMessagingAdapter({
-  accountSid: twilio.accountSid,
-  authToken: twilio.authToken,
-  from: twilio.from,
-  contentSidMap: {
-    WELCOME_MENU: env.TWILIO_CONTENT_SID_WELCOME_MENU ?? "",
-    DATE_PICKER_FLOW: env.TWILIO_CONTENT_SID_DATE_PICKER_FLOW ?? "",
-    GUESTS_PICKER_FLOW: env.TWILIO_CONTENT_SID_GUESTS_PICKER_FLOW ?? "",
-    GUEST_INFO_FLOW: env.TWILIO_CONTENT_SID_GUEST_INFO_FLOW ?? "",
-    ROOM_DETAIL_CARD: env.TWILIO_CONTENT_SID_ROOM_DETAIL_CARD ?? "",
-    PAY_CTA: env.TWILIO_CONTENT_SID_PAY_CTA ?? "",
-    BOOKING_CONFIRMED: env.TWILIO_CONTENT_SID_BOOKING_CONFIRMED ?? "",
-  },
-});
-
-const booking = new BookingService(prisma);
-
-const ports = {
-  messaging,
-  pms: createBookingServicePmsAdapter(booking, prisma),
-  payments: createStripePaymentAdapter(
-    createStripeService({
-      stripe: new Stripe(env.STRIPE_SECRET_KEY),
-      prisma,
-      baseUrl: env.APP_BASE_URL,
-      sessionTtlMs: 30 * 60 * 1000,
-    }),
-  ),
-  email: createNoopEmailAdapter(),
-  prisma,
-  now: () => new Date(),
-};
-
-const engine = new FlowConversationEngine();
-
+// Rate limiter is module-level so in-memory state persists across requests.
 const rateLimiter = createRateLimiter({
   capacity: 10,
   refillTokens: 10,
@@ -108,29 +55,93 @@ const idempotency: TwilioIdempotencyStore = {
   },
 };
 
-const handlers = createTwilioWebhookHandlers({
-  authToken: twilio.authToken,
-  publicUrl: twilio.publicUrl,
-  rateLimiter,
-  idempotency,
-  process: async (msg, ctx) => {
-    logger.info({
-      event: "twilio.message.received",
-      from: maskPhone(msg.from),
-      messageSid: msg.messageSid,
-      messageType: msg.messageType,
-      correlationId: ctx.correlationId,
-    });
-    await processMessage(msg, ctx);
-  },
-  schedule: (fn) => after(fn),
-  logger,
-  getCorrelationId: () => getCorrelationId() ?? "unknown",
-});
+function buildHandlers(): ReturnType<typeof createTwilioWebhookHandlers> {
+  const missing: string[] = [];
+  if (!env.TWILIO_ACCOUNT_SID) missing.push("TWILIO_ACCOUNT_SID");
+  if (!env.TWILIO_AUTH_TOKEN) missing.push("TWILIO_AUTH_TOKEN");
+  if (!env.TWILIO_WHATSAPP_FROM) missing.push("TWILIO_WHATSAPP_FROM");
+  if (!env.TWILIO_WEBHOOK_PUBLIC_URL) missing.push("TWILIO_WEBHOOK_PUBLIC_URL");
+  if (missing.length > 0) {
+    throw new Error(`Twilio env vars missing: ${missing.join(", ")}`);
+  }
+
+  const accountSid = env.TWILIO_ACCOUNT_SID!;
+  const authToken = env.TWILIO_AUTH_TOKEN!;
+  const from = env.TWILIO_WHATSAPP_FROM!;
+  const publicUrl = env.TWILIO_WEBHOOK_PUBLIC_URL!;
+
+  const messaging = createTwilioMessagingAdapter({
+    accountSid,
+    authToken,
+    from,
+    contentSidMap: {
+      WELCOME_MENU: env.TWILIO_CONTENT_SID_WELCOME_MENU ?? "",
+      DATE_PICKER_FLOW: env.TWILIO_CONTENT_SID_DATE_PICKER_FLOW ?? "",
+      GUESTS_PICKER_FLOW: env.TWILIO_CONTENT_SID_GUESTS_PICKER_FLOW ?? "",
+      GUEST_INFO_FLOW: env.TWILIO_CONTENT_SID_GUEST_INFO_FLOW ?? "",
+      ROOM_DETAIL_CARD: env.TWILIO_CONTENT_SID_ROOM_DETAIL_CARD ?? "",
+      PAY_CTA: env.TWILIO_CONTENT_SID_PAY_CTA ?? "",
+      BOOKING_CONFIRMED: env.TWILIO_CONTENT_SID_BOOKING_CONFIRMED ?? "",
+    },
+  });
+
+  const booking = new BookingService(prisma);
+
+  const ports = {
+    messaging,
+    pms: createBookingServicePmsAdapter(booking, prisma),
+    payments: createStripePaymentAdapter(
+      createStripeService({
+        stripe: new Stripe(env.STRIPE_SECRET_KEY),
+        prisma,
+        baseUrl: env.APP_BASE_URL,
+        sessionTtlMs: 30 * 60 * 1000,
+      }),
+    ),
+    email: createNoopEmailAdapter(),
+    prisma,
+    now: () => new Date(),
+  };
+
+  const engine = new FlowConversationEngine();
+
+  return createTwilioWebhookHandlers({
+    authToken,
+    publicUrl,
+    rateLimiter,
+    idempotency,
+    process: async (msg, ctx) => {
+      logger.info({
+        event: "twilio.message.received",
+        from: maskPhone(msg.from),
+        messageSid: msg.messageSid,
+        messageType: msg.messageType,
+        correlationId: ctx.correlationId,
+      });
+      await processMessage(msg, ctx, engine, ports);
+    },
+    schedule: (fn) => after(fn),
+    logger,
+    getCorrelationId: () => getCorrelationId() ?? "unknown",
+  });
+}
+
+let _handlers: ReturnType<typeof createTwilioWebhookHandlers> | undefined;
+
+function getHandlers() {
+  if (!_handlers) _handlers = buildHandlers();
+  return _handlers;
+}
+
+export async function POST(req: Request): Promise<Response> {
+  return getHandlers().POST(req);
+}
 
 async function processMessage(
   msg: TwilioInboundMessage,
   ctx: Readonly<{ correlationId: string }>,
+  engine: FlowConversationEngine,
+  ports: Parameters<typeof interpretEffects>[4],
 ): Promise<void> {
   const conv = await prisma.conversation.upsert({
     where: { phone: msg.from },
@@ -223,5 +234,3 @@ function reviveDateSlots(slots: FlowSlots): FlowSlots {
     ...(slots.checkOut ? { checkOut: new Date(slots.checkOut as unknown as string) } : {}),
   };
 }
-
-export const POST = handlers.POST;
