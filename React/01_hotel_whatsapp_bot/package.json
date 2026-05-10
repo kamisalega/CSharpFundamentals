@@ -12,7 +12,10 @@
     "test:coverage": "vitest run --coverage",
     "type-check": "tsc --noEmit",
     "test:db:setup": "tsx tests/helpers/setupTestDb.ts",
-    "audit": "npm audit --audit-level=high"
+    "audit": "npm audit --audit-level=high",
+    "flows:sync": "tsx scripts/sync-flows.ts",
+    "flows:upload-key": "tsx scripts/upload-flows-public-key.ts",
+    "twilio:sync-templates": "tsx scripts/seed-twilio-templates.ts"
   },
   "engines": {
     "node": "20.x"

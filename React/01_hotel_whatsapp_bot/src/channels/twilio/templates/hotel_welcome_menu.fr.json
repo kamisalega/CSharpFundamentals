@@ -1,0 +1,30 @@
+{
+  "env_key": "TWILIO_CONTENT_SID_WELCOME_MENU",
+  "friendly_name": "hotel_welcome_menu_fr",
+  "language": "fr",
+  "types": {
+    "twilio/list-picker": {
+      "body": "Bonjour ! Je suis l'assistant de réservation de l'hôtel. Comment puis-je vous aider ?",
+      "items": [
+        { "id": "BOOK", "item": "Réserver une chambre" },
+        { "id": "STATUS", "item": "Statut de ma réservation" },
+        { "id": "CANCEL", "item": "Annuler ma réservation" },
+        { "id": "HELP", "item": "Parler à un agent" }
+      ]
+    }
+  },
+  "approval": {
+    "name": "hotel_welcome_menu",
+    "category": "UTILITY",
+    "label": "Voir les chambres",
+    "on-click-action": {
+      "name": "complete",
+      "payload": {
+        "check_in": "${data.check_in}",
+        "check_out": "${data.check_out}",
+        "adults": "${form.adults}",
+        "children": "${form.children}"
+      }
+    }
+  }
+}
