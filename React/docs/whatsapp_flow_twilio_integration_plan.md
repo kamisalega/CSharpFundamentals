@@ -52,28 +52,29 @@ These corrections came from a pressure-test pass on the design and **must** be r
 
 ### Ports
 
-| Port | File | Methods |
-|---|---|---|
-| `MessagingPort` | `src/channels/MessagingPort.ts` | `sendText`, `sendListPicker`, `sendCard`, `sendCtaButton`, `sendFlow`, `sendTextTemplate` |
-| `PmsPort` | `src/pms/PmsPort.ts` | `searchAvailability(checkIn, checkOut, guests)`, `holdReservation(input)`, `getReservation(id)`, `cancelReservation(code)` |
-| `PaymentPort` | `src/payments/PaymentPort.ts` | `createCheckoutLink(reservation, locale)` |
-| `EmailPort` | `src/email/EmailPort.ts` | `sendBookingConfirmation(reservation, locale)` |
+| Port            | File                            | Methods                                                                                                                    |
+| --------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `MessagingPort` | `src/channels/MessagingPort.ts` | `sendText`, `sendListPicker`, `sendCard`, `sendCtaButton`, `sendFlow`, `sendTextTemplate`                                  |
+| `PmsPort`       | `src/pms/PmsPort.ts`            | `searchAvailability(checkIn, checkOut, guests)`, `holdReservation(input)`, `getReservation(id)`, `cancelReservation(code)` |
+| `PaymentPort`   | `src/payments/PaymentPort.ts`   | `createCheckoutLink(reservation, locale)`                                                                                  |
+| `EmailPort`     | `src/email/EmailPort.ts`        | `sendBookingConfirmation(reservation, locale)`                                                                             |
 
 ### Adapters
 
-| Adapter | File | Wraps |
-|---|---|---|
-| `TwilioMessagingAdapter` | `src/channels/twilio/TwilioMessagingAdapter.ts` | Twilio Node SDK v5 (`client.messages.create` with `contentSid` + `contentVariables`) |
-| `MetaMessagingAdapter` | `src/channels/meta/MetaMessagingAdapter.ts` | Existing `WhatsAppClient` — refactor to fit `MessagingPort` interface (additive, no behaviour change) |
-| `BookingServicePmsAdapter` | `src/pms/BookingServicePmsAdapter.ts` | Existing `BookingService` — pure mapping layer |
-| `StripePaymentAdapter` | `src/payments/StripePaymentAdapter.ts` | Existing `StripeService` |
-| `NoopEmailAdapter` | `src/email/NoopEmailAdapter.ts` | Logs `event: "email.send.noop"` only |
+| Adapter                    | File                                            | Wraps                                                                                                 |
+| -------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `TwilioMessagingAdapter`   | `src/channels/twilio/TwilioMessagingAdapter.ts` | Twilio Node SDK v5 (`client.messages.create` with `contentSid` + `contentVariables`)                  |
+| `MetaMessagingAdapter`     | `src/channels/meta/MetaMessagingAdapter.ts`     | Existing `WhatsAppClient` — refactor to fit `MessagingPort` interface (additive, no behaviour change) |
+| `BookingServicePmsAdapter` | `src/pms/BookingServicePmsAdapter.ts`           | Existing `BookingService` — pure mapping layer                                                        |
+| `StripePaymentAdapter`     | `src/payments/StripePaymentAdapter.ts`          | Existing `StripeService`                                                                              |
+| `NoopEmailAdapter`         | `src/email/NoopEmailAdapter.ts`                 | Logs `event: "email.send.noop"` only                                                                  |
 
 ### Deterministic Flow engine
 
 `src/flows/FlowConversationEngine.ts` — pure transition function; effects-as-data interpreter is separate.
 
 **States** (`src/flows/FlowState.ts`):
+
 ```
 BOOT → MENU_SHOWN → AWAITING_DATES → AWAITING_GUESTS →
 ROOM_LIST_SHOWN → ROOM_DETAIL_SHOWN → AWAITING_GUEST_INFO →
@@ -83,43 +84,99 @@ PAID → CONFIRMED   (terminal)
 ```
 
 **Events**:
+
 ```ts
 type FlowEvent =
-  | { kind: 'inboundText'; text: string }
-  | { kind: 'menuSelection'; selectionId: string }
-  | { kind: 'flowDataExchange'; screen: string; action: string; data: unknown; flowToken: string }
-  | { kind: 'flowSubmitted'; flowToken: string; payload: unknown }
-  | { kind: 'paymentSucceeded'; reservationCode: string }
-  | { kind: 'paymentFailed'; reservationCode: string; reason: string }
-  | { kind: 'reservationHeld'; reservationId: string; total: number }
-  | { kind: 'reservationFailed'; reason: string }
-  | { kind: 'timeout' };
+  | { kind: "inboundText"; text: string }
+  | { kind: "menuSelection"; selectionId: string }
+  | {
+      kind: "flowDataExchange";
+      screen: string;
+      action: string;
+      data: unknown;
+      flowToken: string;
+    }
+  | { kind: "flowSubmitted"; flowToken: string; payload: unknown }
+  | { kind: "paymentSucceeded"; reservationCode: string }
+  | { kind: "paymentFailed"; reservationCode: string; reason: string }
+  | { kind: "reservationHeld"; reservationId: string; total: number }
+  | { kind: "reservationFailed"; reason: string }
+  | { kind: "timeout" };
 ```
 
 **Effects** (`src/flows/Effect.ts`):
+
 ```ts
 type Effect =
-  | { kind: 'sendListPicker'; to: string; templateSid: string; variables: Record<string,string> }
-  | { kind: 'sendFlow'; to: string; flowId: string; flowToken: string; cta: string; templateSid: string }
-  | { kind: 'sendCard'; to: string; templateSid: string; variables: Record<string,string> }
-  | { kind: 'sendCtaButton'; to: string; templateSid: string; url: string; variables: Record<string,string> }
-  | { kind: 'sendTextTemplate'; to: string; templateSid: string; variables: Record<string,string> }
-  | { kind: 'searchAvailability'; checkIn: Date; checkOut: Date; guests: { adults: number; children: number } }
-  | { kind: 'holdReservation'; conversationId: string; roomId: string; checkIn: Date; checkOut: Date; guests: { adults: number; children: number }; breakfast: boolean; guest: { name: string; email: string; phone: string } }
-  | { kind: 'createPaymentLink'; reservationId: string }
-  | { kind: 'sendBookingConfirmEmail'; reservationId: string }
-  | { kind: 'persistFlowState'; conversationId: string; nextState: FlowState; flowToken?: string; mergedSlots?: Partial<FlowSlots> };
+  | {
+      kind: "sendListPicker";
+      to: string;
+      templateSid: string;
+      variables: Record<string, string>;
+    }
+  | {
+      kind: "sendFlow";
+      to: string;
+      flowId: string;
+      flowToken: string;
+      cta: string;
+      templateSid: string;
+    }
+  | {
+      kind: "sendCard";
+      to: string;
+      templateSid: string;
+      variables: Record<string, string>;
+    }
+  | {
+      kind: "sendCtaButton";
+      to: string;
+      templateSid: string;
+      url: string;
+      variables: Record<string, string>;
+    }
+  | {
+      kind: "sendTextTemplate";
+      to: string;
+      templateSid: string;
+      variables: Record<string, string>;
+    }
+  | {
+      kind: "searchAvailability";
+      checkIn: Date;
+      checkOut: Date;
+      guests: { adults: number; children: number };
+    }
+  | {
+      kind: "holdReservation";
+      conversationId: string;
+      roomId: string;
+      checkIn: Date;
+      checkOut: Date;
+      guests: { adults: number; children: number };
+      breakfast: boolean;
+      guest: { name: string; email: string; phone: string };
+    }
+  | { kind: "createPaymentLink"; reservationId: string }
+  | { kind: "sendBookingConfirmEmail"; reservationId: string }
+  | {
+      kind: "persistFlowState";
+      conversationId: string;
+      nextState: FlowState;
+      flowToken?: string;
+      mergedSlots?: Partial<FlowSlots>;
+    };
 ```
 
 The interpreter (`src/flows/EffectInterpreter.ts`) executes effects sequentially against the ports, feeds results back as new events to the engine until the queue drains, and persists at the end inside a Prisma transaction.
 
 ### Routes
 
-| Route | File | Purpose | Signature |
-|---|---|---|---|
-| `POST /api/twilio/whatsapp/webhook` | `src/app/api/twilio/whatsapp/webhook/route.ts` | Inbound Twilio messages (text, button, list, Flow completion) | `X-Twilio-Signature` (HMAC-SHA1) via `twilio.validateRequest` |
-| `POST /api/whatsapp-flows/data-exchange` | `src/app/api/whatsapp-flows/data-exchange/route.ts` | Meta-direct Flow data-exchange callbacks (encrypted) | `X-Hub-Signature-256` (reuse `verifyMetaSignature` with `WHATSAPP_FLOWS_APP_SECRET`) — **synchronous response** (no `after()`) |
-| `POST /api/stripe/webhook` (modified) | `src/app/api/stripe/webhook/route.ts` | After updating reservation, dispatch final WhatsApp message via channel-aware adapter | unchanged signature, new behaviour |
+| Route                                    | File                                                | Purpose                                                                               | Signature                                                                                                                      |
+| ---------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `POST /api/twilio/whatsapp/webhook`      | `src/app/api/twilio/whatsapp/webhook/route.ts`      | Inbound Twilio messages (text, button, list, Flow completion)                         | `X-Twilio-Signature` (HMAC-SHA1) via `twilio.validateRequest`                                                                  |
+| `POST /api/whatsapp-flows/data-exchange` | `src/app/api/whatsapp-flows/data-exchange/route.ts` | Meta-direct Flow data-exchange callbacks (encrypted)                                  | `X-Hub-Signature-256` (reuse `verifyMetaSignature` with `WHATSAPP_FLOWS_APP_SECRET`) — **synchronous response** (no `after()`) |
+| `POST /api/stripe/webhook` (modified)    | `src/app/api/stripe/webhook/route.ts`               | After updating reservation, dispatch final WhatsApp message via channel-aware adapter | unchanged signature, new behaviour                                                                                             |
 
 ### Schema changes (`prisma/schema.prisma`)
 
@@ -307,12 +364,14 @@ TWILIO_CONTENT_SID_BOOKING_CONFIRMED    # twilio/text for >24h delivery
 Each numbered item is a tight TDD slice: write the failing test first, then the production code, then refactor. Follow the existing project's vitest patterns (colocated `*.test.ts`, MSW for outbound HTTP, test DB helpers for integration).
 
 ### Phase 0 — Schema + env (DB foundation)
+
 - Modify: `prisma/schema.prisma` (add `channel`, `flowState`, `flowToken`, `locale`, `lastInboundAt`, `Reservation.locale`; allow new `ProcessedWebhookEvent.source` values).
 - Create migration `add_twilio_channel_and_flow_fields`.
 - Modify: `src/config/env.ts` — add Twilio + WhatsApp Flow env keys with Zod.
 - Update: `tests/helpers/setupTestDb.ts` if any seed needs `channel` defaulting.
 
 ### Phase 1 — Ports + Stripe/PMS/Email adapters (no behaviour change yet)
+
 - New: `src/pms/PmsPort.ts`, `src/pms/BookingServicePmsAdapter.ts` + tests.
 - New: `src/payments/PaymentPort.ts`, `src/payments/StripePaymentAdapter.ts` + tests.
 - New: `src/email/EmailPort.ts`, `src/email/NoopEmailAdapter.ts` + tests.
@@ -320,21 +379,25 @@ Each numbered item is a tight TDD slice: write the failing test first, then the 
 - Tests: pure mapping unit tests; no DB needed except for `BookingServicePmsAdapter`.
 
 ### Phase 2 — Twilio messaging adapter
+
 - New: `src/channels/twilio/TwilioMessagingAdapter.ts` — wraps `twilio` SDK v5 `client.messages.create({ from, to, contentSid, contentVariables })`. Mirrors retry/timeout style of `src/whatsapp/WhatsAppClient.ts`.
 - New: `src/channels/twilio/TwilioSignature.ts` — wraps `twilio.validateRequest(authToken, signature, url, params)`; URL pinned from `TWILIO_WEBHOOK_PUBLIC_URL`.
 - New: `src/channels/twilio/TwilioWebhookSchema.ts` — Zod for parsed form-encoded inbound (fields: `MessageSid`, `From`, `To`, `Body`, `NumMedia`, `ProfileName`, `WaId`, `ButtonText`, `ButtonPayload`, `OriginalRepliedMessageSid`, `MessageType`, `MessagingServiceSid?`).
 - Tests: signature unit tests with sample Twilio request, schema parse tests, adapter calls mocked via MSW.
 
 ### Phase 3 — Pure Flow engine (no I/O)
+
 - New: `src/flows/FlowState.ts`, `src/flows/FlowEvent.ts`, `src/flows/Effect.ts`.
 - New: `src/flows/transitions.ts` — pure `transition(state, event, ctx) → { next, effects }` table.
 - Tests: `tests/integration/flow-engine.transitions.test.ts` (actually pure unit, no DB) — table-driven coverage of every state×event combination, including invalid edges.
 
 ### Phase 4 — Effect interpreter
+
 - New: `src/flows/EffectInterpreter.ts` — given an effect list and `{ messaging, pms, payments, email, prisma, logger, now }` ports, executes sequentially, feeds results back as new events, persists `Conversation.flowState` + `flowToken` + slot merges in a single Prisma transaction at the end.
 - Tests: `tests/integration/flow-engine.interpreter.test.ts` — stubbed ports, asserts effect execution order and DB writes; uses test DB.
 
 ### Phase 5 — Twilio inbound webhook route
+
 - New: `src/app/api/twilio/whatsapp/webhook/route.ts` — mirrors the factory pattern of `src/whatsapp/webhookHandler.ts`:
   ```ts
   createTwilioWebhookHandlers({
@@ -347,6 +410,7 @@ Each numbered item is a tight TDD slice: write the failing test first, then the 
 - Tests: `tests/integration/twilio-webhook.signature.test.ts` (rejects bad signature), `twilio-webhook.idempotency.test.ts` (replays don't double-process). Uses test DB + MSW.
 
 ### Phase 6 — Flow data-exchange route + crypto
+
 - New: `src/whatsapp-flows/FlowEndpointCrypto.ts` — `decryptRequest(encrypted, privateKey, passphrase)` and `encryptResponse(plaintext, aesKey, ivFlipped)`. Explicit `oaepHash: 'sha256'`. 16-byte IV. Bit-flipped response IV. Returns base64 strings.
 - New: `src/whatsapp-flows/FlowDataExchangeSchema.ts` — Zod for `{ version, action, screen, data, flow_token }`.
 - New: `src/whatsapp-flows/FlowEndpointHandler.ts` — handles `INIT`, `data_exchange`, `BACK`, `ping`. Calls into `FlowConversationEngine.handleDataExchange()` (read-only path). Returns synchronous encrypted response.
@@ -355,17 +419,20 @@ Each numbered item is a tight TDD slice: write the failing test first, then the 
 - Tests: `tests/integration/flow-data-exchange.crypto.test.ts` (round-trip with test keypair), `flow-data-exchange.handlers.test.ts` (each screen's data-exchange returns expected next-screen payload from PMS data).
 
 ### Phase 7 — Stripe webhook channel-aware dispatch (modify existing)
+
 - Modify: `src/payments/stripeWebhookHandler.ts` — after status update, look up `Reservation → Conversation.channel`. If `TWILIO`, dispatch `sendTextTemplate` via `TwilioMessagingAdapter` using `TWILIO_CONTENT_SID_BOOKING_CONFIRMED` with `{{1}} = reservationCode`. Also enqueue `EmailPort.sendBookingConfirmation`. If `META`, leave existing AI orchestrator path alone.
 - Modify: `src/app/api/stripe/webhook/route.ts` — instantiate the channel-aware dispatcher (both `MetaMessagingAdapter` and `TwilioMessagingAdapter` injected).
 - Tests: `tests/integration/stripe-webhook.dispatch.test.ts` — fixture with `Conversation.channel='TWILIO'` asserts Twilio outbound; existing META fixture asserts AI orchestrator path unchanged.
 
 ### Phase 8 — Setup scripts
+
 - New: `scripts/sync-flows.ts` — reads `src/flows/definitions/*.json`, POSTs each to `/{waba-id}/flows`, writes `src/flows/flowIds.generated.ts` (TS object literal).
 - New: `scripts/upload-flows-public-key.ts` — POST to `/{phone-number-id}/whatsapp_business_encryption`.
 - New: `scripts/seed-twilio-templates.ts` — idempotently creates Content templates and submits approval requests.
 - Add `npm run twilio:sync-templates`, `npm run flows:sync`, `npm run flows:upload-key` to `package.json`.
 
 ### Phase 9 — End-to-end webhook-replay tests
+
 - New: `tests/fixtures/twilio-webhook.ts` — builders returning `{ url, params, signature }` triples ready to POST. Generate signatures with the test `TWILIO_AUTH_TOKEN`.
 - New: `tests/fixtures/flow-data-exchange.ts` — encrypts plaintext with the committed test public key; decrypts responses with test private key. Includes `pingFixture()`, `initFixture()`, `dateExchangeFixture()`, etc.
 - New: `tests/fixtures/test-keypair/{private,public}.pem` — committed; **never** used in production.
@@ -381,7 +448,8 @@ Each numbered item is a tight TDD slice: write the failing test first, then the 
 - New: `tests/e2e/twilio-flow-stale-token.test.ts` — data-exchange with unknown `flow_token` → 427 + DB unchanged.
 - Test ergonomics: lazy-import route modules per test to control `process.env`; pass `schedule: async fn => fn()` for deterministic `after()` substitute.
 
-### Phase 10 — Admin UI minor extension (optional polish)
+### Phase 10 — Admin UI minor extension
+
 - Modify: `src/app/admin/conversations/page.tsx` — add `channel` column (badge META/TWILIO).
 - Modify: `src/app/admin/conversations/[id]/page.tsx` — display `flowState` if `channel='TWILIO'`.
 - No new auth or schema needed.
@@ -416,6 +484,7 @@ Each numbered item is a tight TDD slice: write the failing test first, then the 
 ## Verification plan (end-to-end)
 
 ### Local development
+
 1. `docker compose up -d postgres redis` (existing setup).
 2. `npx prisma migrate dev` to apply the new schema.
 3. Populate `.env` with Twilio sandbox credentials + a generated test RSA keypair.
@@ -427,12 +496,14 @@ Each numbered item is a tight TDD slice: write the failing test first, then the 
 9. From a phone joined to Twilio sandbox: send any text → expect welcome list-picker. Click "Réserver une chambre" → expect Date Picker Flow opens (requires production WABA — sandbox templates only). For sandbox, manually verify webhook arrival in logs.
 
 ### Automated test suite
+
 - `npm run test` runs unit + integration + E2E (currently `maxWorkers: 1` — sequential).
 - `npm run test:coverage` — target ≥80% on `src/flows/`, `src/channels/twilio/`, `src/whatsapp-flows/`, `src/pms/`.
 - E2E happy path runs entirely in-process; no external Twilio/Meta calls (MSW intercepts all outbound HTTP).
 - Expected runtime: 30-90 seconds for the full suite.
 
 ### Production-readiness gate (before going live with Twilio)
+
 - All 4 Flows authored, approved, and published in WhatsApp Manager.
 - All 7 Content templates approved by Meta (24-48h lead time per template).
 - Public key uploaded; ping action returns `200` with valid encrypted payload from Meta's debugger.

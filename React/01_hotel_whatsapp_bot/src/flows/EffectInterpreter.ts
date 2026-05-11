@@ -21,7 +21,7 @@ export type InterpreterPorts = Readonly<{
 
 export async function interpretEffects(
   initialEffects: Effect[],
-  liveState: FlowState, 
+  liveState: FlowState,
   ctx: TransitionContext,
   engine: FlowConversationEngine,
   ports: InterpreterPorts,
