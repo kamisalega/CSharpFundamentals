@@ -27,7 +27,7 @@ const schema = z
     TWILIO_WHATSAPP_FROM: z.string().optional(),
     TWILIO_WEBHOOK_PUBLIC_URL: z.preprocess(
       (v) => (v === "" ? undefined : v),
-      z.string().url().optional(),
+      z.url().optional(),
     ),
     TWILIO_CONTENT_SID_WELCOME_MENU: z.string().optional(),
     TWILIO_CONTENT_SID_DATE_PICKER_FLOW: z.string().optional(),
