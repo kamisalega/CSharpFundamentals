@@ -1,0 +1,48 @@
+# Manual tests of OrdersLegacy (HttpListener + XML).
+# docker compose up -d --build postgres orders-legacy   -> :5080
+# Running locally on Mono with LEGACY_PORT=5081? Change @host.
+@host = http://localhost:5080
+
+### Health - expected "OK v2.0.50727"
+GET {{host}}/health
+
+### Place order - 201 + <Order/>
+POST {{host}}/orders
+Content-Type: application/xml
+
+<PlaceOrderRequest>
+  <CustomerEmail>jan@test.pl</CustomerEmail>
+  <Total>123.45</Total>
+</PlaceOrderRequest>
+
+> {%
+    const id = response.body.match(/<Id>([^<]+)<\/Id>/)[1];
+    client.global.set("orderId", id);
+%}
+
+### Get order - 200, Status = 0
+GET {{host}}/orders/{{orderId}}
+
+### Ship order - 204
+POST {{host}}/orders/{{orderId}}/ship
+
+### Get order again - Status = 1, ModifiedAt changed
+GET {{host}}/orders/{{orderId}}
+
+### Unknown order - 404 "Order not found"
+GET {{host}}/orders/00000000-0000-0000-0000-000000000000
+
+### Ship unknown order - 404
+POST {{host}}/orders/00000000-0000-0000-0000-000000000000/ship
+
+### Invalid id - 500 (new Guid("abc") throws, details in docker logs)
+GET {{host}}/orders/abc
+
+### Invalid XML - 500
+POST {{host}}/orders
+Content-Type: application/xml
+
+<PlaceOrderRequest><Total>not-a-number</Total></PlaceOrderRequest>
+
+### Unknown route - 404 "Unknown route"
+GET {{host}}/foo

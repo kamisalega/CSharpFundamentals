@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/StranglerFig.Api/StranglerFig.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Common/">
+    <Project Path="src/Common/StranglerFig.Common.Application/StranglerFig.Common.Application.csproj" />
+    <Project Path="src/Common/StranglerFig.Common.Domain/StranglerFig.Common.Domain.csproj" />
+    <Project Path="src/Common/StranglerFig.Common.Infrastructure/StranglerFig.Common.Infrastructure.csproj" />
+    <Project Path="src/Common/StranglerFig.Common.Presentation/StranglerFig.Common.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Migration/">
+    <Project Path="src/Migration/StranglerFig.Migration.IntegrationEvents/StranglerFig.Migration.IntegrationEvents.csproj" />
+    <Project Path="src/Migration/StranglerFig.Migration/StranglerFig.Migration.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Orders/">
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Application/StranglerFig.Modules.Orders.Application.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Domain/StranglerFig.Modules.Orders.Domain.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Infrastructure/StranglerFig.Modules.Orders.Infrastructure.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.IntegrationEvents/StranglerFig.Modules.Orders.IntegrationEvents.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Presentation/StranglerFig.Modules.Orders.Presentation.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.PublicApi/StranglerFig.Modules.Orders.PublicApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/StranglerFig.ArchitectureTests/StranglerFig.ArchitectureTests.csproj" />
+    <Project Path="tests/StranglerFig.IntegrationTests/StranglerFig.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

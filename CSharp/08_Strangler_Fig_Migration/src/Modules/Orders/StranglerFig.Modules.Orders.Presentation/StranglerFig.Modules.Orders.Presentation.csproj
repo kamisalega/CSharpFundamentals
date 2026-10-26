@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\StranglerFig.Common.Presentation\StranglerFig.Common.Presentation.csproj" />
+    <ProjectReference Include="..\..\..\Migration\StranglerFig.Migration.IntegrationEvents\StranglerFig.Migration.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\StranglerFig.Modules.Orders.Application\StranglerFig.Modules.Orders.Application.csproj" />
+  </ItemGroup>
+
+</Project>
