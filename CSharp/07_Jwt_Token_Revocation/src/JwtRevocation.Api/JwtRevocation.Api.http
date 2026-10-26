@@ -1,0 +1,44 @@
+@host = http://localhost:5197
+@email = demo@test.local
+@password = Pa$$w0rd-1
+
+### 1. Rejestracja
+POST {{host}}/auth/register
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}" }
+
+### 2. Logowanie - skopiuj accessToken i refreshToken poniżej
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "{{password}}" }
+
+###
+@accessToken = paste-access-token
+@refreshToken = paste-refresh-token
+
+### 3. Endpoint chroniony - pokazuje token_version i sid z tokenu
+GET {{host}}/me
+Authorization: Bearer {{accessToken}}
+
+### 4. Rotacja refresh tokena (drugie wywołanie z tym samym tokenem = wykrycie kradzieży)
+POST {{host}}/auth/refresh
+Content-Type: application/json
+
+{ "refreshToken": "{{refreshToken}}" }
+
+### 5. Wylogowanie tego urządzenia (usuwa rodzinę = sid)
+POST {{host}}/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### 6. Wylogowanie wszędzie (token_version + 1) - potem krok 3 zwraca 401
+POST {{host}}/auth/logout-all
+Authorization: Bearer {{accessToken}}
+
+### 7. Zmiana hasła (token_version + 1)
+POST {{host}}/auth/change-password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "currentPassword": "{{password}}", "newPassword": "N3w-Pa$$w0rd" }

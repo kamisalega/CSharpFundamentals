@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/JwtRevocation.Api/JwtRevocation.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/JwtRevocation.Api.IntegrationTests/JwtRevocation.Api.IntegrationTests.csproj" />
+  </Folder>
+</Solution>
