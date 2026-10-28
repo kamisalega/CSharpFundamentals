@@ -33,7 +33,8 @@ public sealed class StranglerFigApp(
         builder.UseSetting("OrdersMigration:SyncStrategy", syncStrategy.ToString());
         builder.UseSetting("OrdersMigration:SyncInterval", (syncInterval ?? TimeSpan.FromSeconds(30)).ToString());
 
-        // Fast inbox processing, so asynchronous flows finish within a test.
+        // Fast outbox/inbox processing, so asynchronous flows finish within a test.
+        builder.UseSetting("Orders:Outbox:IntervalInSeconds", "1");
         builder.UseSetting("Orders:Inbox:IntervalInSeconds", "1");
 
         // Read on every request (the feature flag).

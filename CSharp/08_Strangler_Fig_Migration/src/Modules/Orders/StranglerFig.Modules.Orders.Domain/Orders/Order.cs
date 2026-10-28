@@ -31,6 +31,8 @@ public sealed class Order : Entity
             CreatedAtUtc = createdAtUtc
         };
 
+        order.Raise(new OrderImportedDomainEvent(order.Id));
+
         return order;
     }
 

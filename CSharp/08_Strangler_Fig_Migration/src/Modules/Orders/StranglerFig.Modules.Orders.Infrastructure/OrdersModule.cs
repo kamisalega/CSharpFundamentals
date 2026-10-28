@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using StranglerFig.Common.Application.EventBus;
+using StranglerFig.Common.Application.Messaging;
+using StranglerFig.Common.Infrastructure.Outbox;
 using StranglerFig.Common.Presentation.Endpoints;
 using StranglerFig.Migration.IntegrationEvents;
 using StranglerFig.Modules.Orders.Application.Abstractions.Data;
@@ -11,6 +13,7 @@ using StranglerFig.Modules.Orders.Domain.Orders;
 using StranglerFig.Modules.Orders.Infrastructure.Database;
 using StranglerFig.Modules.Orders.Infrastructure.Inbox;
 using StranglerFig.Modules.Orders.Infrastructure.Orders;
+using StranglerFig.Modules.Orders.Infrastructure.Outbox;
 using StranglerFig.Modules.Orders.Infrastructure.PublicApi;
 using StranglerFig.Modules.Orders.PublicApi;
 
@@ -20,6 +23,8 @@ public static class OrdersModule
 {
     public static IServiceCollection AddOrdersModule(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddDomainEventHandlers();
+
         services.AddIntegrationEventHandlers();
 
         services.AddInfrastructure(configuration);
@@ -53,9 +58,10 @@ public static class OrdersModule
 
     private static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<OrdersDbContext>(options =>
+        services.AddDbContext<OrdersDbContext>((sp, options) =>
             options
                 .UseNpgsql(configuration.GetConnectionString("Database"))
+                .AddInterceptors(sp.GetRequiredService<InsertOutboxMessagesInterceptor>())
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IOrderRepository, OrderRepository>();
@@ -64,9 +70,36 @@ public static class OrdersModule
 
         services.AddScoped<IOrdersApi, OrdersApi>();
 
+        services.Configure<OutboxOptions>(configuration.GetSection("Orders:Outbox"));
+
+        services.ConfigureOptions<ConfigureProcessOutboxJob>();
+
         services.Configure<InboxOptions>(configuration.GetSection("Orders:Inbox"));
 
         services.ConfigureOptions<ConfigureProcessInboxJob>();
+    }
+
+    private static void AddDomainEventHandlers(this IServiceCollection services)
+    {
+        Type[] domainEventHandlers = Application.AssemblyReference.Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(IDomainEventHandler)))
+            .ToArray();
+
+        foreach (Type domainEventHandler in domainEventHandlers)
+        {
+            services.TryAddScoped(domainEventHandler);
+
+            Type domainEvent = domainEventHandler
+                .GetInterfaces()
+                .Single(i => i.IsGenericType)
+                .GetGenericArguments()
+                .Single();
+
+            Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
+
+            services.Decorate(domainEventHandler, closedIdempotentHandler);
+        }
     }
 
     private static void AddIntegrationEventHandlers(this IServiceCollection services)
