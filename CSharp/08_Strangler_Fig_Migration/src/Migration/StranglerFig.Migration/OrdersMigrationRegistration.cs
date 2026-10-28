@@ -5,6 +5,7 @@ using StranglerFig.Common.Presentation.Endpoints;
 using StranglerFig.Migration.Legacy;
 using StranglerFig.Migration.Routing;
 using StranglerFig.Migration.Seam;
+using StranglerFig.Migration.Sync;
 using StranglerFig.Migration.Writes;
 
 namespace StranglerFig.Migration;
@@ -15,7 +16,9 @@ public static class OrdersMigrationRegistration
 {
     public static IServiceCollection AddOrdersMigration(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<OrdersMigrationOptions>(configuration.GetSection(OrdersMigrationOptions.SectionName));
+        IConfigurationSection section = configuration.GetSection(OrdersMigrationOptions.SectionName);
+        OrdersMigrationOptions options = section.Get<OrdersMigrationOptions>() ?? new OrdersMigrationOptions();
+        services.Configure<OrdersMigrationOptions>(section);
 
         services.AddFeatureManagement();
 
@@ -24,10 +27,19 @@ public static class OrdersMigrationRegistration
             ?? throw new InvalidOperationException("Missing Legacy:BaseUrl.");
         services.AddHttpClient<LegacyOrdersClient>(client => client.BaseAddress = new Uri(legacyBaseUrl.TrimEnd('/') + "/"));
 
+        services.AddScoped<LegacyOrdersReader>();
         services.AddScoped<NewOrdersModuleService>();
         services.AddScoped<OrderWriteFacade>();
+        services.AddScoped(sp => new OrderSynchronizer(
+            sp.GetRequiredService<LegacyOrdersReader>(),
+            sp.GetRequiredService<Modules.Orders.PublicApi.IOrdersApi>()));
 
         services.AddScoped<IOrderService, OrderServiceRouter>();
+
+        if (options.SyncStrategy == SyncStrategy.BackgroundJob)
+        {
+            services.ConfigureOptions<ConfigureOrderDataMigrationJob>();
+        }
 
         services.AddEndpoints(typeof(OrdersMigrationRegistration).Assembly);
 

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging.Testing;
 using StranglerFig.Migration;
 
@@ -21,6 +22,10 @@ public sealed class StranglerFigApp(
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        // Quartz 3 keeps its logger factory in a static field. Every test here starts its own host, so the
+        // next host would log through the previous (already disposed) host's factory - and fail to start.
+        Quartz.Logging.LogContext.SetCurrentLogProvider(NullLoggerFactory.Instance);
+
         // Read once at startup (they decide what gets registered in DI).
         builder.UseSetting("ConnectionStrings:Database", environment.ConnectionString);
         builder.UseSetting("Legacy:BaseUrl", environment.LegacyBaseUrl.ToString());

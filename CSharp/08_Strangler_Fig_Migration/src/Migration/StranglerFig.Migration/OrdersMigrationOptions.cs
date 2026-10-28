@@ -8,7 +8,10 @@ public enum MigrationPhase
 
 public enum SyncStrategy
 {
-    None = 0
+    None = 0,
+
+    // Option A: Quartz job with a modified_at watermark.
+    BackgroundJob = 1
 }
 
 public sealed class OrdersMigrationOptions
@@ -17,5 +20,7 @@ public sealed class OrdersMigrationOptions
 
     public MigrationPhase Phase { get; init; } = MigrationPhase.Routing;
 
-    public SyncStrategy SyncStrategy { get; init; } = SyncStrategy.None;
+    public SyncStrategy SyncStrategy { get; init; } = SyncStrategy.BackgroundJob;
+
+    public TimeSpan SyncInterval { get; init; } = TimeSpan.FromSeconds(30);
 }

@@ -33,6 +33,19 @@ public sealed class RoutingTests(LegacyEnvironment legacy)
     }
 
     [Fact]
+    public async Task FlagOn_AfterSync_NewModuleReturnsTheSameOrderAsLegacy()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        OrderDto fromLegacy = await Api.GetOrderOrThrowAsync(placed.Id, Ct);
+
+        await SyncEverythingAsync();
+        UseNewOrdersModule();
+
+        OrderDto fromNewModule = await Api.GetOrderOrThrowAsync(placed.Id, Ct);
+        fromNewModule.ShouldBe(fromLegacy);
+    }
+
+    [Fact]
     public async Task FlippingTheFlagBack_IsAnInstantRollback_WithoutRestart()
     {
         OrderDto placed = await Api.PlaceOrderAsync(Ct);
