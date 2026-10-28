@@ -3,7 +3,10 @@ namespace StranglerFig.Migration;
 public enum MigrationPhase
 {
     // Step 1: the feature flag decides which implementation answers.
-    Routing = 0
+    Routing = 0,
+
+    // Step 4: both implementations answer, results are compared, legacy result is returned.
+    ParallelRun = 1
 }
 
 public enum SyncStrategy

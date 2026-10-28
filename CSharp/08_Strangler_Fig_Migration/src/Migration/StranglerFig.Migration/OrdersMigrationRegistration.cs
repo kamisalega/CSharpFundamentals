@@ -35,7 +35,14 @@ public static class OrdersMigrationRegistration
             sp.GetRequiredService<LegacyOrdersReader>(),
             sp.GetRequiredService<Modules.Orders.PublicApi.IOrdersApi>()));
 
-        services.AddScoped<IOrderService, OrderServiceRouter>();
+        if (options.Phase == MigrationPhase.ParallelRun)
+        {
+            services.AddScoped<IOrderService, ParallelVerificationService>();
+        }
+        else
+        {
+            services.AddScoped<IOrderService, OrderServiceRouter>();
+        }
 
         if (options.SyncStrategy == SyncStrategy.BackgroundJob)
         {
