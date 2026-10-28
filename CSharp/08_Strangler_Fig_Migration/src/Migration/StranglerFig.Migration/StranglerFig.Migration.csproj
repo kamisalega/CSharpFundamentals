@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Temporary strangler-fig scaffolding. Talks to the Orders module ONLY through
+       Orders.PublicApi and integration events - the architecture tests enforce it. -->
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.FeatureManagement" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\StranglerFig.Common.Application\StranglerFig.Common.Application.csproj" />
+    <ProjectReference Include="..\..\Common\StranglerFig.Common.Presentation\StranglerFig.Common.Presentation.csproj" />
+    <ProjectReference Include="..\..\Modules\Orders\StranglerFig.Modules.Orders.PublicApi\StranglerFig.Modules.Orders.PublicApi.csproj" />
+  </ItemGroup>
+
+</Project>

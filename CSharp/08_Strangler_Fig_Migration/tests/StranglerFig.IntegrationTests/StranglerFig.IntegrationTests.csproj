@@ -25,4 +25,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\StranglerFig.Api\StranglerFig.Api.csproj" />
+  </ItemGroup>
+
 </Project>
