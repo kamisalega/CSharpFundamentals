@@ -1,3 +1,7 @@
 <Solution>
   <Project Path="tests/StranglerFig.IntegrationTests/StranglerFig.IntegrationTests.csproj" />
+  <Project Path="src/Common/StranglerFig.Common.Domain/StranglerFig.Common.Domain.csproj" />
+  <Project Path="src/Common/StranglerFig.Common.Application/StranglerFig.Common.Application.csproj" />
+  <Project Path="src/Common/StranglerFig.Common.Infrastructure/StranglerFig.Common.Infrastructure.csproj" />
+  <Project Path="src/Common/StranglerFig.Common.Presentation/StranglerFig.Common.Presentation.csproj" />
 </Solution>
