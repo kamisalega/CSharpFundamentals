@@ -11,7 +11,7 @@ string databaseConnectionString = builder.Configuration.GetConnectionString("Dat
 
 builder.Services.AddApplication([StranglerFig.Modules.Orders.Application.AssemblyReference.Assembly]);
 
-builder.Services.AddInfrastructure(databaseConnectionString);
+builder.Services.AddInfrastructure([OrdersModule.ConfigureConsumers], databaseConnectionString);
 
 builder.Services.AddOrdersModule(builder.Configuration);
 

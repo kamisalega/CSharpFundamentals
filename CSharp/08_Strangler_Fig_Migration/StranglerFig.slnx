@@ -10,4 +10,6 @@
   <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.PublicApi/StranglerFig.Modules.Orders.PublicApi.csproj" />
   <Project Path="src/StranglerFig.Api/StranglerFig.Api.csproj" />
   <Project Path="src/Migration/StranglerFig.Migration/StranglerFig.Migration.csproj" />
+  <Project Path="src/Migration/StranglerFig.Migration.IntegrationEvents/StranglerFig.Migration.IntegrationEvents.csproj" />
+  <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Presentation/StranglerFig.Modules.Orders.Presentation.csproj" />
 </Solution>

@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\Common\StranglerFig.Common.Application\StranglerFig.Common.Application.csproj" />
     <ProjectReference Include="..\..\Common\StranglerFig.Common.Presentation\StranglerFig.Common.Presentation.csproj" />
     <ProjectReference Include="..\..\Modules\Orders\StranglerFig.Modules.Orders.PublicApi\StranglerFig.Modules.Orders.PublicApi.csproj" />
+    <ProjectReference Include="..\StranglerFig.Migration.IntegrationEvents\StranglerFig.Migration.IntegrationEvents.csproj" />
   </ItemGroup>
 
 </Project>

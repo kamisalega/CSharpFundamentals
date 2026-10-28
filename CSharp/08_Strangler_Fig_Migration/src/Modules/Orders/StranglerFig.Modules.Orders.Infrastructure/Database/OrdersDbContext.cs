@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using StranglerFig.Common.Infrastructure.Inbox;
 using StranglerFig.Modules.Orders.Application.Abstractions.Data;
 using StranglerFig.Modules.Orders.Domain.Orders;
 using StranglerFig.Modules.Orders.Infrastructure.Orders;
@@ -14,6 +15,8 @@ public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options) :
     {
         modelBuilder.HasDefaultSchema(Schemas.Orders);
 
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConsumerConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
     }
 }
