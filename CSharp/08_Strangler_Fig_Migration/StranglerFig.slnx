@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Common/">
+    <Project Path="src/Common/StranglerFig.Common.Application/StranglerFig.Common.Application.csproj" />
+    <Project Path="src/Common/StranglerFig.Common.Domain/StranglerFig.Common.Domain.csproj" />
+    <Project Path="src/Common/StranglerFig.Common.Infrastructure/StranglerFig.Common.Infrastructure.csproj" />
+    <Project Path="src/Common/StranglerFig.Common.Presentation/StranglerFig.Common.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Orders/">
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Application/StranglerFig.Modules.Orders.Application.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Domain/StranglerFig.Modules.Orders.Domain.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.IntegrationEvents/StranglerFig.Modules.Orders.IntegrationEvents.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/StranglerFig.IntegrationTests/StranglerFig.IntegrationTests.csproj" />
+    <Project Path="tests/StranglerFig.UnitTests/StranglerFig.UnitTests.csproj" />
+  </Folder>
+</Solution>

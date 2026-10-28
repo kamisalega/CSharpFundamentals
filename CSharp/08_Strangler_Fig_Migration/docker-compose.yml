@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: strangler-fig-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: strangler_fig
+    ports:
+      - "5443:5432"
+
+  # .NET Framework 2.0 app on Mono 6.12. Creates public.orders itself on startup.
+  orders-legacy:
+    build: ./src/LegacyCode/OrdersLegacy
+    container_name: strangler-fig-orders-legacy
+    environment:
+      LEGACY_DB: "Driver={PostgreSQL Unicode};Server=postgres;Port=5432;Database=strangler_fig;Uid=postgres;Pwd=postgres;"
+    ports:
+      - "5080:8080"
+    depends_on:
+      - postgres
