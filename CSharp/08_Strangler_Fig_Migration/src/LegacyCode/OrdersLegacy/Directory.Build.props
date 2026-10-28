@@ -1,0 +1,3 @@
+<!-- Empty on purpose: stops MSBuild from importing the root Directory.Build.props (Nullable, analyzers, ...),
+     which a C# 2.0 / .NET Framework 2.0 project cannot compile with. Docker never sees the root file anyway. -->
+<Project />
