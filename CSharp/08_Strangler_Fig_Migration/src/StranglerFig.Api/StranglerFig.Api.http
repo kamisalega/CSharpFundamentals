@@ -1,0 +1,16 @@
+@host = http://localhost:5272
+
+### 1. Zamówienie trafia do legacy (public.orders) - skopiuj "id" poniżej
+POST {{host}}/orders
+Content-Type: application/json
+
+{ "customerEmail": "jan@test.local", "total": 149.99 }
+
+###
+@orderId = paste-order-id
+
+### 2. Odczyt przez seam (IOrderService). Kto odpowiada? Zależy od FeatureManagement:NewOrdersModule
+GET {{host}}/orders/{{orderId}}
+
+### 3. Zmiana w legacy - job z watermarkiem przeniesie ją do orders.orders w ciągu SyncInterval
+POST {{host}}/orders/{{orderId}}/ship
