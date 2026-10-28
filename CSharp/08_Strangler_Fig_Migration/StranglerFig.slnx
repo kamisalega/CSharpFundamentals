@@ -4,4 +4,8 @@
   <Project Path="src/Common/StranglerFig.Common.Application/StranglerFig.Common.Application.csproj" />
   <Project Path="src/Common/StranglerFig.Common.Infrastructure/StranglerFig.Common.Infrastructure.csproj" />
   <Project Path="src/Common/StranglerFig.Common.Presentation/StranglerFig.Common.Presentation.csproj" />
+  <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Domain/StranglerFig.Modules.Orders.Domain.csproj" />
+  <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Application/StranglerFig.Modules.Orders.Application.csproj" />
+  <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Infrastructure/StranglerFig.Modules.Orders.Infrastructure.csproj" />
+  <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.PublicApi/StranglerFig.Modules.Orders.PublicApi.csproj" />
 </Solution>
