@@ -49,6 +49,16 @@ public sealed class ParallelRunTests(LegacyEnvironment legacy)
         mismatch.ShouldContain("Pending");
     }
 
+    [Fact]
+    public async Task FeatureFlag_IsIgnored_DuringParallelRun()
+    {
+        // The router is not registered in this phase, so the flag has no effect.
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        UseNewOrdersModule();
+
+        (await Api.GetOrderOrThrowAsync(placed.Id, Ct)).ShouldBe(placed);
+    }
+
     private List<string> MismatchesFor(Guid orderId) =>
         App.Logs.GetSnapshot()
             .Where(r => r.Level == LogLevel.Warning && r.Message.Contains($"Order {orderId} mismatch"))
