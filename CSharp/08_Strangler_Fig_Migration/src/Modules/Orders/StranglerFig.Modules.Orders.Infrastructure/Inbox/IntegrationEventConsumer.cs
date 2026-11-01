@@ -29,10 +29,12 @@ internal sealed class IntegrationEventConsumer<TIntegrationEvent>(IDbConnectionF
             OccurredOnUtc = integrationEvent.OccurredOnUtc
         };
 
+        // Not in Evently: a redelivered event (same Id) is ignored instead of failing on the primary key.
         const string sql =
             """
             INSERT INTO orders.inbox_messages(id, type, content, occurred_on_utc)
             VALUES (@Id, @Type, @Content::json, @OccurredOnUtc)
+            ON CONFLICT (id) DO NOTHING
             """;
 
         await connection.ExecuteAsync(sql, inboxMessage);
