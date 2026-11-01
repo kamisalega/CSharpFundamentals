@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using StranglerFig.Common.Presentation.Endpoints;
-using StranglerFig.Migration.Legacy;
 using StranglerFig.Migration.Seam;
+using StranglerFig.Migration.Writes;
 
 namespace StranglerFig.Migration.Endpoints;
 
@@ -13,9 +13,9 @@ public sealed record PlaceOrderRequest(string CustomerEmail, decimal Total);
 internal sealed class PlaceOrder : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app) =>
-        app.MapPost("orders", async (PlaceOrderRequest request, LegacyOrdersClient legacy, CancellationToken cancellationToken) =>
+        app.MapPost("orders", async (PlaceOrderRequest request, OrderWriteFacade writes, CancellationToken cancellationToken) =>
         {
-            OrderDto order = await legacy.PlaceOrderAsync(request.CustomerEmail, request.Total, cancellationToken);
+            OrderDto order = await writes.PlaceOrderAsync(request.CustomerEmail, request.Total, cancellationToken);
 
             return Results.Created($"/orders/{order.Id}", order);
         });

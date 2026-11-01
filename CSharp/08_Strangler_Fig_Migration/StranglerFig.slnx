@@ -9,6 +9,7 @@
     <Project Path="src/Common/StranglerFig.Common.Presentation/StranglerFig.Common.Presentation.csproj" />
   </Folder>
   <Folder Name="/src/Migration/">
+    <Project Path="src/Migration/StranglerFig.Migration.IntegrationEvents/StranglerFig.Migration.IntegrationEvents.csproj" />
     <Project Path="src/Migration/StranglerFig.Migration/StranglerFig.Migration.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
@@ -17,6 +18,7 @@
     <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Domain/StranglerFig.Modules.Orders.Domain.csproj" />
     <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Infrastructure/StranglerFig.Modules.Orders.Infrastructure.csproj" />
     <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.IntegrationEvents/StranglerFig.Modules.Orders.IntegrationEvents.csproj" />
+    <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.Presentation/StranglerFig.Modules.Orders.Presentation.csproj" />
     <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.PublicApi/StranglerFig.Modules.Orders.PublicApi.csproj" />
   </Folder>
   <Folder Name="/tests/">

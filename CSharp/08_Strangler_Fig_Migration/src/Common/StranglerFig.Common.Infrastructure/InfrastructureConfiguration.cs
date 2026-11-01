@@ -14,7 +14,10 @@ namespace StranglerFig.Common.Infrastructure;
 
 public static class InfrastructureConfiguration
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string databaseConnectionString)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        Action<IRegistrationConfigurator>[] moduleConfigureConsumers,
+        string databaseConnectionString)
     {
         NpgsqlDataSource npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
         services.TryAddSingleton(npgsqlDataSource);
@@ -33,6 +36,11 @@ public static class InfrastructureConfiguration
 
         services.AddMassTransit(configure =>
         {
+            foreach (Action<IRegistrationConfigurator> configureConsumers in moduleConfigureConsumers)
+            {
+                configureConsumers(configure);
+            }
+
             configure.SetKebabCaseEndpointNameFormatter();
 
             configure.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));

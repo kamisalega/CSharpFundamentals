@@ -1,12 +1,17 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using StranglerFig.Common.Application.EventBus;
 using StranglerFig.Common.Application.Messaging;
 using StranglerFig.Common.Infrastructure.Outbox;
+using StranglerFig.Common.Presentation.Endpoints;
+using StranglerFig.Migration.IntegrationEvents;
 using StranglerFig.Modules.Orders.Application.Abstractions.Data;
 using StranglerFig.Modules.Orders.Domain.Orders;
 using StranglerFig.Modules.Orders.Infrastructure.Database;
+using StranglerFig.Modules.Orders.Infrastructure.Inbox;
 using StranglerFig.Modules.Orders.Infrastructure.Orders;
 using StranglerFig.Modules.Orders.Infrastructure.Outbox;
 using StranglerFig.Modules.Orders.Infrastructure.PublicApi;
@@ -20,10 +25,17 @@ public static class OrdersModule
     {
         services.AddDomainEventHandlers();
 
+        services.AddIntegrationEventHandlers();
+
         services.AddInfrastructure(configuration);
+
+        services.AddEndpoints(Presentation.AssemblyReference.Assembly);
 
         return services;
     }
+
+    public static void ConfigureConsumers(IRegistrationConfigurator registrationConfigurator) =>
+        registrationConfigurator.AddConsumer<IntegrationEventConsumer<LegacyOrderPlacedIntegrationEvent>>();
 
     // Demo only - Evently applies EF migrations here. dotnet-ef isn't installed, so the schema is created
     // from the model; GenerateCreateScript() is safe to run only when the schema doesn't exist yet.
@@ -83,6 +95,19 @@ public static class OrdersModule
             Type closedIdempotentHandler = typeof(IdempotentDomainEventHandler<>).MakeGenericType(domainEvent);
 
             services.Decorate(domainEventHandler, closedIdempotentHandler);
+        }
+    }
+
+    private static void AddIntegrationEventHandlers(this IServiceCollection services)
+    {
+        Type[] integrationEventHandlers = Presentation.AssemblyReference.Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(IIntegrationEventHandler)))
+            .ToArray();
+
+        foreach (Type integrationEventHandler in integrationEventHandlers)
+        {
+            services.TryAddScoped(integrationEventHandler);
         }
     }
 }
