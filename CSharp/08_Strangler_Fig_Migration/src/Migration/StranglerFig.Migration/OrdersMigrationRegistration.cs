@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.FeatureManagement;
 using StranglerFig.Common.Presentation.Endpoints;
 using StranglerFig.Migration.Legacy;
+using StranglerFig.Migration.Routing;
 using StranglerFig.Migration.Seam;
 
 namespace StranglerFig.Migration;
@@ -12,12 +14,16 @@ public static class OrdersMigrationRegistration
 {
     public static IServiceCollection AddOrdersMigration(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddFeatureManagement();
+
         // The legacy app is a separate process (.NET Framework 2.0 on Mono) - we talk to it over HTTP.
         string legacyBaseUrl = configuration["Legacy:BaseUrl"]
             ?? throw new InvalidOperationException("Missing Legacy:BaseUrl.");
         services.AddHttpClient<LegacyOrdersClient>(client => client.BaseAddress = new Uri(legacyBaseUrl.TrimEnd('/') + "/"));
 
-        services.AddScoped<IOrderService>(sp => sp.GetRequiredService<LegacyOrdersClient>());
+        services.AddScoped<NewOrdersModuleService>();
+
+        services.AddScoped<IOrderService, OrderServiceRouter>();
 
         services.AddEndpoints(typeof(OrdersMigrationRegistration).Assembly);
 

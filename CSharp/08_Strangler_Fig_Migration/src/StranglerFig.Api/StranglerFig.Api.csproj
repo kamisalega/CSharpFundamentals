@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Migration\StranglerFig.Migration\StranglerFig.Migration.csproj" />
+    <ProjectReference Include="..\Modules\Orders\StranglerFig.Modules.Orders.Infrastructure\StranglerFig.Modules.Orders.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

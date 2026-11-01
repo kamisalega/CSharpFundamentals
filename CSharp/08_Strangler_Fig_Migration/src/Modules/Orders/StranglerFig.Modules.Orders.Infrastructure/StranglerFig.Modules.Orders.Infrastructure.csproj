@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\StranglerFig.Common.Infrastructure\StranglerFig.Common.Infrastructure.csproj" />
+    <ProjectReference Include="..\StranglerFig.Modules.Orders.Application\StranglerFig.Modules.Orders.Application.csproj" />
+    <ProjectReference Include="..\StranglerFig.Modules.Orders.PublicApi\StranglerFig.Modules.Orders.PublicApi.csproj" />
+  </ItemGroup>
+
+</Project>
