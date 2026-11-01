@@ -14,6 +14,7 @@ public sealed class LegacyOrderXml
 
     public int Status { get; set; }
 
+    // No time zone in the XML - legacy stores UTC by convention.
     public DateTime CreatedAt { get; set; }
 
     public DateTime ModifiedAt { get; set; }
