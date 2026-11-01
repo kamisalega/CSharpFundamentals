@@ -31,4 +31,18 @@ public sealed class EventSyncTests(LegacyEnvironment legacy)
 
         (await QueryModuleDatabaseAsync<bool>(sql, new { OrderId = placed.Id.ToString() })).ShouldBeTrue();
     }
+
+    [Fact]
+    public async Task Events_SyncOnlyWhatIsPublished()
+    {
+        // The facade publishes LegacyOrderPlacedIntegrationEvent but nothing when an order is shipped.
+        // That is exactly the kind of gap the parallel run is meant to catch before cutover.
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        await EventuallyAsync(async () => await GetFromNewModuleAsync(placed.Id) is not null, "the order should arrive");
+
+        await Api.ShipOrderAsync(placed.Id, Ct);
+
+        (await Api.GetOrderOrThrowAsync(placed.Id, Ct)).Status.ShouldBe("Shipped");
+        (await GetFromNewModuleAsync(placed.Id))!.Status.ShouldBe("Pending");
+    }
 }
