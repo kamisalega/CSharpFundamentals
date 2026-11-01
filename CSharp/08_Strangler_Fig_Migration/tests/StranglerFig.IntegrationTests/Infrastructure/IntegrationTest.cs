@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 using StranglerFig.Migration;
 using StranglerFig.Migration.Seam;
 using StranglerFig.Migration.Sync;
@@ -9,9 +10,9 @@ namespace StranglerFig.IntegrationTests.Infrastructure;
 // Every test gets its own app (own DI setup and flags) on top of the shared containers.
 public abstract class IntegrationTest : IAsyncDisposable
 {
-    protected IntegrationTest(LegacyEnvironment legacy)
+    protected IntegrationTest(LegacyEnvironment legacy, SyncStrategy syncStrategy, TimeSpan? syncInterval = null)
     {
-        App = new StranglerFigApp(legacy);
+        App = new StranglerFigApp(legacy, syncStrategy, syncInterval);
         Api = new OrdersApi(App.CreateClient());
     }
 
@@ -41,6 +42,17 @@ public abstract class IntegrationTest : IAsyncDisposable
         return order is null
             ? null
             : new OrderDto(order.Id, order.CustomerEmail, order.Total, order.Status, order.CreatedAtUtc);
+    }
+
+    protected static async Task EventuallyAsync(Func<Task<bool>> condition, string because)
+    {
+        DateTime deadline = DateTime.UtcNow.AddSeconds(15);
+
+        while (!await condition())
+        {
+            DateTime.UtcNow.ShouldBeLessThan(deadline, because);
+            await Task.Delay(100, Ct);
+        }
     }
 
     public async ValueTask DisposeAsync()

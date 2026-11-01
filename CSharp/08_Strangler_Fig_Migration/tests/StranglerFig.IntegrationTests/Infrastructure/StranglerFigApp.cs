@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using StranglerFig.Migration;
 
 namespace StranglerFig.IntegrationTests.Infrastructure;
 
-public sealed class StranglerFigApp(LegacyEnvironment environment) : WebApplicationFactory<Program>
+public sealed class StranglerFigApp(
+    LegacyEnvironment environment,
+    SyncStrategy syncStrategy,
+    TimeSpan? syncInterval = null) : WebApplicationFactory<Program>
 {
     private readonly FeatureFlagsSource _flags = new();
 
@@ -11,9 +15,11 @@ public sealed class StranglerFigApp(LegacyEnvironment environment) : WebApplicat
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        // Read once at startup.
+        // Read once at startup (they decide what gets registered in DI).
         builder.UseSetting("ConnectionStrings:Database", environment.ConnectionString);
         builder.UseSetting("Legacy:BaseUrl", environment.LegacyBaseUrl.ToString());
+        builder.UseSetting("OrdersMigration:SyncStrategy", syncStrategy.ToString());
+        builder.UseSetting("OrdersMigration:SyncInterval", (syncInterval ?? TimeSpan.FromSeconds(30)).ToString());
 
         // Read on every request (the feature flag).
         builder.ConfigureAppConfiguration((_, config) => config.Add(_flags));

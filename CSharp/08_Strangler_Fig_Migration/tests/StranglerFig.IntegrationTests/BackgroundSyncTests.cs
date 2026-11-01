@@ -1,5 +1,6 @@
 using Shouldly;
 using StranglerFig.IntegrationTests.Infrastructure;
+using StranglerFig.Migration;
 using StranglerFig.Migration.Seam;
 using StranglerFig.Migration.Sync;
 
@@ -7,7 +8,8 @@ namespace StranglerFig.IntegrationTests;
 
 // Step 3, option A: copy legacy rows (public.orders) into the module (orders.orders) using a
 // modified_at watermark. Each row goes through IOrdersApi -> ImportOrderCommand, never straight to the DbContext.
-public sealed class BackgroundSyncTests(LegacyEnvironment legacy) : IntegrationTest(legacy)
+public sealed class BackgroundSyncTests(LegacyEnvironment legacy)
+    : IntegrationTest(legacy, SyncStrategy.None)
 {
     [Fact]
     public async Task Sync_CopiesLegacyOrdersIntoNewModule()
@@ -57,5 +59,20 @@ public sealed class BackgroundSyncTests(LegacyEnvironment legacy) : IntegrationT
 
         again.Inserted.ShouldBe(0);
         (await GetFromNewModuleAsync(placed.Id)).ShouldBe(placed);
+    }
+}
+
+// The real Quartz job (OrderDataMigrationJob) with a short interval instead of 30 s.
+public sealed class HostedSyncJobTests(LegacyEnvironment legacy)
+    : IntegrationTest(legacy, SyncStrategy.BackgroundJob, TimeSpan.FromMilliseconds(200))
+{
+    [Fact]
+    public async Task Job_EventuallyCopiesNewOrders()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+
+        await EventuallyAsync(
+            async () => await GetFromNewModuleAsync(placed.Id) is not null,
+            "the job should copy the order into the new module");
     }
 }
