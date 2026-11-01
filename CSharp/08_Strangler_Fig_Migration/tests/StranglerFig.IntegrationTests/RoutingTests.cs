@@ -9,7 +9,7 @@ namespace StranglerFig.IntegrationTests;
 // Step 1: OrderServiceRouter + the NewOrdersModule feature flag.
 // The order is placed in legacy and NOT synced, so "404" proves the new module answered.
 public sealed class RoutingTests(LegacyEnvironment legacy)
-    : IntegrationTest(legacy, SyncStrategy.None)
+    : IntegrationTest(legacy, MigrationPhase.Routing, SyncStrategy.None)
 {
     [Fact]
     public async Task FlagOff_ReadsFromLegacy()

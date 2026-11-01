@@ -9,7 +9,7 @@ namespace StranglerFig.IntegrationTests;
 // Step 3, option A: copy legacy rows (public.orders) into the module (orders.orders) using a
 // modified_at watermark. Each row goes through IOrdersApi -> ImportOrderCommand, never straight to the DbContext.
 public sealed class BackgroundSyncTests(LegacyEnvironment legacy)
-    : IntegrationTest(legacy, SyncStrategy.None)
+    : IntegrationTest(legacy, MigrationPhase.Routing, SyncStrategy.None)
 {
     [Fact]
     public async Task Sync_CopiesLegacyOrdersIntoNewModule()
@@ -95,7 +95,7 @@ public sealed class BackgroundSyncTests(LegacyEnvironment legacy)
 
 // The real Quartz job (OrderDataMigrationJob) with a short interval instead of 30 s.
 public sealed class HostedSyncJobTests(LegacyEnvironment legacy)
-    : IntegrationTest(legacy, SyncStrategy.BackgroundJob, TimeSpan.FromMilliseconds(200))
+    : IntegrationTest(legacy, MigrationPhase.Routing, SyncStrategy.BackgroundJob, TimeSpan.FromMilliseconds(200))
 {
     [Fact]
     public async Task Job_EventuallyCopiesNewOrders()

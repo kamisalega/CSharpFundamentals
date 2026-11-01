@@ -10,6 +10,7 @@ namespace StranglerFig.IntegrationTests.Infrastructure;
 
 public sealed class StranglerFigApp(
     LegacyEnvironment environment,
+    MigrationPhase phase,
     SyncStrategy syncStrategy,
     TimeSpan? syncInterval = null) : WebApplicationFactory<Program>
 {
@@ -28,6 +29,7 @@ public sealed class StranglerFigApp(
         // Read once at startup (they decide what gets registered in DI).
         builder.UseSetting("ConnectionStrings:Database", environment.ConnectionString);
         builder.UseSetting("Legacy:BaseUrl", environment.LegacyBaseUrl.ToString());
+        builder.UseSetting("OrdersMigration:Phase", phase.ToString());
         builder.UseSetting("OrdersMigration:SyncStrategy", syncStrategy.ToString());
         builder.UseSetting("OrdersMigration:SyncInterval", (syncInterval ?? TimeSpan.FromSeconds(30)).ToString());
 

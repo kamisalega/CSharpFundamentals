@@ -13,7 +13,7 @@ namespace StranglerFig.IntegrationTests;
 // facade -> IEventBus (MassTransit) -> IntegrationEventConsumer stores it in orders.inbox_messages
 // -> ProcessInboxJob -> LegacyOrderPlacedIntegrationEventHandler (Presentation) -> ImportOrderCommand (Application).
 public sealed class EventSyncTests(LegacyEnvironment legacy)
-    : IntegrationTest(legacy, SyncStrategy.Events)
+    : IntegrationTest(legacy, MigrationPhase.Routing, SyncStrategy.Events)
 {
     [Fact]
     public async Task PlacedOrder_ArrivesInNewModule_ThroughTheInbox()

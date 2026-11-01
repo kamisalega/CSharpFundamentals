@@ -13,9 +13,9 @@ namespace StranglerFig.IntegrationTests.Infrastructure;
 // Every test gets its own app (own DI setup and flags) on top of the shared containers.
 public abstract class IntegrationTest : IAsyncDisposable
 {
-    protected IntegrationTest(LegacyEnvironment legacy, SyncStrategy syncStrategy, TimeSpan? syncInterval = null)
+    protected IntegrationTest(LegacyEnvironment legacy, MigrationPhase phase, SyncStrategy syncStrategy, TimeSpan? syncInterval = null)
     {
-        App = new StranglerFigApp(legacy, syncStrategy, syncInterval);
+        App = new StranglerFigApp(legacy, phase, syncStrategy, syncInterval);
         Api = new OrdersApi(App.CreateClient());
         Legacy = new LegacyApi(legacy.LegacyBaseUrl);
     }
