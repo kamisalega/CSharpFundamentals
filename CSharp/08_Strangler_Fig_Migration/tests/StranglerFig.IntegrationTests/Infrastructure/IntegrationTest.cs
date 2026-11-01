@@ -1,3 +1,5 @@
+using StranglerFig.Migration;
+
 namespace StranglerFig.IntegrationTests.Infrastructure;
 
 // Every test gets its own app (own DI setup and flags) on top of the shared containers.
@@ -14,6 +16,8 @@ public abstract class IntegrationTest : IAsyncDisposable
     protected OrdersApi Api { get; }
 
     protected static CancellationToken Ct => TestContext.Current.CancellationToken;
+
+    protected void UseNewOrdersModule(bool enabled = true) => App.SetFlag(FeatureFlags.NewOrdersModule, enabled);
 
     public async ValueTask DisposeAsync()
     {
