@@ -34,6 +34,21 @@ public sealed class ParallelRunTests(LegacyEnvironment legacy)
         MismatchesFor(placed.Id).Count.ShouldBe(1);
     }
 
+    [Fact]
+    public async Task StaleDataInNewModule_ReturnsLegacy_AndLogsMismatch()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        await SyncEverythingAsync();
+        await Api.ShipOrderAsync(placed.Id, Ct);
+
+        OrderDto order = await Api.GetOrderOrThrowAsync(placed.Id, Ct);
+
+        order.Status.ShouldBe("Shipped");
+        string mismatch = MismatchesFor(placed.Id).ShouldHaveSingleItem();
+        mismatch.ShouldContain("Shipped");
+        mismatch.ShouldContain("Pending");
+    }
+
     private List<string> MismatchesFor(Guid orderId) =>
         App.Logs.GetSnapshot()
             .Where(r => r.Level == LogLevel.Warning && r.Message.Contains($"Order {orderId} mismatch"))
