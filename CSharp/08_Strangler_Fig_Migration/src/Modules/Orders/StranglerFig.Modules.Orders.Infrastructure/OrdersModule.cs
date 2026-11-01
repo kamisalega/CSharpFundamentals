@@ -73,6 +73,10 @@ public static class OrdersModule
         services.Configure<OutboxOptions>(configuration.GetSection("Orders:Outbox"));
 
         services.ConfigureOptions<ConfigureProcessOutboxJob>();
+
+        services.Configure<InboxOptions>(configuration.GetSection("Orders:Inbox"));
+
+        services.ConfigureOptions<ConfigureProcessInboxJob>();
     }
 
     private static void AddDomainEventHandlers(this IServiceCollection services)

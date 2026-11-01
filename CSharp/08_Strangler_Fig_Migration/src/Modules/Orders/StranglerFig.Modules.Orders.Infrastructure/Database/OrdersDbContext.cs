@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using StranglerFig.Common.Infrastructure.Inbox;
 using StranglerFig.Common.Infrastructure.Outbox;
 using StranglerFig.Modules.Orders.Application.Abstractions.Data;
 using StranglerFig.Modules.Orders.Domain.Orders;
@@ -17,6 +18,7 @@ public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options) :
 
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new OutboxMessageConsumerConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
 
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
     }
