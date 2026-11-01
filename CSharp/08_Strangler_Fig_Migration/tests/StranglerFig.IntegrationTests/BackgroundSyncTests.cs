@@ -75,4 +75,15 @@ public sealed class HostedSyncJobTests(LegacyEnvironment legacy)
             async () => await GetFromNewModuleAsync(placed.Id) is not null,
             "the job should copy the order into the new module");
     }
+
+    [Fact]
+    public async Task Job_EventuallyCopiesChanges()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        await Api.ShipOrderAsync(placed.Id, Ct);
+
+        await EventuallyAsync(
+            async () => (await GetFromNewModuleAsync(placed.Id))?.Status == "Shipped",
+            "the job should copy the shipped status into the new module");
+    }
 }
