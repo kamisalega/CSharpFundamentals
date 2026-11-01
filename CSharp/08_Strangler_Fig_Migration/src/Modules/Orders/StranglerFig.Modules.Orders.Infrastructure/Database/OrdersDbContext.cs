@@ -19,7 +19,7 @@ public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options) :
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
         modelBuilder.ApplyConfiguration(new OutboxMessageConsumerConfiguration());
         modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
-
+        modelBuilder.ApplyConfiguration(new InboxMessageConsumerConfiguration());
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
     }
 }
