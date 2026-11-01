@@ -60,6 +60,26 @@ public sealed class BackgroundSyncTests(LegacyEnvironment legacy)
         again.Inserted.ShouldBe(0);
         (await GetFromNewModuleAsync(placed.Id)).ShouldBe(placed);
     }
+
+    [Fact]
+    public async Task ImportedOrder_RaisesDomainEvent_ThatIsDispatchedThroughTheOutbox()
+    {
+        // Order.Import raises OrderImportedDomainEvent. It is saved to orders.outbox_messages in the same
+        // transaction as the order; ProcessOutboxJob dispatches it and publishes OrderImportedIntegrationEvent.
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        await SyncEverythingAsync();
+
+        const string outboxSql =
+            """
+            SELECT processed_on_utc IS NOT NULL AND error IS NULL
+            FROM orders.outbox_messages
+            WHERE content ->> 'OrderId' = @OrderId
+            """;
+
+        await EventuallyAsync(
+            async () => await QueryModuleDatabaseAsync<bool>(outboxSql, new { OrderId = placed.Id.ToString() }),
+            "the outbox message should be processed without errors");
+    }
 }
 
 // The real Quartz job (OrderDataMigrationJob) with a short interval instead of 30 s.

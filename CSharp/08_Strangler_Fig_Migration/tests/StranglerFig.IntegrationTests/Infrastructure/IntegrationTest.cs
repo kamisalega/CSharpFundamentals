@@ -1,5 +1,8 @@
+using System.Data.Common;
+using Dapper;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
+using StranglerFig.Common.Application.Data;
 using StranglerFig.Migration;
 using StranglerFig.Migration.Seam;
 using StranglerFig.Migration.Sync;
@@ -42,6 +45,16 @@ public abstract class IntegrationTest : IAsyncDisposable
         return order is null
             ? null
             : new OrderDto(order.Id, order.CustomerEmail, order.Total, order.Status, order.CreatedAtUtc);
+    }
+
+    // Peeks into the module's tables (outbox, inbox) to show what happens under the hood.
+    protected async Task<T?> QueryModuleDatabaseAsync<T>(string sql, object parameters)
+    {
+        using IServiceScope scope = App.Services.CreateScope();
+        await using DbConnection connection =
+            await scope.ServiceProvider.GetRequiredService<IDbConnectionFactory>().OpenConnectionAsync();
+
+        return await connection.QuerySingleOrDefaultAsync<T>(sql, parameters);
     }
 
     protected static async Task EventuallyAsync(Func<Task<bool>> condition, string because)
