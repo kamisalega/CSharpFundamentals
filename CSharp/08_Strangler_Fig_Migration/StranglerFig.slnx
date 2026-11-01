@@ -22,6 +22,7 @@
     <Project Path="src/Modules/Orders/StranglerFig.Modules.Orders.PublicApi/StranglerFig.Modules.Orders.PublicApi.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/StranglerFig.ArchitectureTests/StranglerFig.ArchitectureTests.csproj" />
     <Project Path="tests/StranglerFig.IntegrationTests/StranglerFig.IntegrationTests.csproj" />
     <Project Path="tests/StranglerFig.UnitTests/StranglerFig.UnitTests.csproj" />
   </Folder>
