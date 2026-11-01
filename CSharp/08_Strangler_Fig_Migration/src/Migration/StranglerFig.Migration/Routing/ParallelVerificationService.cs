@@ -14,7 +14,17 @@ internal sealed class ParallelVerificationService(
     {
         OrderDto? legacyResult = await legacy.GetOrderAsync(orderId, cancellationToken);
 
-        OrderDto? newResult = await newModule.GetOrderAsync(orderId, cancellationToken);
+        OrderDto? newResult;
+        try
+        {
+            newResult = await newModule.GetOrderAsync(orderId, cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            // A bug in the new module must not break users - they still get the legacy answer.
+            logger.LogError(exception, "New orders module failed for order {OrderId}", orderId);
+            return legacyResult;
+        }
 
         // OrderDto is a record, so Equals compares values, not references.
         if (!Equals(legacyResult, newResult))
