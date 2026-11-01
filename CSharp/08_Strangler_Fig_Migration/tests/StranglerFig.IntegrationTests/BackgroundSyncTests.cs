@@ -79,6 +79,17 @@ public sealed class BackgroundSyncTests(LegacyEnvironment legacy)
         await EventuallyAsync(
             async () => await QueryModuleDatabaseAsync<bool>(outboxSql, new { OrderId = placed.Id.ToString() }),
             "the outbox message should be processed without errors");
+
+        const string consumerSql =
+            """
+            SELECT name
+            FROM orders.outbox_message_consumers c
+            JOIN orders.outbox_messages m ON m.id = c.outbox_message_id
+            WHERE m.content ->> 'OrderId' = @OrderId
+            """;
+
+        (await QueryModuleDatabaseAsync<string>(consumerSql, new { OrderId = placed.Id.ToString() }))
+            .ShouldBe("OrderImportedDomainEventHandler");
     }
 }
 
