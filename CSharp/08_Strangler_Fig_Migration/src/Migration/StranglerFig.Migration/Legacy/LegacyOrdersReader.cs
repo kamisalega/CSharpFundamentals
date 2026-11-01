@@ -16,6 +16,15 @@ internal sealed record LegacyOrderRow(
 // read-only, and only here - in temporary migration code, never in the Orders module.
 internal sealed class LegacyOrdersReader(IDbConnectionFactory dbConnectionFactory)
 {
+    // The database clock, in the same zone-less UTC convention legacy uses for modified_at.
+    // The legacy container's clock and this process's clock never match exactly.
+    public async Task<DateTime> GetDatabaseUtcNowAsync()
+    {
+        await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
+
+        return await connection.ExecuteScalarAsync<DateTime>("SELECT clock_timestamp() AT TIME ZONE 'utc'");
+    }
+
     public async Task<IReadOnlyList<LegacyOrderRow>> GetOrdersChangedSinceAsync(DateTime since)
     {
         await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
