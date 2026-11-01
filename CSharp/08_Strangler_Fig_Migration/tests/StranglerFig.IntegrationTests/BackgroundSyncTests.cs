@@ -22,6 +22,20 @@ public sealed class BackgroundSyncTests(LegacyEnvironment legacy) : IntegrationT
     }
 
     [Fact]
+    public async Task Sync_FromWatermark_PicksUpLaterChanges()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        SyncResult firstPass = await SyncEverythingAsync();
+
+        await Api.ShipOrderAsync(placed.Id, Ct);
+        SyncResult secondPass = await SyncAsync(firstPass.SyncStartedAt);
+
+        secondPass.Inserted.ShouldBe(0);
+        secondPass.Updated.ShouldBe(1);
+        (await GetFromNewModuleAsync(placed.Id))!.Status.ShouldBe("Shipped");
+    }
+
+    [Fact]
     public async Task Sync_FromWatermark_SkipsRowsThatDidNotChange()
     {
         await Api.PlaceOrderAsync(Ct);

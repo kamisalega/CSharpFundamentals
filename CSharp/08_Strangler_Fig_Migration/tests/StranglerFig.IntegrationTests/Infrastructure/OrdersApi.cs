@@ -18,6 +18,13 @@ public sealed class OrdersApi(HttpClient client)
         return (await response.Content.ReadFromJsonAsync<OrderDto>(ct))!;
     }
 
+    public async Task ShipOrderAsync(Guid orderId, CancellationToken ct)
+    {
+        using var content = new StringContent(string.Empty);
+        HttpResponseMessage response = await client.PostAsync(new Uri($"/orders/{orderId}/ship", UriKind.Relative), content, ct);
+        response.EnsureSuccessStatusCode();
+    }
+
     public Task<HttpResponseMessage> GetOrderAsync(Guid orderId, CancellationToken ct) =>
         client.GetAsync(new Uri($"/orders/{orderId}", UriKind.Relative), ct);
 
