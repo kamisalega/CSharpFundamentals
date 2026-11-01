@@ -1,7 +1,11 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Shouldly;
+using StranglerFig.Common.Application.EventBus;
 using StranglerFig.IntegrationTests.Infrastructure;
 using StranglerFig.Migration;
 using StranglerFig.Migration.Seam;
+using StranglerFig.Migration.IntegrationEvents;
 
 namespace StranglerFig.IntegrationTests;
 
@@ -58,5 +62,36 @@ public sealed class EventSyncTests(LegacyEnvironment legacy)
 
         (await Api.GetOrderAsync(orderId, Ct)).StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
         (await GetFromNewModuleAsync(orderId)).ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task RedeliveredEvent_IsStoredInTheInboxOnlyOnce()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        var redelivered = new LegacyOrderPlacedIntegrationEvent(
+            Guid.NewGuid(), DateTime.UtcNow, placed.Id, placed.CustomerEmail, placed.Total, placed.CreatedAtUtc);
+
+        using (IServiceScope scope = App.Services.CreateScope())
+        {
+            IEventBus eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+            await eventBus.PublishAsync(redelivered, Ct);
+            await eventBus.PublishAsync(redelivered, Ct);
+        }
+
+        await EventuallyAsync(
+            async () => await QueryModuleDatabaseAsync<bool>(
+                "SELECT processed_on_utc IS NOT NULL FROM orders.inbox_messages WHERE id = @Id",
+                new { redelivered.Id }),
+            "the redelivered event should be processed");
+
+        (await QueryModuleDatabaseAsync<int>(
+            "SELECT count(*)::int FROM orders.inbox_messages WHERE id = @Id",
+            new { redelivered.Id })).ShouldBe(1);
+        (await GetFromNewModuleAsync(placed.Id)).ShouldBe(placed);
+
+        // The second delivery is swallowed by "ON CONFLICT DO NOTHING" - no failed consume in MassTransit.
+        App.Logs.GetSnapshot()
+            .Where(r => r.Level >= LogLevel.Error && r.Category?.StartsWith("MassTransit", StringComparison.Ordinal) == true)
+            .ShouldBeEmpty();
     }
 }

@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging.Testing;
 using StranglerFig.Migration;
 
 namespace StranglerFig.IntegrationTests.Infrastructure;
@@ -11,6 +14,8 @@ public sealed class StranglerFigApp(
     TimeSpan? syncInterval = null) : WebApplicationFactory<Program>
 {
     private readonly FeatureFlagsSource _flags = new();
+
+    public FakeLogCollector Logs => Services.GetRequiredService<FakeLogCollector>();
 
     public void SetFlag(string flag, bool enabled) => _flags.SetFlag(flag, enabled);
 
@@ -32,5 +37,7 @@ public sealed class StranglerFigApp(
 
         // Read on every request (the feature flag).
         builder.ConfigureAppConfiguration((_, config) => config.Add(_flags));
+
+        builder.ConfigureTestServices(services => services.AddFakeLogging());
     }
 }
