@@ -1,10 +1,15 @@
 <Solution>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+    <Project Path="src/StranglerFig.Api/StranglerFig.Api.csproj" />
+  </Folder>
   <Folder Name="/src/Common/">
     <Project Path="src/Common/StranglerFig.Common.Application/StranglerFig.Common.Application.csproj" />
     <Project Path="src/Common/StranglerFig.Common.Domain/StranglerFig.Common.Domain.csproj" />
     <Project Path="src/Common/StranglerFig.Common.Infrastructure/StranglerFig.Common.Infrastructure.csproj" />
     <Project Path="src/Common/StranglerFig.Common.Presentation/StranglerFig.Common.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Migration/">
+    <Project Path="src/Migration/StranglerFig.Migration/StranglerFig.Migration.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
   <Folder Name="/src/Modules/Orders/">

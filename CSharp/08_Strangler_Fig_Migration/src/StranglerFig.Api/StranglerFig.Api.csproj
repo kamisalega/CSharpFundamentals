@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Migration\StranglerFig.Migration\StranglerFig.Migration.csproj" />
+  </ItemGroup>
+
+</Project>
