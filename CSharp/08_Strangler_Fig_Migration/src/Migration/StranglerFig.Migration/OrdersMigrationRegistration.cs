@@ -15,6 +15,10 @@ public static class OrdersMigrationRegistration
 {
     public static IServiceCollection AddOrdersMigration(this IServiceCollection services, IConfiguration configuration)
     {
+        IConfigurationSection section = configuration.GetSection(OrdersMigrationOptions.SectionName);
+        OrdersMigrationOptions options = section.Get<OrdersMigrationOptions>() ?? new OrdersMigrationOptions();
+        services.Configure<OrdersMigrationOptions>(section);
+
         services.AddFeatureManagement();
 
         // The legacy app is a separate process (.NET Framework 2.0 on Mono) - we talk to it over HTTP.
@@ -29,6 +33,11 @@ public static class OrdersMigrationRegistration
             sp.GetRequiredService<Modules.Orders.PublicApi.IOrdersApi>()));
 
         services.AddScoped<IOrderService, OrderServiceRouter>();
+
+        if (options.SyncStrategy == SyncStrategy.BackgroundJob)
+        {
+            services.ConfigureOptions<ConfigureOrderDataMigrationJob>();
+        }
 
         services.AddEndpoints(typeof(OrdersMigrationRegistration).Assembly);
 
