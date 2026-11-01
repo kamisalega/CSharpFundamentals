@@ -1,6 +1,8 @@
 using MediatR;
+using StranglerFig.Common.Application.Exceptions;
 using StranglerFig.Common.Domain;
 using StranglerFig.Modules.Orders.Application.Orders.GetOrder;
+using StranglerFig.Modules.Orders.Application.Orders.ImportOrder;
 using StranglerFig.Modules.Orders.PublicApi;
 using OrderResponse = StranglerFig.Modules.Orders.PublicApi.OrderResponse;
 
@@ -25,5 +27,25 @@ internal sealed class OrdersApi(ISender sender) : IOrdersApi
             result.Value.Total,
             result.Value.Status,
             result.Value.CreatedAtUtc);
+    }
+
+    public async Task<ImportOrderResult> ImportOrderAsync(
+        Guid orderId,
+        string customerEmail,
+        decimal total,
+        bool isShipped,
+        DateTime createdAtUtc,
+        CancellationToken cancellationToken = default)
+    {
+        Result<ImportOrderOutcome> result = await sender.Send(
+            new ImportOrderCommand(orderId, customerEmail, total, isShipped, createdAtUtc),
+            cancellationToken);
+
+        if (result.IsFailure)
+        {
+            throw new StranglerFigException(nameof(ImportOrderCommand), result.Error);
+        }
+
+        return result.Value == ImportOrderOutcome.Created ? ImportOrderResult.Created : ImportOrderResult.Updated;
     }
 }

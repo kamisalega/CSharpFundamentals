@@ -1,18 +1,48 @@
+using StranglerFig.Migration.Legacy;
 using StranglerFig.Modules.Orders.PublicApi;
 
 namespace StranglerFig.Migration.Sync;
 
 public sealed record SyncResult(int Inserted, int Updated, DateTime SyncStartedAt);
 
+// One pass of option A. Unlike the article's job, it doesn't write to the module's DbContext:
+// every row goes through IOrdersApi, i.e. through the module's own ImportOrderCommand.
 public sealed class OrderSynchronizer
 {
+    private readonly LegacyOrdersReader _legacyOrders;
     private readonly IOrdersApi _ordersApi;
 
-    internal OrderSynchronizer(IOrdersApi ordersApi)
+    internal OrderSynchronizer(LegacyOrdersReader legacyOrders, IOrdersApi ordersApi)
     {
+        _legacyOrders = legacyOrders;
         _ordersApi = ordersApi;
     }
 
-    public Task<SyncResult> SyncChangesSinceAsync(DateTime since, CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException(_ordersApi.ToString());
+    public async Task<SyncResult> SyncChangesSinceAsync(DateTime since, CancellationToken cancellationToken = default)
+    {
+        IReadOnlyList<LegacyOrderRow> changed = await _legacyOrders.GetOrdersChangedSinceAsync(since);
+
+        int inserted = 0, updated = 0;
+        foreach (LegacyOrderRow row in changed)
+        {
+            ImportOrderResult result = await _ordersApi.ImportOrderAsync(
+                row.OrderId,
+                row.CustomerEmail,
+                row.Total,
+                isShipped: false,
+                LegacyOrdersClient.FromLegacyUtc(row.CreatedAt),
+                cancellationToken);
+
+            if (result == ImportOrderResult.Created)
+            {
+                inserted++;
+            }
+            else
+            {
+                updated++;
+            }
+        }
+
+        return new SyncResult(inserted, updated, since);
+    }
 }

@@ -5,6 +5,7 @@ using StranglerFig.Common.Presentation.Endpoints;
 using StranglerFig.Migration.Legacy;
 using StranglerFig.Migration.Routing;
 using StranglerFig.Migration.Seam;
+using StranglerFig.Migration.Sync;
 
 namespace StranglerFig.Migration;
 
@@ -21,7 +22,11 @@ public static class OrdersMigrationRegistration
             ?? throw new InvalidOperationException("Missing Legacy:BaseUrl.");
         services.AddHttpClient<LegacyOrdersClient>(client => client.BaseAddress = new Uri(legacyBaseUrl.TrimEnd('/') + "/"));
 
+        services.AddScoped<LegacyOrdersReader>();
         services.AddScoped<NewOrdersModuleService>();
+        services.AddScoped(sp => new OrderSynchronizer(
+            sp.GetRequiredService<LegacyOrdersReader>(),
+            sp.GetRequiredService<Modules.Orders.PublicApi.IOrdersApi>()));
 
         services.AddScoped<IOrderService, OrderServiceRouter>();
 

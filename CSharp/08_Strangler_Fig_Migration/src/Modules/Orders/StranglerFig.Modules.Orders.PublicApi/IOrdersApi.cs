@@ -5,6 +5,20 @@ namespace StranglerFig.Modules.Orders.PublicApi;
 public interface IOrdersApi
 {
     Task<OrderResponse?> GetOrderAsync(Guid orderId, CancellationToken cancellationToken = default);
+
+    Task<ImportOrderResult> ImportOrderAsync(
+        Guid orderId,
+        string customerEmail,
+        decimal total,
+        bool isShipped,
+        DateTime createdAtUtc,
+        CancellationToken cancellationToken = default);
 }
 
 public sealed record OrderResponse(Guid Id, string CustomerEmail, decimal Total, string Status, DateTime CreatedAtUtc);
+
+public enum ImportOrderResult
+{
+    Created = 0,
+    Updated = 1
+}

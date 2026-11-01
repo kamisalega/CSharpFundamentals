@@ -6,7 +6,7 @@ using StranglerFig.Migration.Seam;
 
 namespace StranglerFig.Migration.Legacy;
 
-// Anti-corruption layer over the legacy HTTP API: XML and magic status numbers
+// Anti-corruption layer over the legacy HTTP API: XML, magic status numbers and zone-less UTC dates
 // are translated here and never reach the rest of the system.
 internal sealed class LegacyOrdersClient(HttpClient http) : IOrderService
 {
@@ -50,6 +50,8 @@ internal sealed class LegacyOrdersClient(HttpClient http) : IOrderService
         return ToDto(await ReadOrderAsync(response, cancellationToken));
     }
 
+    internal static DateTime FromLegacyUtc(DateTime value) => DateTime.SpecifyKind(value, DateTimeKind.Utc);
+
     internal static string ToStatusName(int status) => status == LegacyOrderStatus.Shipped ? "Shipped" : "Pending";
 
     private static async Task<LegacyOrderXml> ReadOrderAsync(HttpResponseMessage response, CancellationToken cancellationToken)
@@ -61,5 +63,5 @@ internal sealed class LegacyOrdersClient(HttpClient http) : IOrderService
     }
 
     private static OrderDto ToDto(LegacyOrderXml order) =>
-        new(order.Id, order.CustomerEmail, order.Total, ToStatusName(order.Status), order.CreatedAt);
+        new(order.Id, order.CustomerEmail, order.Total, ToStatusName(order.Status), FromLegacyUtc(order.CreatedAt));
 }
