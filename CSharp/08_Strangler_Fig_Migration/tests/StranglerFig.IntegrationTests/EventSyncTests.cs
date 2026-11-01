@@ -45,4 +45,18 @@ public sealed class EventSyncTests(LegacyEnvironment legacy)
         (await Api.GetOrderOrThrowAsync(placed.Id, Ct)).Status.ShouldBe("Shipped");
         (await GetFromNewModuleAsync(placed.Id))!.Status.ShouldBe("Pending");
     }
+
+    [Fact]
+    public async Task OrderWrittenDirectlyToLegacy_BypassingTheFacade_IsNotSynced()
+    {
+        // Legacy's own UI or batch jobs never go through the facade, so no event is published.
+        // The watermark job (option A) doesn't have this blind spot - it reads the table itself.
+        Guid orderId = await Legacy.PlaceOrderAsync("direct@legacy.local", 10m, Ct);
+
+        // A few inbox cycles: if an event existed, it would have been processed by now.
+        await Task.Delay(TimeSpan.FromSeconds(3), Ct);
+
+        (await Api.GetOrderAsync(orderId, Ct)).StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+        (await GetFromNewModuleAsync(orderId)).ShouldBeNull();
+    }
 }

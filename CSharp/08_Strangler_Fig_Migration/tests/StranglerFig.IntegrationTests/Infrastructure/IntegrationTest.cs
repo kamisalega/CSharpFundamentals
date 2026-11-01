@@ -17,11 +17,14 @@ public abstract class IntegrationTest : IAsyncDisposable
     {
         App = new StranglerFigApp(legacy, syncStrategy, syncInterval);
         Api = new OrdersApi(App.CreateClient());
+        Legacy = new LegacyApi(legacy.LegacyBaseUrl);
     }
 
     protected StranglerFigApp App { get; }
 
     protected OrdersApi Api { get; }
+
+    protected LegacyApi Legacy { get; }
 
     protected static CancellationToken Ct => TestContext.Current.CancellationToken;
 
@@ -70,6 +73,7 @@ public abstract class IntegrationTest : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        Legacy.Dispose();
         await App.DisposeAsync();
         GC.SuppressFinalize(this);
     }
