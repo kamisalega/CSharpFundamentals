@@ -12,6 +12,18 @@ public sealed class ParallelRunTests(LegacyEnvironment legacy)
     : IntegrationTest(legacy, MigrationPhase.ParallelRun, SyncStrategy.None)
 {
     [Fact]
+    public async Task SameResults_ReturnsLegacy_AndLogsNoMismatch()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+        await SyncEverythingAsync();
+
+        OrderDto order = await Api.GetOrderOrThrowAsync(placed.Id, Ct);
+
+        order.ShouldBe(placed);
+        MismatchesFor(placed.Id).ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task OrderMissingInNewModule_ReturnsLegacy_AndLogsMismatch()
     {
         OrderDto placed = await Api.PlaceOrderAsync(Ct);
