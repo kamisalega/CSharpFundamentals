@@ -46,4 +46,16 @@ public sealed class BackgroundSyncTests(LegacyEnvironment legacy) : IntegrationT
         secondPass.Inserted.ShouldBe(0);
         secondPass.Updated.ShouldBe(0);
     }
+
+    [Fact]
+    public async Task Sync_RunTwiceFromScratch_IsIdempotent()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+
+        await SyncEverythingAsync();
+        SyncResult again = await SyncEverythingAsync();
+
+        again.Inserted.ShouldBe(0);
+        (await GetFromNewModuleAsync(placed.Id)).ShouldBe(placed);
+    }
 }
