@@ -50,6 +50,25 @@ internal sealed class LegacyOrdersClient(HttpClient http) : IOrderService
         return ToDto(await ReadOrderAsync(response, cancellationToken));
     }
 
+    public async Task<bool> ShipOrderAsync(Guid orderId, CancellationToken cancellationToken = default)
+    {
+        // Empty body instead of null: Mono's HttpListener rejects a POST without Content-Length (411).
+        using var content = new StringContent(string.Empty);
+        using HttpResponseMessage response = await http.PostAsync(
+            new Uri($"orders/{orderId}/ship", UriKind.Relative),
+            content,
+            cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return false;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        return true;
+    }
+
     internal static DateTime FromLegacyUtc(DateTime value) => DateTime.SpecifyKind(value, DateTimeKind.Utc);
 
     internal static string ToStatusName(int status) => status == LegacyOrderStatus.Shipped ? "Shipped" : "Pending";

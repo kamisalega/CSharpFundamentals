@@ -34,7 +34,7 @@ public sealed class OrderSynchronizer
                 row.OrderId,
                 row.CustomerEmail,
                 row.Total,
-                isShipped: false,
+                row.Status == LegacyOrderStatus.Shipped,
                 LegacyOrdersClient.FromLegacyUtc(row.CreatedAt),
                 cancellationToken);
 
