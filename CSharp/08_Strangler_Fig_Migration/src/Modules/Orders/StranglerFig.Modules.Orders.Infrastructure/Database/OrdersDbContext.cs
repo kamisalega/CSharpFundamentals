@@ -16,6 +16,7 @@ public sealed class OrdersDbContext(DbContextOptions<OrdersDbContext> options) :
         modelBuilder.HasDefaultSchema(Schemas.Orders);
 
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new OutboxMessageConsumerConfiguration());
 
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
     }
