@@ -29,4 +29,16 @@ public sealed class RoutingTests(LegacyEnvironment legacy) : IntegrationTest(leg
 
         (await Api.GetOrderAsync(placed.Id, Ct)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
+
+    [Fact]
+    public async Task FlippingTheFlagBack_IsAnInstantRollback_WithoutRestart()
+    {
+        OrderDto placed = await Api.PlaceOrderAsync(Ct);
+
+        UseNewOrdersModule();
+        (await Api.GetOrderAsync(placed.Id, Ct)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+
+        UseNewOrdersModule(false);
+        (await Api.GetOrderAsync(placed.Id, Ct)).StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
 }
